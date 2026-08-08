@@ -4,10 +4,140 @@ import {
 } from 'lucide-react';
 import { NPD_MASTER_OEM_COMPANIES } from '../data/fullDatabase';
 
+// Brand company logo badge generator for OEM Directory
+const getCompanyLogoBadge = (company) => {
+  const name = company.name || 'OEM Company';
+  const domain = company.domain || '';
+  
+  let logoText = name.substring(0, 2).toUpperCase();
+  let bgGradient = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
+  let textColor = '#ffffff';
+  let borderColor = '#38bdf8';
+  let shadowGlow = 'rgba(56, 189, 248, 0.4)';
+
+  if (name.includes('Reeman')) {
+    logoText = 'RM';
+    bgGradient = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+    borderColor = '#34d399';
+    shadowGlow = 'rgba(52, 211, 153, 0.5)';
+  } else if (name.includes('LionsBot')) {
+    logoText = 'LB';
+    bgGradient = 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+    borderColor = '#fbbf24';
+    shadowGlow = 'rgba(251, 191, 36, 0.5)';
+  } else if (name.includes('Pudu')) {
+    logoText = 'PD';
+    bgGradient = 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)';
+    borderColor = '#fb923c';
+    shadowGlow = 'rgba(251, 146, 60, 0.5)';
+  } else if (name.includes('Tennant')) {
+    logoText = 'TN';
+    bgGradient = 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)';
+    borderColor = '#60a5fa';
+    shadowGlow = 'rgba(96, 165, 250, 0.5)';
+  } else if (name.includes('Nilfisk')) {
+    logoText = 'NF';
+    bgGradient = 'linear-gradient(135deg, #0284c7 0%, #075985 100%)';
+    borderColor = '#38bdf8';
+    shadowGlow = 'rgba(56, 189, 248, 0.5)';
+  } else if (name.includes('Kärcher') || name.includes('Karcher')) {
+    logoText = 'KÄ';
+    bgGradient = 'linear-gradient(135deg, #ca8a04 0%, #854d0e 100%)';
+    borderColor = '#facc15';
+    shadowGlow = 'rgba(250, 204, 21, 0.5)';
+  } else if (name.includes('Avidbots')) {
+    logoText = 'AV';
+    bgGradient = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
+    borderColor = '#38bdf8';
+    shadowGlow = 'rgba(56, 189, 248, 0.5)';
+  } else if (name.includes('Peppermint')) {
+    logoText = 'PM';
+    bgGradient = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+    borderColor = '#6ee7b7';
+    shadowGlow = 'rgba(110, 231, 183, 0.5)';
+  } else if (name.includes('Rohde') || name.includes('Schwarz')) {
+    logoText = 'R&S';
+    bgGradient = 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)';
+    borderColor = '#818cf8';
+    shadowGlow = 'rgba(129, 140, 248, 0.5)';
+  } else if (name.includes('Ghost')) {
+    logoText = 'GR';
+    bgGradient = 'linear-gradient(135deg, #374151 0%, #1f2937 100%)';
+    borderColor = '#9ca3af';
+    shadowGlow = 'rgba(156, 163, 175, 0.5)';
+  } else if (name.includes('CP Plus') || name.includes('Aditya')) {
+    logoText = 'CP';
+    bgGradient = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
+    borderColor = '#38bdf8';
+    shadowGlow = 'rgba(56, 189, 248, 0.5)';
+  } else if (name.includes('Banovision') || name.includes('Brihaspathi')) {
+    logoText = 'BV';
+    bgGradient = 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)';
+    borderColor = '#a5b4fc';
+    shadowGlow = 'rgba(165, 180, 252, 0.5)';
+  } else if (name.includes('Streamax')) {
+    logoText = 'SX';
+    bgGradient = 'linear-gradient(135deg, #0d9488 0%, #115e59 100%)';
+    borderColor = '#2dd4bf';
+    shadowGlow = 'rgba(45, 212, 191, 0.5)';
+  } else if (name.includes('ALKHOLOCKS')) {
+    logoText = 'AK';
+    bgGradient = 'linear-gradient(135deg, #be185d 0%, #831843 100%)';
+    borderColor = '#f472b6';
+    shadowGlow = 'rgba(244, 114, 182, 0.5)';
+  } else if (name.includes('Jinko')) {
+    logoText = 'JK';
+    bgGradient = 'linear-gradient(135deg, #eab308 0%, #854d0e 100%)';
+    borderColor = '#fde047';
+    shadowGlow = 'rgba(253, 224, 71, 0.5)';
+  } else if (name.includes('ZKTeco') || name.includes('Zk')) {
+    logoText = 'ZK';
+    bgGradient = 'linear-gradient(135deg, #0891b2 0%, #155e75 100%)';
+    borderColor = '#67e8f9';
+    shadowGlow = 'rgba(103, 232, 249, 0.5)';
+  } else if (name.includes('Horion')) {
+    logoText = 'HR';
+    bgGradient = 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)';
+    borderColor = '#c084fc';
+    shadowGlow = 'rgba(192, 132, 252, 0.5)';
+  } else if (domain.includes('Robotics')) {
+    bgGradient = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+    borderColor = '#34d399';
+    shadowGlow = 'rgba(52, 211, 153, 0.4)';
+  } else if (domain.includes('Drone')) {
+    bgGradient = 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)';
+    borderColor = '#818cf8';
+    shadowGlow = 'rgba(129, 140, 248, 0.4)';
+  }
+
+  return (
+    <div style={{
+      width: '30px',
+      height: '30px',
+      minWidth: '30px',
+      borderRadius: '7px',
+      background: bgGradient,
+      border: `1.5px solid ${borderColor}`,
+      display: 'inline-flex',
+      alignItems: 'center',
+      justify: 'center',
+      fontWeight: 900,
+      fontSize: '12px',
+      color: textColor,
+      letterSpacing: '-0.02em',
+      boxShadow: `0 3px 10px ${shadowGlow}`,
+      marginRight: '0.45rem',
+      flexShrink: 0
+    }}>
+      {logoText}
+    </div>
+  );
+};
+
 export const INITIAL_OEM_COMPANIES = NPD_MASTER_OEM_COMPANIES;
 
 export default function OEMCompanyDirectory() {
-  const [companies, setCompanies] = useState(INITIAL_OEM_COMPANIES);
+  const [companies, setCompanies] = useState(INITIAL_OEM_COMPANIES || []);
   const [selectedDomain, setSelectedDomain] = useState('ALL');
   const [selectedCountry, setSelectedCountry] = useState('ALL');
   const [selectedStateCity, setSelectedStateCity] = useState('ALL');
@@ -144,8 +274,8 @@ export default function OEMCompanyDirectory() {
                     <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       S.NO {idx + 1} &bull; OEM MANUFACTURER
                     </div>
-                    <h3 style={{ fontSize: '1.2rem', marginTop: '0.15rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <Building2 size={18} color="#38bdf8" /> {comp.name}
+                    <h3 style={{ fontSize: '1.2rem', marginTop: '0.15rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                      {getCompanyLogoBadge(comp)} {comp.name}
                     </h3>
                   </div>
 

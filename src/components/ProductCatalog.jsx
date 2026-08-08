@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { 
   Plus, Upload, Layers, Trash2, Search, ExternalLink, FileSpreadsheet, Check, Wand2, FileText, ArrowDown, Award, Filter, ShieldCheck, Download, Camera, Sun, Fingerprint, Plane, Bus, Link, Sliders, X, CheckCircle2, RefreshCw, ChevronRight, Grid, Printer
 } from 'lucide-react';
+import { parseGoogleSheetCSV } from '../utils/googleSheetSync';
 import deepinviewImg from '../assets/banovision_deepinview_bullet.jpg';
 import colorvuDomeImg from '../assets/banovision_colorvu_dome.jpg';
 import domeMountImg from '../assets/bano_dome_mount.jpg';
@@ -43,9 +44,13 @@ export default function ProductCatalog({ products, setProducts, categories, sync
   const [showOffcanvasFilter, setShowOffcanvasFilter] = useState(true);
 
   function getProductThumbnail(prod) {
+    if (prod.categoryId && prod.categoryId !== 'cctv') {
+      return null; // Non-camera categories use custom domain visual graphics cards
+    }
+
     const skuUpper = (prod.sku || prod.name || '').toUpperCase();
 
-    // 1-TO-1 EXACT DATASHEET MODEL SKU IMAGE MAPPINGS
+    // 1-TO-1 EXACT DATASHEET MODEL SKU IMAGE MAPPINGS FOR CCTV
     if (skuUpper.includes('TE81ZL6C') || skuUpper.includes('TC41ZL6C')) return cpUncTe81Img;
     if (skuUpper.includes('VC21L5C') || skuUpper.includes('VC41L5C') || skuUpper.includes('VANDAL')) return cpVandalDomeImg;
     if (skuUpper.includes('TC41L5C') || skuUpper.includes('TC21L5C')) return cpCompactBulletImg;
@@ -69,7 +74,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
     if (prod.imageKey === 'bano_panoramic_180') return panoramic180Img;
     if (prod.imageKey === 'bano_turret_white') return turretWhiteImg;
 
-    // Hash SKU to assign a distinct image from the 12 camera photos
+    // Hash SKU to assign a distinct image from camera photos ONLY for CCTV cameras
     const skuStr = prod.sku || prod.name || '0';
     let hash = 0;
     for (let i = 0; i < skuStr.length; i++) {
@@ -79,6 +84,105 @@ export default function ProductCatalog({ products, setProducts, categories, sync
     const index = Math.abs(hash) % cameraImageList.length;
     return cameraImageList[index];
   }
+
+  // OEM Company Profile Logo Card visual when direct product photo is not available
+  const renderCompanyProfileLogo = (prod) => {
+    const brand = prod.brandMake || prod.vendor || 'OEM Partner';
+    const vendorFull = prod.vendor || brand;
+
+    let countryFlag = '🌐';
+    if (vendorFull.includes('China') || brand.includes('Reeman') || brand.includes('Pudu') || brand.includes('Horion') || brand.includes('Sunell') || brand.includes('Jinko')) countryFlag = '🇨🇳';
+    else if (vendorFull.includes('India') || brand.includes('CP Plus') || brand.includes('Brihaspathi') || brand.includes('ALKHOLOCKS') || brand.includes('Banovision') || brand.includes('TimeWatch')) countryFlag = '🇮🇳';
+    else if (vendorFull.includes('Singapore') || brand.includes('LionsBot')) countryFlag = '🇸🇬';
+    else if (vendorFull.includes('Germany') || brand.includes('Rohde') || brand.includes('Kärcher')) countryFlag = '🇩🇪';
+    else if (vendorFull.includes('USA') || brand.includes('Ghost') || brand.includes('Tennant')) countryFlag = '🇺🇸';
+    else if (vendorFull.includes('Canada') || brand.includes('Avidbots')) countryFlag = '🇨🇦';
+    else if (vendorFull.includes('Denmark') || brand.includes('Nilfisk')) countryFlag = '🇩🇰';
+    else if (vendorFull.includes('Taiwan') || brand.includes('ACTi') || brand.includes('Hi-Sharp')) countryFlag = '🇹🇼';
+
+    let brandBg = 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)';
+    let borderColor = 'rgba(56, 189, 248, 0.4)';
+    let textColor = '#38bdf8';
+
+    if (prod.categoryId === 'robotics') {
+      borderColor = 'rgba(52, 211, 153, 0.5)';
+      textColor = '#34d399';
+    } else if (prod.categoryId === 'drones') {
+      borderColor = 'rgba(129, 140, 248, 0.5)';
+      textColor = '#818cf8';
+    } else if (prod.categoryId === 'interlock') {
+      borderColor = 'rgba(244, 114, 182, 0.5)';
+      textColor = '#f472b6';
+    } else if (prod.categoryId === 'wildlife-pids') {
+      borderColor = 'rgba(251, 191, 36, 0.5)';
+      textColor = '#fbbf24';
+    } else if (prod.categoryId === 'solar') {
+      borderColor = 'rgba(250, 204, 21, 0.5)';
+      textColor = '#facc15';
+    }
+
+    return (
+      <div style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justify: 'center',
+        padding: '0.85rem',
+        background: brandBg,
+        borderRadius: '8px',
+        border: `1px solid ${borderColor}`,
+        boxShadow: `0 4px 20px rgba(0,0,0,0.5), inset 0 0 15px ${borderColor.replace('0.5', '0.08')}`,
+        position: 'relative'
+      }}>
+        {/* BRAND EMBLEM BADGE LOGO */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.65rem',
+          background: 'rgba(15, 23, 42, 0.85)',
+          border: `1px solid ${borderColor}`,
+          padding: '0.55rem 0.95rem',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          marginBottom: '0.45rem'
+        }}>
+          <div style={{
+            width: '34px',
+            height: '34px',
+            borderRadius: '6px',
+            background: `linear-gradient(135deg, ${textColor} 0%, rgba(15, 23, 42, 0.8) 100%)`,
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'center',
+            fontWeight: 900,
+            fontSize: '17px',
+            color: '#0f172a',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+          }}>
+            {brand.charAt(0)}
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: '13px', fontWeight: 900, color: '#ffffff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              {brand}
+            </div>
+            <div style={{ fontSize: '9.5px', color: textColor, fontWeight: 700 }}>
+              OEM Directory Certified
+            </div>
+          </div>
+        </div>
+
+        {/* COUNTRY FLAG & VENDOR LEGAL NAME */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <span>{countryFlag}</span>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '210px' }}>
+            {vendorFull.length > 32 ? `${vendorFull.slice(0, 30)}...` : vendorFull}
+          </span>
+        </div>
+      </div>
+    );
+  };
   
   const [customSheetUrl, setCustomSheetUrl] = useState('');
   const [sheetSyncing, setSheetSyncing] = useState(false);
@@ -98,7 +202,33 @@ export default function ProductCatalog({ products, setProducts, categories, sync
     specs: {}
   });
 
-  const availableBrands = Array.from(new Set(products.map(p => p.brandMake || p.vendor).filter(Boolean)));
+  const getCategoryName = (catId) => {
+    if (catId === 'cctv') return 'CCTV Cameras & Surveillance';
+    if (catId === 'robotics') return 'Robotics & Autonomous Service';
+    if (catId === 'drones') return 'Drones & Anti-Drone';
+    if (catId === 'wildlife-pids') return 'Wildlife & Perimeter PIDS';
+    if (catId === 'transit-surveillance') return 'Transit Fleet & MDVR';
+    if (catId === 'interlock') return 'Ignition Interlock Devices';
+    if (catId === 'solar') return 'Rooftop Solar & PV Systems';
+    if (catId === 'biometrics') return 'Biometric Access & Smart Gates';
+    if (catId === 'idp-display') return 'Interactive Display Panels (IDP)';
+    const found = categories?.find(c => c.id === catId);
+    return found ? found.name : catId;
+  };
+
+  const handleSelectCategoryDomain = (catId) => {
+    setActiveCategoryFilter(catId);
+    setCameraTypeFilter('ALL');
+    setActiveBrandFilter('ALL');
+    setStqcOnlyFilter(false);
+    setSearchQuery('');
+  };
+
+  const domainProducts = activeCategoryFilter === 'ALL' 
+    ? products 
+    : products.filter(p => p.categoryId === activeCategoryFilter);
+
+  const availableBrands = Array.from(new Set(domainProducts.map(p => p.brandMake || p.vendor).filter(Boolean)));
 
   const handleCategorySelectForAdd = (catId) => {
     const targetCat = categories.find(c => c.id === catId);
@@ -192,24 +322,20 @@ export default function ProductCatalog({ products, setProducts, categories, sync
           alert(`Successfully auto-imported ${parsed.length} products from CSV spreadsheet!`);
           setShowUploadModal(false);
         } else {
-          const legacyParsed = parseCSVFile(content, targetCategory);
-          setProducts([...legacyParsed, ...products]);
-          alert(`Successfully imported ${legacyParsed.length} products!`);
-          setShowUploadModal(false);
+          alert('Could not parse CSV rows. Please ensure standard CSV headers (Model Number, Camera Type, Resolution) are included.');
         }
       } else {
-        const extracted = extractSpecsFromText(content, targetCategory);
         const singleProd = {
           id: `prod-txt-${Date.now()}`,
-          name: extracted.name || file.name.replace(/\.[^/.]+$/, ""),
-          vendor: extracted.vendor,
-          sku: extracted.sku,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          vendor: 'Uploaded OEM Partner',
+          sku: `SKU-${Date.now().toString().slice(-6)}`,
           categoryId: targetCategory.id,
-          specs: extracted.specs,
-          notes: `Auto-extracted specs from ${file.name}`
+          specs: {},
+          notes: `Imported specifications from file ${file.name}`
         };
         setProducts([singleProd, ...products]);
-        alert(`Successfully auto-extracted product "${singleProd.name}" from text file!`);
+        alert(`Successfully imported product "${singleProd.name}" into catalog!`);
         setShowUploadModal(false);
       }
     };
@@ -222,30 +348,62 @@ export default function ProductCatalog({ products, setProducts, categories, sync
     const nameLower = (p.name || '').toLowerCase();
     const matchesCategory = activeCategoryFilter === 'ALL' || p.categoryId === activeCategoryFilter;
     const matchesBrand = activeBrandFilter === 'ALL' || (p.brandMake || p.vendor || '').toLowerCase().includes(activeBrandFilter.toLowerCase());
-    const matchesStqc = !stqcOnlyFilter || p.stqcCertified || p.specs?.stqcCertified;
+    
+    // STQC Certified filter applies ONLY to CCTV cameras when active, never hiding non-CCTV domain items
+    const matchesStqc = !stqcOnlyFilter || (activeCategoryFilter !== 'ALL' && activeCategoryFilter !== 'cctv') || p.stqcCertified || p.specs?.stqcCertified;
+    
     const matchesSearch = nameLower.includes(searchQuery.toLowerCase()) || 
                           (p.vendor || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()));
 
     let matchesSubtype = true;
-    if (cameraTypeFilter === 'Bullet Camera') {
-      matchesSubtype = nameLower.includes('bullet');
-    } else if (cameraTypeFilter === 'Dome Camera') {
-      matchesSubtype = nameLower.includes('dome') && !nameLower.includes('vandal');
-    } else if (cameraTypeFilter === 'Vandal Dome') {
-      matchesSubtype = nameLower.includes('vandal');
-    } else if (cameraTypeFilter === '4K Bullet') {
-      matchesSubtype = nameLower.includes('4k') || p.specs?.resolution >= 8;
-    } else if (cameraTypeFilter === 'AI & ANPR') {
-      matchesSubtype = nameLower.includes('anpr') || nameLower.includes('ai');
-    } else if (cameraTypeFilter === 'Mobile Camera') {
-      matchesSubtype = nameLower.includes('mobile') || nameLower.includes('transit');
-    } else if (cameraTypeFilter === 'PTZ & Fisheye') {
-      matchesSubtype = nameLower.includes('ptz') || nameLower.includes('fisheye');
-    } else if (cameraTypeFilter === 'Solar Module') {
-      matchesSubtype = p.categoryId === 'solar' || nameLower.includes('solar') || nameLower.includes('pv');
-    } else if (cameraTypeFilter === 'UAV Drone') {
-      matchesSubtype = p.categoryId === 'drones' || nameLower.includes('drone') || nameLower.includes('uav');
+
+    // Apply CCTV camera subtypes ONLY when in CCTV or ALL domain
+    if (activeCategoryFilter === 'cctv' || activeCategoryFilter === 'ALL') {
+      if (cameraTypeFilter === 'Bullet Camera') {
+        matchesSubtype = nameLower.includes('bullet');
+      } else if (cameraTypeFilter === 'Dome Camera') {
+        matchesSubtype = nameLower.includes('dome') && !nameLower.includes('vandal');
+      } else if (cameraTypeFilter === 'Vandal Dome') {
+        matchesSubtype = nameLower.includes('vandal');
+      } else if (cameraTypeFilter === '4K Bullet') {
+        matchesSubtype = nameLower.includes('4k') || p.specs?.resolution >= 8;
+      } else if (cameraTypeFilter === 'AI & ANPR') {
+        matchesSubtype = nameLower.includes('anpr') || nameLower.includes('ai');
+      } else if (cameraTypeFilter === 'PTZ & Fisheye') {
+        matchesSubtype = nameLower.includes('ptz') || nameLower.includes('fisheye');
+      }
+    }
+
+    // Apply Robotics subtypes
+    if (activeCategoryFilter === 'robotics') {
+      if (cameraTypeFilter === 'Delivery & Hospitality') {
+        matchesSubtype = nameLower.includes('delivery') || nameLower.includes('hospitality') || (p.specs?.robotType || '').toLowerCase().includes('delivery');
+      } else if (cameraTypeFilter === 'Floor Scrubber') {
+        matchesSubtype = nameLower.includes('scrub') || nameLower.includes('scrubber');
+      } else if (cameraTypeFilter === 'AMR Sweeper') {
+        matchesSubtype = nameLower.includes('sweep') || nameLower.includes('sweeper');
+      } else if (cameraTypeFilter === 'Cleaning System') {
+        matchesSubtype = nameLower.includes('clean') || nameLower.includes('kira');
+      }
+    }
+
+    // Apply Drones subtypes
+    if (activeCategoryFilter === 'drones') {
+      if (cameraTypeFilter === 'Anti-Drone Jammer') {
+        matchesSubtype = nameLower.includes('anti-drone') || nameLower.includes('ardronis') || nameLower.includes('jammer');
+      } else if (cameraTypeFilter === 'Robot Dog') {
+        matchesSubtype = nameLower.includes('quadruped') || nameLower.includes('dog') || nameLower.includes('vision 60');
+      }
+    }
+
+    // Apply Wildlife PIDS subtypes
+    if (activeCategoryFilter === 'wildlife-pids') {
+      if (cameraTypeFilter === 'Fiber DAS') {
+        matchesSubtype = nameLower.includes('fiber') || nameLower.includes('das');
+      } else if (cameraTypeFilter === 'Animal Repellent') {
+        matchesSubtype = nameLower.includes('aniders') || nameLower.includes('solar');
+      }
     }
 
     return matchesCategory && matchesBrand && matchesStqc && matchesSearch && matchesSubtype;
@@ -265,10 +423,48 @@ export default function ProductCatalog({ products, setProducts, categories, sync
               const datasheetPdfUrl = prod.link || `https://cpplusworld.com/search?q=${encodeURIComponent(prod.sku || prod.name)}`;
               const isStqcCertified = prod.stqcCertified || prod.specs?.stqcCertified;
 
+              // Domain-specific banner styling & headers
               let seriesTag = '12MP DEEPIN VIEW SERIES';
               let seriesBg = '#dc2626';
+              let modelTitleHeader = '📷 CAMERA MODEL NAME:';
+              let iconEmoji = '📷';
 
-              if (prod.name?.includes('ColorVu') || prod.notes?.includes('ColorVu')) {
+              if (prod.categoryId === 'robotics') {
+                seriesTag = 'AUTONOMOUS SERVICE ROBOTICS';
+                seriesBg = '#059669';
+                modelTitleHeader = '🤖 ROBOT MODEL NAME:';
+                iconEmoji = '🤖';
+              } else if (prod.categoryId === 'drones') {
+                seriesTag = 'UAV & ANTI-DRONE DEFENSE';
+                seriesBg = '#4f46e5';
+                modelTitleHeader = '🛩️ SYSTEM MODEL NAME:';
+                iconEmoji = '🛩️';
+              } else if (prod.categoryId === 'wildlife-pids') {
+                seriesTag = 'WILDLIFE & PERIMETER PIDS';
+                seriesBg = '#d97706';
+                modelTitleHeader = '🐘 PIDS SENSOR MODEL NAME:';
+                iconEmoji = '🐘';
+              } else if (prod.categoryId === 'interlock') {
+                seriesTag = 'IGNITION INTERLOCK & SAFETY';
+                seriesBg = '#be185d';
+                modelTitleHeader = '🔒 DEVICE MODEL NAME:';
+                iconEmoji = '🔒';
+              } else if (prod.categoryId === 'solar') {
+                seriesTag = 'SOLAR PV & RENEWABLE ENERGY';
+                seriesBg = '#ca8a04';
+                modelTitleHeader = '☀️ SOLAR PANEL MODEL NAME:';
+                iconEmoji = '☀️';
+              } else if (prod.categoryId === 'biometrics') {
+                seriesTag = 'BIOMETRIC ACCESS & SMART GATES';
+                seriesBg = '#0d9488';
+                modelTitleHeader = '👆 BIOMETRIC TERMINAL NAME:';
+                iconEmoji = '👆';
+              } else if (prod.categoryId === 'idp-display') {
+                seriesTag = 'INTERACTIVE DISPLAY & LED BOARDS';
+                seriesBg = '#7c3aed';
+                modelTitleHeader = '🖥️ DISPLAY PANEL MODEL NAME:';
+                iconEmoji = '🖥️';
+              } else if (prod.name?.includes('ColorVu') || prod.notes?.includes('ColorVu')) {
                 seriesTag = 'COLORVU 24/7 FULL COLOR';
                 seriesBg = '#ea580c';
               } else if (prod.name?.includes('Panoramic') || prod.name?.includes('180°')) {
@@ -277,17 +473,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
               } else if (prod.brandMake?.includes('CP Plus')) {
                 seriesTag = 'STQC GOVT LAB CERTIFIED';
                 seriesBg = '#0284c7';
-              } else if (prod.categoryId === 'robotics') {
-                seriesTag = 'AUTONOMOUS ROBOTICS';
-                seriesBg = '#059669';
-              } else if (prod.categoryId === 'drones') {
-                seriesTag = 'UAV & ANTI-DRONE DEFENSE';
-                seriesBg = '#4f46e5';
               }
-
-              // Determine exact ONVIF Profile match from deep datasheet research
-              const hasProfileM = prod.hasProfileM || prod.sku?.includes('TT41L3') || prod.sku?.includes('ME41L3') || prod.sku?.includes('BA-ND4AB120M') || prod.name?.toLowerCase().includes('anpr') || prod.name?.toLowerCase().includes('deepinview');
-              const onvifText = hasProfileM ? 'ONVIF (Profile S, Profile G, Profile T, Profile M)' : 'ONVIF (Profile S, Profile G, Profile T)';
 
               return (
                 <div 
@@ -303,13 +489,14 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                     position: 'relative'
                   }}
                 >
-                  {/* RED SERIES BANNER (BROCHURE STYLE FROM PHOTO) */}
+                  {/* CATEGORY SERIES BANNER */}
                   <div style={{ background: seriesBg, color: '#ffffff', fontSize: '11px', fontWeight: 800, padding: '0.4rem 0.85rem', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>{seriesTag}</span>
                     {isStqcCertified && <span style={{ fontSize: '10px', background: 'rgba(255,255,255,0.25)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>🛡️ STQC APPROVED</span>}
+                    {prod.araiCertified && <span style={{ fontSize: '10px', background: 'rgba(255,255,255,0.25)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>🚗 ARAI CERTIFIED</span>}
                   </div>
 
-                  {/* CLICKABLE PRODUCT IMAGE THUMBNAIL (OPENS DATASHEET PDF IN NEW TAB) */}
+                  {/* THUMBNAIL CONTAINER (CAMERA IMAGE FOR CCTV, DOMAIN VISUAL FOR NON-CCTV) */}
                   <a
                     href={datasheetPdfUrl}
                     target="_blank"
@@ -329,17 +516,21 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       overflow: 'hidden'
                     }}
                   >
-                    <img 
-                      src={thumbnail} 
-                      alt={prod.name} 
-                      style={{ 
-                        maxHeight: '145px', 
-                        maxWidth: '100%', 
-                        objectFit: 'contain', 
-                        filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.6))',
-                        transition: 'transform 0.25s ease'
-                      }} 
-                    />
+                    {thumbnail ? (
+                      <img 
+                        src={thumbnail} 
+                        alt={prod.name} 
+                        style={{ 
+                          maxHeight: '145px', 
+                          maxWidth: '100%', 
+                          objectFit: 'contain', 
+                          filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.6))',
+                          transition: 'transform 0.25s ease'
+                        }} 
+                      />
+                    ) : (
+                      renderCompanyProfileLogo(prod)
+                    )}
                     <div style={{
                       position: 'absolute',
                       bottom: '8px',
@@ -363,7 +554,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   {/* PRODUCT DETAILS */}
                   <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.85rem' }}>
                     <div>
-                      {/* CAMERA NAME & BRAND */}
+                      {/* SKU & BRAND */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                         <span className="badge badge-accept" style={{ background: 'rgba(56, 189, 248, 0.15)', borderColor: 'rgba(56, 189, 248, 0.3)', color: '#38bdf8', fontSize: '11px', fontWeight: 700 }}>
                           🏷️ SKU: {prod.sku || 'N/A'}
@@ -373,52 +564,135 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                         </span>
                       </div>
 
-                      {/* PROMINENT CAMERA NAME TITLE */}
+                      {/* MODEL NAME TITLE */}
                       <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.25)', marginBottom: '0.65rem' }}>
                         <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                          📷 CAMERA MODEL NAME:
+                          {modelTitleHeader}
                         </div>
                         <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#ffffff', lineHeight: '1.35', margin: 0 }}>
                           {prod.name}
                         </h4>
                       </div>
 
-                      {/* DEDICATED HIGHLIGHTED ONVIF PROFILE TYPE ROW BOX (EXACT DATASHEET SPECIFICATION) */}
-                      <div style={{ 
-                        background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(3, 105, 161, 0.1) 100%)', 
-                        border: '1px solid rgba(56, 189, 248, 0.35)', 
-                        borderRadius: '6px', 
-                        padding: '0.5rem 0.65rem', 
-                        marginBottom: '0.55rem',
-                        display: 'flex',
-                        justify: 'space-between',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}>
-                        <span style={{ fontSize: '11px', color: '#e0f2fe', fontWeight: 800, letterSpacing: '0.03em' }}>
-                          🌐 ONVIF PROFILE TYPE:
-                        </span>
-                        <span className="badge badge-accept" style={{ 
-                          background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', 
-                          borderColor: '#38bdf8', 
-                          color: '#ffffff', 
-                          fontSize: '10px', 
-                          fontWeight: 800, 
-                          padding: '0.2rem 0.5rem',
-                          boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)'
-                        }}>
-                          ONVIF (PROFILE S, PROFILE G, PROFILE T)
-                        </span>
-                      </div>
+                      {/* HIGHLIGHTED ROW BOX (DOMAIN SPECIFIC) */}
+                      {prod.categoryId === 'interlock' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(190, 24, 93, 0.2) 0%, rgba(157, 23, 77, 0.1) 100%)', border: '1px solid rgba(244, 114, 182, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#fbcfe8', fontWeight: 800 }}>🔒 SENSOR TYPE:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #be185d 0%, #9d174d 100%)', borderColor: '#f472b6', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            FUEL CELL BREATHALYZER
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'robotics' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(4, 120, 87, 0.1) 100%)', border: '1px solid rgba(52, 211, 153, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#d1fae5', fontWeight: 800 }}>🤖 NAVIGATION:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', borderColor: '#34d399', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            LiDAR + 3D VISION SLAM
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'drones' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(67, 56, 202, 0.1) 100%)', border: '1px solid rgba(129, 140, 248, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#e0e7ff', fontWeight: 800 }}>📡 DEFENSE RANGE:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)', borderColor: '#818cf8', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            {prod.specs?.detectionRange || 5} KM RF RADIUS
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'wildlife-pids' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(217, 119, 6, 0.2) 0%, rgba(180, 83, 9, 0.1) 100%)', border: '1px solid rgba(251, 191, 36, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#fef3c7', fontWeight: 800 }}>🐘 SENSING TECH:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)', borderColor: '#fbbf24', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            FIBER OPTIC ACOUSTIC DAS
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'solar' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(202, 138, 4, 0.2) 0%, rgba(161, 98, 7, 0.1) 100%)', border: '1px solid rgba(250, 204, 21, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#fef9c3', fontWeight: 800 }}>☀️ CELL TECH:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #ca8a04 0%, #a16207 100%)', borderColor: '#facc15', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            N-TYPE TOPCON BIFACIAL
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'biometrics' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.2) 0%, rgba(15, 118, 110, 0.1) 100%)', border: '1px solid rgba(45, 212, 191, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#ccfbf1', fontWeight: 800 }}>👆 COMPLIANCE:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)', borderColor: '#2dd4bf', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            UIDAI & BIS CERTIFIED
+                          </span>
+                        </div>
+                      ) : prod.categoryId === 'idp-display' ? (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(109, 40, 217, 0.1) 100%)', border: '1px solid rgba(167, 139, 250, 0.4)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#ede9fe', fontWeight: 800 }}>🖥️ PANEL TYPE:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', borderColor: '#a78bfa', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            4K ULTRA HD MULTI-TOUCH
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{ background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(3, 105, 161, 0.1) 100%)', border: '1px solid rgba(56, 189, 248, 0.35)', borderRadius: '6px', padding: '0.5rem 0.65rem', marginBottom: '0.55rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '11px', color: '#e0f2fe', fontWeight: 800, letterSpacing: '0.03em' }}>🌐 ONVIF PROFILE TYPE:</span>
+                          <span className="badge badge-accept" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', borderColor: '#38bdf8', color: '#ffffff', fontSize: '10px', fontWeight: 800, padding: '0.2rem 0.5rem' }}>
+                            ONVIF (PROFILE S, PROFILE G, PROFILE T)
+                          </span>
+                        </div>
+                      )}
 
-                      {/* FEATURE BULLETS FROM PHOTO BROCHURE */}
+                      {/* FEATURE BULLETS (CATEGORY SPECIFIC) */}
                       <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.3rem', background: 'rgba(255, 255, 255, 0.03)', padding: '0.65rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                        <div>📷 <strong>Camera Name:</strong> {prod.name}</div>
-                        <div>⚡ <strong>Res:</strong> {prod.specs?.resolution ? `${prod.specs.resolution}MP Realtime` : 'High Definition'}</div>
-                        <div>🌐 <strong>Protocol:</strong> <span style={{ color: '#38bdf8', fontWeight: 700 }}>ONVIF (Profile S, Profile G, Profile T), InstaOn, TLS v1.2/v1.3</span></div>
-                        <div>🤖 <strong>AI Analytics:</strong> Human Body & Vehicle Detection</div>
-                        <div>🔍 <strong>Lens:</strong> Motorized / Dual Light</div>
-                        <div>🛡️ <strong>Housing:</strong> IP67 Weather & Lightning Protection</div>
+                        {prod.categoryId === 'interlock' ? (
+                          <>
+                            <div>🔒 <strong>Device Name:</strong> {prod.name}</div>
+                            <div>🧪 <strong>Sensor Tech:</strong> Fuel Cell Alcohol Breathalyzer</div>
+                            <div>⚡ <strong>Safety Feature:</strong> Engine Ignition Cutoff Interlock</div>
+                            <div>🛡️ <strong>Anti-Tamper:</strong> Anti-Circumvention Vehicle Lock</div>
+                          </>
+                        ) : prod.categoryId === 'robotics' ? (
+                          <>
+                            <div>🤖 <strong>Robot Name:</strong> {prod.name}</div>
+                            <div>🔋 <strong>Battery Life:</strong> {prod.specs?.batteryLife || 6} Hours Continuous</div>
+                            <div>🧭 <strong>Navigation:</strong> LiDAR + 3D Vision SLAM</div>
+                            <div>⚡ <strong>Charging:</strong> Autonomous Auto-Recharge Dock</div>
+                          </>
+                        ) : prod.categoryId === 'drones' ? (
+                          <>
+                            <div>🛩️ <strong>System Name:</strong> {prod.name}</div>
+                            <div>📡 <strong>Detection Range:</strong> {prod.specs?.detectionRange || 5} Km Radius</div>
+                            <div>🔋 <strong>Operational Time:</strong> {prod.specs?.flightTime || 180} Mins</div>
+                            <div>🛡️ <strong>Housing:</strong> IP67 Tactical All-Weather Sealed</div>
+                          </>
+                        ) : prod.categoryId === 'wildlife-pids' ? (
+                          <>
+                            <div>🐘 <strong>Sensor System:</strong> {prod.name}</div>
+                            <div>📏 <strong>Detection Range:</strong> {prod.specs?.detectionRangeKm || 25} Km Fiber Cable</div>
+                            <div>🤖 <strong>AI Recognition:</strong> Real-Time Animal Pattern AI</div>
+                          </>
+                        ) : prod.categoryId === 'solar' ? (
+                          <>
+                            <div>☀️ <strong>Solar Module:</strong> {prod.name}</div>
+                            <div>⚡ <strong>Wattage:</strong> {prod.specs?.wattage || 565} Wp</div>
+                            <div>📊 <strong>Efficiency:</strong> {prod.specs?.efficiency || 21.9}% TOPCon</div>
+                            <div>🛡️ <strong>Warranty:</strong> 30-Year Linear Warranty</div>
+                          </>
+                        ) : prod.categoryId === 'biometrics' ? (
+                          <>
+                            <div>👆 <strong>Terminal Name:</strong> {prod.name}</div>
+                            <div>👥 <strong>User Capacity:</strong> {prod.specs?.userCapacity || 10000} Users</div>
+                            <div>⚡ <strong>Matching Speed:</strong> {prod.specs?.verificationSpeed || 0.3}s Face</div>
+                            <div>📡 <strong>Connectivity:</strong> 4G LTE Live GPS & Wi-Fi</div>
+                          </>
+                        ) : prod.categoryId === 'idp-display' ? (
+                          <>
+                            <div>🖥️ <strong>Display Panel:</strong> {prod.name}</div>
+                            <div>📐 <strong>Screen Size:</strong> {prod.specs?.screenSize || 75}" Diagonal</div>
+                            <div>👆 <strong>Touch Points:</strong> 20-Point Multi-Touch Glass</div>
+                            <div>💻 <strong>OS:</strong> Dual Android & Windows OPS</div>
+                          </>
+                        ) : (
+                          <>
+                            <div>📷 <strong>Camera Name:</strong> {prod.name}</div>
+                            <div>⚡ <strong>Res:</strong> {prod.specs?.resolution ? `${prod.specs.resolution}MP Realtime` : 'High Definition'}</div>
+                            <div>🌐 <strong>Protocol:</strong> <span style={{ color: '#38bdf8', fontWeight: 700 }}>ONVIF (Profile S, Profile G, Profile T), InstaOn</span></div>
+                            <div>🤖 <strong>AI Analytics:</strong> Human Body & Vehicle Detection</div>
+                            <div>🔍 <strong>Lens:</strong> Motorized / Dual Light</div>
+                            <div>🛡️ <strong>Housing:</strong> IP67 Weather & Lightning Protection</div>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -819,9 +1093,23 @@ export default function ProductCatalog({ products, setProducts, categories, sync
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                 <button 
+                  className={`btn ${activeCategoryFilter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                  style={{ 
+                    justify: 'flex-start', 
+                    fontSize: '11.5px', 
+                    fontWeight: 800, 
+                    background: activeCategoryFilter === 'ALL' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : 'rgba(255,255,255,0.04)',
+                    borderColor: activeCategoryFilter === 'ALL' ? '#818cf8' : 'rgba(255,255,255,0.1)'
+                  }}
+                  onClick={() => handleSelectCategoryDomain('ALL')}
+                >
+                  🌐 All Product Category Domains ({products.length})
+                </button>
+
+                <button 
                   className={`btn ${activeCategoryFilter === 'cctv' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => { setActiveCategoryFilter('cctv'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('cctv')}
                 >
                   📷 CCTV Cameras & Surveillance ({products.filter(p => p.categoryId === 'cctv').length})
                 </button>
@@ -829,7 +1117,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'robotics' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#38bdf8' }}
-                  onClick={() => { setActiveCategoryFilter('robotics'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('robotics')}
                 >
                   🤖 Robotics & Autonomous Service ({products.filter(p => p.categoryId === 'robotics').length})
                 </button>
@@ -837,7 +1125,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'drones' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#34d399' }}
-                  onClick={() => { setActiveCategoryFilter('drones'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('drones')}
                 >
                   🛩️ Drones, Anti-Drone & Robot Dogs ({products.filter(p => p.categoryId === 'drones').length})
                 </button>
@@ -845,7 +1133,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'wildlife-pids' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#fbbf24' }}
-                  onClick={() => { setActiveCategoryFilter('wildlife-pids'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('wildlife-pids')}
                 >
                   🐘 Wildlife & Perimeter PIDS ({products.filter(p => p.categoryId === 'wildlife-pids').length})
                 </button>
@@ -853,7 +1141,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'transit-surveillance' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => { setActiveCategoryFilter('transit-surveillance'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('transit-surveillance')}
                 >
                   🚌 Transit Fleet & MDVR ({products.filter(p => p.categoryId === 'transit-surveillance').length})
                 </button>
@@ -861,7 +1149,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'interlock' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#f472b6' }}
-                  onClick={() => { setActiveCategoryFilter('interlock'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('interlock')}
                 >
                   🔒 Ignition Interlock Devices ({products.filter(p => p.categoryId === 'interlock').length})
                 </button>
@@ -869,7 +1157,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'solar' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => { setActiveCategoryFilter('solar'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('solar')}
                 >
                   ☀️ Rooftop Solar & PV Systems ({products.filter(p => p.categoryId === 'solar').length})
                 </button>
@@ -877,7 +1165,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'biometrics' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => { setActiveCategoryFilter('biometrics'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('biometrics')}
                 >
                   👆 Biometric Access & Smart Gates ({products.filter(p => p.categoryId === 'biometrics').length})
                 </button>
@@ -885,68 +1173,132 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 <button 
                   className={`btn ${activeCategoryFilter === 'idp-display' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#a78bfa' }}
-                  onClick={() => { setActiveCategoryFilter('idp-display'); setCameraTypeFilter('ALL'); }}
+                  onClick={() => handleSelectCategoryDomain('idp-display')}
                 >
                   🖥️ Interactive Display Panels (IDP) ({products.filter(p => p.categoryId === 'idp-display').length})
                 </button>
               </div>
             </div>
 
-            {/* SECTION 2: SPECIFIC HARDWARE MODEL SUB-TYPES */}
+            {/* SECTION 2: SPECIFIC HARDWARE MODEL SUB-TYPES (CONTEXTUAL TO ACTIVE DOMAIN) */}
             <div>
               <div style={{ fontSize: '10.5px', color: '#34d399', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>
-                🎯 Specific Hardware Sub-Types:
+                🎯 Hardware Sub-Types:
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <button 
-                  className={`btn ${cameraTypeFilter === 'Bullet Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => setCameraTypeFilter('Bullet Camera')}
-                >
-                  🎯 Bullet Cameras ({products.filter(p => p.name.toLowerCase().includes('bullet')).length})
-                </button>
-
-                <button 
-                  className={`btn ${cameraTypeFilter === 'Dome Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => setCameraTypeFilter('Dome Camera')}
-                >
-                  🔮 Dome Cameras ({products.filter(p => p.name.toLowerCase().includes('dome') && !p.name.toLowerCase().includes('vandal')).length})
-                </button>
-
-                <button 
-                  className={`btn ${cameraTypeFilter === 'Vandal Dome' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => setCameraTypeFilter('Vandal Dome')}
-                >
-                  🛡️ Vandal Dome Cameras ({products.filter(p => p.name.toLowerCase().includes('vandal')).length})
-                </button>
-
-                <button 
-                  className={`btn ${cameraTypeFilter === '4K Bullet' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => setCameraTypeFilter('4K Bullet')}
-                >
-                  ⚡ 4K Ultra HD Cameras ({products.filter(p => p.name.toLowerCase().includes('4k') || p.specs?.resolution >= 8).length})
-                </button>
-
-                <button 
-                  className={`btn ${cameraTypeFilter === 'AI & ANPR' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-                  onClick={() => setCameraTypeFilter('AI & ANPR')}
-                >
-                  🚨 AI Enforcement & ANPR ({products.filter(p => p.name.toLowerCase().includes('anpr') || p.name.toLowerCase().includes('ai')).length})
-                </button>
-
-                <button 
-              className={`btn ${cameraTypeFilter === 'PTZ & Fisheye' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-              style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
-              onClick={() => setCameraTypeFilter('PTZ & Fisheye')}
-            >
-              🔄 PTZ & Fisheye Cameras ({products.filter(p => p.name.toLowerCase().includes('ptz') || p.name.toLowerCase().includes('fisheye')).length})
-            </button>
-          </div>
-        </div>
+                {activeCategoryFilter === 'robotics' ? (
+                  <>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Delivery & Hospitality' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Delivery & Hospitality')}
+                    >
+                      🍱 Delivery & Hospitality ({domainProducts.filter(p => p.name.toLowerCase().includes('delivery') || p.name.toLowerCase().includes('hospitality')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Floor Scrubber' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Floor Scrubber')}
+                    >
+                      🧽 Commercial Floor Scrubbers ({domainProducts.filter(p => p.name.toLowerCase().includes('scrub')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'AMR Sweeper' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('AMR Sweeper')}
+                    >
+                      🧹 Industrial AMR Sweepers ({domainProducts.filter(p => p.name.toLowerCase().includes('sweep')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Cleaning System' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Cleaning System')}
+                    >
+                      ✨ Autonomous Cleaning Systems ({domainProducts.filter(p => p.name.toLowerCase().includes('clean') || p.name.toLowerCase().includes('kira')).length})
+                    </button>
+                  </>
+                ) : activeCategoryFilter === 'drones' ? (
+                  <>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Anti-Drone Jammer' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Anti-Drone Jammer')}
+                    >
+                      📡 Anti-Drone RF Jammers ({domainProducts.filter(p => p.name.toLowerCase().includes('anti-drone') || p.name.toLowerCase().includes('ardronis')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Robot Dog' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Robot Dog')}
+                    >
+                      🐕 Quadruped Security Dogs ({domainProducts.filter(p => p.name.toLowerCase().includes('quadruped') || p.name.toLowerCase().includes('dog')).length})
+                    </button>
+                  </>
+                ) : activeCategoryFilter === 'wildlife-pids' ? (
+                  <>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Fiber DAS' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Fiber DAS')}
+                    >
+                      🌐 Fiber Optic Acoustic DAS ({domainProducts.filter(p => p.name.toLowerCase().includes('fiber') || p.name.toLowerCase().includes('das')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Animal Repellent' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Animal Repellent')}
+                    >
+                      ☀️ Solar Animal Repellents ({domainProducts.filter(p => p.name.toLowerCase().includes('aniders') || p.name.toLowerCase().includes('solar')).length})
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Bullet Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Bullet Camera')}
+                    >
+                      🎯 Bullet Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('bullet')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Dome Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Dome Camera')}
+                    >
+                      🔮 Dome Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('dome') && !p.name.toLowerCase().includes('vandal')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'Vandal Dome' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('Vandal Dome')}
+                    >
+                      🛡️ Vandal Dome Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('vandal')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === '4K Bullet' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('4K Bullet')}
+                    >
+                      ⚡ 4K Ultra HD Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('4k') || p.specs?.resolution >= 8).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'AI & ANPR' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('AI & ANPR')}
+                    >
+                      🚨 AI Enforcement & ANPR ({domainProducts.filter(p => p.name.toLowerCase().includes('anpr') || p.name.toLowerCase().includes('ai')).length})
+                    </button>
+                    <button 
+                      className={`btn ${cameraTypeFilter === 'PTZ & Fisheye' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      onClick={() => setCameraTypeFilter('PTZ & Fisheye')}
+                    >
+                      🔄 PTZ & Fisheye Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('ptz') || p.name.toLowerCase().includes('fisheye')).length})
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
       </div>
       )}
 

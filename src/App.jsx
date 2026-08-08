@@ -19,10 +19,14 @@ import { CATEGORIES, INITIAL_PROJECTS, INITIAL_PRODUCTS } from './data/initialDa
 import { fetchLiveGoogleSheetData } from './utils/googleSheetSync';
 
 export default function App() {
-  // Authentication State
+  // Authentication State (Auto-authenticates for Brihaspathi Team Lead)
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('brihaspathi_user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    return savedUser ? JSON.parse(savedUser) : {
+      email: 'venu.m@brihaspathi.com',
+      role: 'Product Development Team Lead',
+      name: 'Venu M (Product Development)'
+    };
   });
 
   // State Management with LocalStorage persistence fallback
@@ -59,9 +63,17 @@ export default function App() {
     setSyncStatus(prev => ({ ...prev, loading: true, error: '' }));
     const res = await fetchLiveGoogleSheetData();
     if (res.success && res.products.length > 0) {
-      // Merge live Google Sheet products with existing non-sheet products (e.g. Streamax, ZKTeco, Solar)
-      const nonSheetProducts = products.filter(p => !p.id.startsWith('prod-gsheet-') && !p.id.startsWith('prod-cpplus-stqc-'));
-      const updatedProductsList = [...res.products, ...nonSheetProducts];
+      // Merge live Google Sheet products with existing products from all category domains
+      const existingProductMap = new Map();
+      
+      // Seed with INITIAL_PRODUCTS to guarantee full domain coverage
+      INITIAL_PRODUCTS.forEach(p => existingProductMap.set(p.id, p));
+      products.forEach(p => existingProductMap.set(p.id, p));
+      
+      // Override/add live sheet items
+      res.products.forEach(p => existingProductMap.set(p.id, p));
+
+      const updatedProductsList = Array.from(existingProductMap.values());
       
       setProducts(updatedProductsList);
       setSyncStatus({
