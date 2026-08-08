@@ -47,6 +47,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedProjectId, setSelectedProjectId] = useState(projects[0]?.id || '');
+  const [evaluatorStatusFilter, setEvaluatorStatusFilter] = useState('ALL');
   const [auditModalData, setAuditModalData] = useState(null);
   const [oemMeetingData, setOemMeetingData] = useState(null);
 
@@ -148,6 +149,8 @@ export default function App() {
             setActiveTab={setActiveTab}
             setSelectedProjectId={setSelectedProjectId}
             onSelectProductForAudit={(prod, res) => setAuditModalData({ product: prod, res })}
+            evaluatorStatusFilter={evaluatorStatusFilter}
+            setEvaluatorStatusFilter={setEvaluatorStatusFilter}
           />
         )}
 
@@ -176,6 +179,8 @@ export default function App() {
             setSelectedProjectId={setSelectedProjectId}
             onSelectProductForAudit={(prod, res) => setAuditModalData({ product: prod, res })}
             onScheduleOEMMeeting={(prod, proj) => setOemMeetingData({ product: prod, project: proj })}
+            statusFilter={evaluatorStatusFilter}
+            setStatusFilter={setEvaluatorStatusFilter}
           />
         )}
 

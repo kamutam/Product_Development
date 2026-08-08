@@ -174,51 +174,80 @@ export default function ComplianceEvaluator({
             </div>
           </div>
 
-          {/* Accepted Products Status */}
-          <div style={{ 
-            background: 'rgba(11, 15, 25, 0.7)', padding: '0.75rem', borderRadius: '8px', 
-            border: '1px solid var(--success-border)' 
-          }}>
+          {/* Accepted Products Status - 1-CLICK INTERACTIVE FILTER */}
+          <div 
+            style={{ 
+              background: statusFilter === 'ACCEPTED' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              padding: '0.75rem', 
+              borderRadius: '8px', 
+              border: statusFilter === 'ACCEPTED' ? '2px solid #34d399' : '1px solid var(--success-border)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: statusFilter === 'ACCEPTED' ? '0 0 12px rgba(52, 211, 153, 0.3)' : 'none'
+            }}
+            onClick={() => setStatusFilter(statusFilter === 'ACCEPTED' ? 'ALL' : 'ACCEPTED')}
+            title="Click 1-Click to view only Accepted compliant products"
+          >
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Accepted Compliant</span>
+              <span style={{ color: '#34d399', fontWeight: 700 }}>Accepted Compliant</span>
               <CheckCircle2 size={13} color="var(--success)" />
             </div>
             <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#34d399', marginTop: '0.1rem' }}>
               {acceptedCount} Products
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
-              Meets project specs (or waived)
+            <div style={{ fontSize: '10.5px', color: '#34d399', fontWeight: 700, marginTop: '0.2rem' }}>
+              👉 1-Click: View {acceptedCount} Compliant
             </div>
           </div>
 
-          {/* Rejected Products Status */}
-          <div style={{ 
-            background: 'rgba(11, 15, 25, 0.7)', padding: '0.75rem', borderRadius: '8px', 
-            border: '1px solid var(--danger-border)' 
-          }}>
+          {/* Rejected Products Status - 1-CLICK INTERACTIVE FILTER */}
+          <div 
+            style={{ 
+              background: statusFilter === 'REJECTED' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              padding: '0.75rem', 
+              borderRadius: '8px', 
+              border: statusFilter === 'REJECTED' ? '2px solid #fb7185' : '1px solid var(--danger-border)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: statusFilter === 'REJECTED' ? '0 0 12px rgba(251, 113, 133, 0.3)' : 'none'
+            }}
+            onClick={() => setStatusFilter(statusFilter === 'REJECTED' ? 'ALL' : 'REJECTED')}
+            title="Click 1-Click to view only Rejected products"
+          >
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Rejected / Non-Compliant</span>
+              <span style={{ color: '#fb7185', fontWeight: 700 }}>Rejected / Non-Compliant</span>
               <XCircle size={13} color="var(--danger)" />
             </div>
             <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#fb7185', marginTop: '0.1rem' }}>
               {rejectedCount} Products
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
-              Failed target specifications
+            <div style={{ fontSize: '10.5px', color: '#fb7185', fontWeight: 700, marginTop: '0.2rem' }}>
+              👉 1-Click: View {rejectedCount} Rejected
             </div>
           </div>
 
-          {/* Total Evaluated & Domain Status */}
-          <div style={{ 
-            background: 'rgba(11, 15, 25, 0.7)', padding: '0.75rem', borderRadius: '8px', 
-            border: '1px solid var(--border-color)' 
-          }}>
+          {/* Total Evaluated & Domain Status - 1-CLICK SHOW ALL */}
+          <div 
+            style={{ 
+              background: statusFilter === 'ALL' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              padding: '0.75rem', 
+              borderRadius: '8px', 
+              border: statusFilter === 'ALL' ? '1.5px solid #818cf8' : '1px solid var(--border-color)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onClick={() => setStatusFilter('ALL')}
+            title="Click to view all candidate models"
+          >
             <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Product Domain Category</div>
             <div style={{ fontWeight: 700, fontSize: '13px', color: '#ffffff', marginTop: '0.2rem' }}>
               {activeCategory?.name}
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
               Total Screened: <strong>{categoryProducts.length} candidate models</strong>
+            </div>
+            <div style={{ fontSize: '10.5px', color: '#818cf8', fontWeight: 700, marginTop: '0.2rem' }}>
+              👉 1-Click: Show All ({categoryProducts.length})
             </div>
           </div>
         </div>

@@ -13,7 +13,10 @@ const ICON_MAP = {
   Cpu: Cpu
 };
 
-export default function Dashboard({ projects, products, categories, activeProjectId, setActiveTab, setSelectedProjectId, onSelectProductForAudit }) {
+export default function Dashboard({ 
+  projects, products, categories, activeProjectId, setActiveTab, setSelectedProjectId, onSelectProductForAudit,
+  evaluatorStatusFilter, setEvaluatorStatusFilter 
+}) {
   const activeProject = projects.find(p => p.id === activeProjectId) || projects[0];
   const activeCategory = categories.find(c => c.id === activeProject?.categoryId);
 
@@ -29,6 +32,13 @@ export default function Dashboard({ projects, products, categories, activeProjec
   const conditionalCount = evaluations.filter(e => e.res.status === 'CONDITIONAL').length;
   const totalScreened = evaluations.length;
   const acceptRate = totalScreened > 0 ? Math.round((acceptedCount / totalScreened) * 100) : 0;
+
+  const handleCardClick = (statusVal) => {
+    if (setEvaluatorStatusFilter) {
+      setEvaluatorStatusFilter(statusVal);
+    }
+    setActiveTab('evaluator');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -59,9 +69,20 @@ export default function Dashboard({ projects, products, categories, activeProjec
         </div>
       </div>
 
-      {/* Metrics Cards */}
+      {/* Metrics Cards with 1-Click Interactive Status Filter */}
       <div className="grid-cols-4">
-        <div className="card">
+        {/* CARD 1: ACCEPTANCE RATE */}
+        <div 
+          className="card" 
+          style={{ 
+            cursor: 'pointer', 
+            transition: 'all 0.2s ease', 
+            border: evaluatorStatusFilter === 'ALL' ? '1.5px solid #10b981' : '1px solid var(--border-color)',
+            boxShadow: evaluatorStatusFilter === 'ALL' ? '0 0 15px rgba(16, 185, 129, 0.3)' : 'none'
+          }}
+          onClick={() => handleCardClick('ALL')}
+          title="Click to view all screened candidate products"
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Acceptance Rate</span>
             <CheckCircle2 color="var(--success)" size={20} />
@@ -72,24 +93,54 @@ export default function Dashboard({ projects, products, categories, activeProjec
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             {acceptedCount} of {totalScreened} candidate products compliant
           </div>
+          <div style={{ fontSize: '10.5px', color: '#10b981', fontWeight: 700, marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            👉 1-Click: View All ({totalScreened})
+          </div>
         </div>
 
-        <div className="card">
+        {/* CARD 2: ACCEPTED PRODUCTS */}
+        <div 
+          className="card" 
+          style={{ 
+            cursor: 'pointer', 
+            transition: 'all 0.2s ease',
+            border: evaluatorStatusFilter === 'ACCEPTED' ? '2px solid #10b981' : '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: evaluatorStatusFilter === 'ACCEPTED' ? '0 0 15px rgba(16, 185, 129, 0.35)' : 'none',
+            background: 'rgba(16, 185, 129, 0.05)'
+          }}
+          onClick={() => handleCardClick('ACCEPTED')}
+          title="Click to view only Accepted products"
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Accepted Products</span>
+            <span style={{ fontSize: '0.85rem', color: '#34d399', fontWeight: 700 }}>Accepted Products</span>
             <CheckCircle2 color="var(--success)" size={20} />
           </div>
-          <div style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.5rem', color: '#34d399' }}>
             {acceptedCount}
           </div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             Ready for procurement approval
           </div>
+          <div style={{ fontSize: '10.5px', color: '#34d399', fontWeight: 700, marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            👉 1-Click: View Accepted ({acceptedCount})
+          </div>
         </div>
 
-        <div className="card">
+        {/* CARD 3: REJECTED PRODUCTS */}
+        <div 
+          className="card" 
+          style={{ 
+            cursor: 'pointer', 
+            transition: 'all 0.2s ease',
+            border: evaluatorStatusFilter === 'REJECTED' ? '2px solid #fb7185' : '1px solid rgba(244, 63, 94, 0.3)',
+            boxShadow: evaluatorStatusFilter === 'REJECTED' ? '0 0 15px rgba(244, 63, 94, 0.35)' : 'none',
+            background: 'rgba(244, 63, 94, 0.05)'
+          }}
+          onClick={() => handleCardClick('REJECTED')}
+          title="Click to view only Rejected products"
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Rejected Products</span>
+            <span style={{ fontSize: '0.85rem', color: '#fb7185', fontWeight: 700 }}>Rejected Products</span>
             <XCircle color="var(--danger)" size={20} />
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.5rem', color: 'var(--danger)' }}>
@@ -98,11 +149,26 @@ export default function Dashboard({ projects, products, categories, activeProjec
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             Failed mandatory project specs
           </div>
+          <div style={{ fontSize: '10.5px', color: '#fb7185', fontWeight: 700, marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            👉 1-Click: View Rejected ({rejectedCount})
+          </div>
         </div>
 
-        <div className="card">
+        {/* CARD 4: CONDITIONAL / REVIEW PRODUCTS */}
+        <div 
+          className="card" 
+          style={{ 
+            cursor: 'pointer', 
+            transition: 'all 0.2s ease',
+            border: evaluatorStatusFilter === 'CONDITIONAL' ? '2px solid #fbbf24' : '1px solid rgba(245, 158, 11, 0.3)',
+            boxShadow: evaluatorStatusFilter === 'CONDITIONAL' ? '0 0 15px rgba(245, 158, 11, 0.35)' : 'none',
+            background: 'rgba(245, 158, 11, 0.05)'
+          }}
+          onClick={() => handleCardClick('CONDITIONAL')}
+          title="Click to view only Conditional / Review products"
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Conditional / Review</span>
+            <span style={{ fontSize: '0.85rem', color: '#fbbf24', fontWeight: 700 }}>Conditional / Review</span>
             <AlertTriangle color="var(--warning)" size={20} />
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 800, marginTop: '0.5rem', color: 'var(--warning)' }}>
@@ -110,6 +176,9 @@ export default function Dashboard({ projects, products, categories, activeProjec
           </div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             Minor spec warnings
+          </div>
+          <div style={{ fontSize: '10.5px', color: '#fbbf24', fontWeight: 700, marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            👉 1-Click: View Conditional ({conditionalCount})
           </div>
         </div>
       </div>
