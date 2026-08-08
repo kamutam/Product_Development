@@ -42,30 +42,67 @@ export default function Dashboard({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      {/* Banner / Active Project Greeting */}
+      {/* Banner / Active Project Greeting with 1-Click Project Switcher & Product Details Hub */}
       <div className="card" style={{ 
-        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-        borderColor: 'rgba(99, 102, 241, 0.3)',
+        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(139, 92, 246, 0.18) 100%)',
+        borderColor: 'rgba(99, 102, 241, 0.4)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justify: 'space-between',
         flexWrap: 'wrap',
         gap: '1rem'
       }}>
-        <div>
-          <div style={{ fontSize: '0.85rem', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Product Development
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+            <span style={{ fontSize: '0.85rem', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              PRODUCT DEVELOPMENT &bull; ACTIVE PROJECT INSPECTION
+            </span>
+            <span className="badge badge-accept" style={{ fontSize: '10.5px' }}>
+              {projects.length} Total Projects
+            </span>
           </div>
-          <h2 style={{ fontSize: '1.6rem', marginTop: '0.2rem' }}>{activeProject?.name}</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+
+          {/* Clickable Project Title */}
+          <h2 
+            style={{ fontSize: '1.5rem', marginTop: '0.15rem', color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+            onClick={() => setActiveTab('evaluator')}
+            title="Click to view full product spec evaluation details for this project"
+          >
+            📁 {activeProject?.name} <ArrowRight size={18} color="#818cf8" />
+          </h2>
+
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.25rem' }}>
             PO / Tender ID: <strong>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional">{activeCategory?.name}</span>
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button className="btn btn-primary" onClick={() => setActiveTab('evaluator')}>
-            Run Spec Inspection <ArrowRight size={16} />
-          </button>
+        {/* 1-Click Project Switcher & Product Inspection Action Bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+          {/* Direct Project Switcher Selector */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+            <span style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700 }}>⚡ 1-Click Switch Project:</span>
+            <select 
+              className="form-select" 
+              style={{ width: '280px', padding: '0.4rem 0.65rem', fontSize: '12px', borderColor: 'rgba(99, 102, 241, 0.5)', background: 'rgba(11, 15, 25, 0.8)', color: '#ffffff', fontWeight: 700 }}
+              value={activeProjectId} 
+              onChange={(e) => setSelectedProjectId(e.target.value)}
+            >
+              {projects.map(p => (
+                <option key={p.id} value={p.id}>
+                  📁 {p.name} ({p.client.slice(0, 20)}...)
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.45rem', marginTop: '1rem' }}>
+            <button className="btn btn-primary btn-sm" onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
+              Run Spec Inspection <ArrowRight size={15} />
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
+              📋 All Projects Product Details
+            </button>
+          </div>
         </div>
       </div>
 
