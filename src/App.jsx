@@ -53,7 +53,12 @@ export default function App() {
     const parsed = saved ? JSON.parse(saved) : [];
     const productMap = new Map();
     INITIAL_PRODUCTS.forEach(p => productMap.set(p.id, p));
-    parsed.forEach(p => productMap.set(p.id, p));
+    parsed.forEach(p => {
+      if (p.link && p.link.includes('hrms.brihaspathi.in')) {
+        p.link = 'https://brihaspathi.com';
+      }
+      productMap.set(p.id, p);
+    });
     return Array.from(productMap.values());
   });
 
