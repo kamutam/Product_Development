@@ -1,8 +1,10 @@
 import React from 'react';
-import { LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, RefreshCw } from 'lucide-react';
 import BrihaspathiLogo from './BrihaspathiLogo';
 
-export default function Navbar({ activeTab, setActiveTab, projects, selectedProjectId, setSelectedProjectId }) {
+export default function Navbar({ 
+  activeTab, setActiveTab, projects, selectedProjectId, setSelectedProjectId, syncStatus, onSyncGoogleSheet 
+}) {
   return (
     <header className="navbar">
       <div onClick={() => setActiveTab('dashboard')}>
@@ -59,19 +61,34 @@ export default function Navbar({ activeTab, setActiveTab, projects, selectedProj
         </button>
       </nav>
 
-      {/* Project Selector Quick Switcher */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Project:</span>
-        <select
-          className="form-select"
-          style={{ width: '220px', padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
-          value={selectedProjectId}
-          onChange={(e) => setSelectedProjectId(e.target.value)}
-        >
-          {projects.map(p => (
-            <option key={p.id} value={p.id}>{p.name}</option>
-          ))}
-        </select>
+      {/* Project Selector & Deep Sync Action */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+        {onSyncGoogleSheet && (
+          <button 
+            className="btn btn-secondary btn-sm"
+            style={{ fontSize: '11.5px', padding: '0.35rem 0.65rem', borderColor: 'rgba(99, 102, 241, 0.4)', background: 'rgba(99, 102, 241, 0.1)', color: '#818cf8' }}
+            onClick={onSyncGoogleSheet}
+            disabled={syncStatus?.loading}
+            title="Perform deep audit & sync against Google Sheet and Master Database"
+          >
+            <RefreshCw size={13} className={syncStatus?.loading ? 'animate-spin' : ''} />
+            {syncStatus?.loading ? 'Syncing...' : '🔄 Deep Sync DB'}
+          </button>
+        )}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Project:</span>
+          <select
+            className="form-select"
+            style={{ width: '200px', padding: '0.4rem 0.65rem', fontSize: '0.8rem' }}
+            value={selectedProjectId}
+            onChange={(e) => setSelectedProjectId(e.target.value)}
+          >
+            {projects.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </header>
   );

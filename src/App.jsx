@@ -59,28 +59,55 @@ export default function App() {
     error: ''
   });
 
-  // Function to sync with live Google Sheet
+  // Function to sync with live Google Sheet and perform deep database audit
   const handleSyncGoogleSheet = async () => {
     setSyncStatus(prev => ({ ...prev, loading: true, error: '' }));
     const res = await fetchLiveGoogleSheetData();
     if (res.success && res.products.length > 0) {
-      // Merge live Google Sheet products with existing products from all category domains
-      const existingProductMap = new Map();
-      
-      // Seed with INITIAL_PRODUCTS to guarantee full domain coverage
-      INITIAL_PRODUCTS.forEach(p => existingProductMap.set(p.id, p));
-      products.forEach(p => existingProductMap.set(p.id, p));
-      
-      // Override/add live sheet items
-      res.products.forEach(p => existingProductMap.set(p.id, p));
+      // Smart SKU-based merging & deep database deduplication
+      const skuProductMap = new Map();
 
-      const updatedProductsList = Array.from(existingProductMap.values());
+      // 1. Seed master catalog to guarantee full 9-domain coverage
+      INITIAL_PRODUCTS.forEach(p => {
+        const normKey = (p.sku || p.id).toUpperCase().replace(/[^A-Z0-9]/g, '');
+        skuProductMap.set(normKey, p);
+      });
+
+      // 2. Merge existing custom/saved products
+      products.forEach(p => {
+        const normKey = (p.sku || p.id).toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (!skuProductMap.has(normKey)) {
+          skuProductMap.set(normKey, p);
+        }
+      });
+
+      // 3. Enrich and update with live Google Sheet verified STQC cert links and FGTech URLs
+      res.products.forEach(p => {
+        const normKey = (p.sku || p.id).toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (skuProductMap.has(normKey)) {
+          const existing = skuProductMap.get(normKey);
+          skuProductMap.set(normKey, {
+            ...existing,
+            stqcPdfUrl: p.stqcPdfUrl || existing.stqcPdfUrl,
+            fgTechStoreLink: p.fgTechStoreLink || existing.fgTechStoreLink,
+            link: p.link || existing.link,
+            testingStatus: p.testingStatus || existing.testingStatus,
+            stqcCertNo: p.stqcCertNo || existing.stqcCertNo
+          });
+        } else {
+          skuProductMap.set(normKey, p);
+        }
+      });
+
+      const updatedProductsList = Array.from(skuProductMap.values());
       
       setProducts(updatedProductsList);
+      localStorage.setItem('spec_products', JSON.stringify(updatedProductsList));
+
       setSyncStatus({
         loading: false,
         lastSynced: res.lastSyncedTime,
-        count: res.products.length,
+        count: updatedProductsList.length,
         error: ''
       });
     } else {
