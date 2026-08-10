@@ -420,7 +420,11 @@ export default function ProductCatalog({ products, setProducts, categories, sync
           ) : (
             filteredProducts.map((prod) => {
               const thumbnail = getProductThumbnail(prod);
-              const datasheetPdfUrl = prod.link || `https://cpplusworld.com/search?q=${encodeURIComponent(prod.sku || prod.name)}`;
+              const datasheetPdfUrl = prod.link ? prod.link : (
+                (prod.brandMake || prod.vendor || '').includes('CP Plus')
+                  ? `https://cpplusworld.com/prodassets/datasheet/${prod.sku}.pdf`
+                  : `https://hrms.brihaspathi.in/datasheets/${prod.sku || prod.id}.pdf`
+              );
               const isStqcCertified = prod.stqcCertified || prod.specs?.stqcCertified;
 
               // Domain-specific banner styling & headers
@@ -749,7 +753,11 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 </tr>
               ) : (
                 filteredProducts.map((prod, idx) => {
-                  const datasheetPdfUrl = prod.link || `https://cpplusworld.com/search?q=${encodeURIComponent(prod.sku || prod.name)}`;
+                  const datasheetPdfUrl = prod.link ? prod.link : (
+                    (prod.brandMake || prod.vendor || '').includes('CP Plus')
+                      ? `https://cpplusworld.com/prodassets/datasheet/${prod.sku}.pdf`
+                      : `https://hrms.brihaspathi.in/datasheets/${prod.sku || prod.id}.pdf`
+                  );
                   const isStqcCertified = prod.stqcCertified || prod.specs?.stqcCertified;
                   const isRareProfileM = prod.hasProfileM || prod.sku?.includes('TT41L3') || prod.sku?.includes('ME41L3') || prod.name?.toLowerCase().includes('anpr') || prod.name?.toLowerCase().includes('deepinview');
 
