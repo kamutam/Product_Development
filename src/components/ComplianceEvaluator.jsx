@@ -253,6 +253,84 @@ export default function ComplianceEvaluator({
         </div>
       </div>
 
+      {/* AP-CRDA AMARAVATI SMART POLE TENDER SPECIFICATION & QUANTITIES TABLE */}
+      {activeProject?.itemsQuantity && (
+        <div className="card" style={{ 
+          marginTop: '1.25rem',
+          marginBottom: '1.25rem',
+          background: '#0d131f', 
+          border: '1.5px solid rgba(56, 189, 248, 0.4)',
+          borderRadius: '12px',
+          padding: '1.25rem',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.2rem' }}>🏛️</span>
+                <h3 style={{ margin: 0, color: '#38bdf8', fontSize: '1.1rem', fontWeight: 800 }}>
+                  AP-CRDA Amaravati Smart City Smart Pole Project - Indicative Specs & Quantity Breakdown
+                </h3>
+              </div>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '11.5px', color: 'var(--text-muted)' }}>
+                Tender PO No: <strong>{activeProject.poNumber}</strong> | Client: <strong>{activeProject.client}</strong>
+              </p>
+            </div>
+            <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', padding: '0.3rem 0.75rem', borderRadius: '6px', fontSize: '11px', fontWeight: 700 }}>
+              📊 11 Subsystems Registered
+            </span>
+          </div>
+
+          <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <table className="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <thead>
+                <tr style={{ background: '#161f30', borderBottom: '2px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8' }}>
+                  <th style={{ padding: '0.65rem', textAlign: 'center', width: '50px' }}>S.No.</th>
+                  <th style={{ padding: '0.65rem', textAlign: 'left', minWidth: '170px' }}>Smart Pole Feature</th>
+                  <th style={{ padding: '0.65rem', textAlign: 'left' }}>Indicative Specification</th>
+                  <th style={{ padding: '0.65rem', textAlign: 'center', width: '160px', background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', fontWeight: 800 }}>Indicative Units (Qty)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activeProject.itemsQuantity.map((item) => (
+                  <tr key={item.sNo} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: item.sNo % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
+                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 700, color: 'var(--text-muted)' }}>{item.sNo}</td>
+                    <td style={{ padding: '0.65rem', fontWeight: 700, color: '#ffffff' }}>
+                      <div style={{ color: '#38bdf8', fontSize: '12px' }}>{item.feature}</div>
+                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.06)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>{item.category}</span>
+                    </td>
+                    <td style={{ padding: '0.65rem', color: '#d1d5db', lineHeight: '1.45', fontSize: '11.5px' }}>{item.spec}</td>
+                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 800, color: '#34d399', background: 'rgba(16, 185, 129, 0.04)', fontSize: '12.5px' }}>
+                      {item.qty}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Smart Pole Customisation Mandatory Condition Box */}
+          <div style={{
+            marginTop: '1rem',
+            padding: '0.85rem 1.1rem',
+            background: 'rgba(245, 158, 11, 0.08)',
+            border: '1px solid rgba(245, 158, 11, 0.35)',
+            borderRadius: '8px',
+            color: '#fde047'
+          }}>
+            <div style={{ fontWeight: 800, fontSize: '12px', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              ⚠️ Smart Pole Customisation (Mandatory Tender Condition)
+            </div>
+            <p style={{ margin: '0 0 0.35rem 0', fontSize: '11.5px', color: '#e5e7eb', lineHeight: '1.45' }}>
+              All Smart Pole components, subsystems, accessories, civil works, electrical works, networking components, IoT devices, display systems, AI-enabled modules and associated infrastructure shall be supplied and implemented strictly on the basis of stakeholder-specific requirements, site conditions, engineering feasibility, regulatory approvals and final approved implementation designs.
+            </p>
+            <p style={{ margin: 0, fontSize: '11.5px', color: '#fef08a', fontWeight: 600 }}>
+              The entire Smart Pole component shall be delivered as per the stakeholder-customised needs and site-feasibility conditions. The selected vendor shall accommodate such customisation without altering the overall project objectives and performance requirements, and without any additional cost over the accepted unit rates.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Target Project Requirements Quick Summary Strip (Formatted S.No Wise) */}
       <div className="card" style={{ background: 'rgba(99, 102, 241, 0.05)', borderColor: 'rgba(99, 102, 241, 0.2)', padding: '0.9rem 1.1rem' }}>
         <h3 style={{ fontSize: '12.5px', color: '#818cf8', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
