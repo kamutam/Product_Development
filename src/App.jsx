@@ -174,8 +174,8 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* Main Content Workspace */}
-      <main className="main-content">
+      {/* Main Content Workspace with 1-Click Page Entrance Animation */}
+      <main className="main-content page-fade-in" key={activeTab}>
         {activeTab === 'dashboard' && (
           <Dashboard 
             projects={projects}
