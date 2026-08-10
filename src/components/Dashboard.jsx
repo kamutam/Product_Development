@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  CheckCircle2, XCircle, AlertTriangle, ShieldAlert, FileText, ArrowRight, Camera, Sun, Fingerprint, Plane, Code, Cpu, Plus
+  CheckCircle2, XCircle, AlertTriangle, ShieldAlert, FileText, ArrowRight, Camera, Sun, Fingerprint, Plane, Code, Cpu, Plus, DollarSign, Layers, Search, X, ExternalLink, ShieldCheck, Building2
 } from 'lucide-react';
 import { evaluateProductAgainstProject } from '../utils/evaluator';
 
@@ -17,6 +17,9 @@ export default function Dashboard({
   projects, products, categories, activeProjectId, setActiveTab, setSelectedProjectId, onSelectProductForAudit,
   evaluatorStatusFilter, setEvaluatorStatusFilter 
 }) {
+  const [showValuationModal, setShowValuationModal] = useState(false);
+  const [valuationSearch, setValuationSearch] = useState('');
+
   const activeProject = projects.find(p => p.id === activeProjectId) || projects[0];
   const activeCategory = categories.find(c => c.id === activeProject?.categoryId);
 
@@ -33,12 +36,30 @@ export default function Dashboard({
   const totalScreened = evaluations.length;
   const acceptRate = totalScreened > 0 ? Math.round((acceptedCount / totalScreened) * 100) : 0;
 
+  // Valuation calculations
+  const totalValuationUSD = currentCategoryProducts.reduce((sum, p) => sum + (Number(p.specs?.maxPrice || p.price) || 0), 0);
+  const acceptedValuationUSD = evaluations.filter(e => e.res.status === 'ACCEPTED').reduce((sum, e) => sum + (Number(e.product.specs?.maxPrice || e.product.price) || 0), 0);
+  const avgUnitPriceUSD = currentCategoryProducts.length > 0 ? Math.round(totalValuationUSD / currentCategoryProducts.length) : 0;
+
+  // Formatters
+  const formatUSD = (val) => `$${Number(val).toLocaleString('en-US')}`;
+  const formatINR = (val) => `₹${Math.round(Number(val) * 85).toLocaleString('en-IN')}`;
+
   const handleCardClick = (statusVal) => {
     if (setEvaluatorStatusFilter) {
       setEvaluatorStatusFilter(statusVal);
     }
     setActiveTab('evaluator');
   };
+
+  // Filter products for valuation modal
+  const filteredValuationProducts = evaluations.filter(({ product }) => {
+    const q = valuationSearch.toLowerCase();
+    return product.name.toLowerCase().includes(q) ||
+           (product.vendor || '').toLowerCase().includes(q) ||
+           (product.sku || '').toLowerCase().includes(q) ||
+           (product.brandMake || '').toLowerCase().includes(q);
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -48,7 +69,7 @@ export default function Dashboard({
         borderColor: 'rgba(99, 102, 241, 0.4)',
         display: 'flex',
         alignItems: 'center',
-        justify: 'space-between',
+        justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '1rem'
       }}>
@@ -74,6 +95,34 @@ export default function Dashboard({
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.25rem' }}>
             PO / Tender ID: <strong>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional">{activeCategory?.name}</span>
           </p>
+
+          {/* REAL-TIME PRODUCTS COUNT & PRODUCT VALUATION STRIP */}
+          <div style={{ 
+            marginTop: '0.75rem', 
+            padding: '0.5rem 0.85rem', 
+            background: 'rgba(11, 15, 25, 0.65)', 
+            borderRadius: '8px', 
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.25rem',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ fontSize: '12px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>📦 Candidate Products: </span>
+              <strong style={{ color: '#38bdf8' }}>{currentCategoryProducts.length} Models</strong>
+            </div>
+
+            <div style={{ fontSize: '12px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>💰 Total Spec Valuation: </span>
+              <strong style={{ color: '#34d399' }}>{formatUSD(totalValuationUSD)} ({formatINR(totalValuationUSD)})</strong>
+            </div>
+
+            <div style={{ fontSize: '12px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>✅ Compliant Accepted Value: </span>
+              <strong style={{ color: '#818cf8' }}>{formatUSD(acceptedValuationUSD)} ({formatINR(acceptedValuationUSD)})</strong>
+            </div>
+          </div>
         </div>
 
         {/* 1-Click Project Switcher & Product Inspection Action Bar */}
@@ -95,12 +144,15 @@ export default function Dashboard({
             </select>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.45rem', marginTop: '1rem' }}>
-            <button className="btn btn-primary btn-sm" onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
+          <div style={{ display: 'flex', gap: '0.45rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
+              💰 Check Products & Product Values ({currentCategoryProducts.length})
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
               Run Spec Inspection <ArrowRight size={15} />
             </button>
             <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
-              📋 All Projects Product Details
+              📋 All Projects Details
             </button>
           </div>
         </div>
@@ -356,6 +408,147 @@ export default function Dashboard({
           </table>
         </div>
       </div>
+
+      {/* 1-CLICK ALL PRODUCTS & PRODUCT VALUES INSPECTION MODAL */}
+      {showValuationModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999,
+          background: 'rgba(5, 8, 15, 0.85)', backdropFilter: 'blur(10px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
+        }}>
+          <div className="card" style={{
+            width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflowY: 'auto',
+            background: '#0b0f19', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: '16px',
+            padding: '1.5rem', boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)'
+          }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.85rem', marginBottom: '1rem' }}>
+              <div>
+                <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Portfolio Valuation & Spec Inspection Hub
+                </div>
+                <h2 style={{ fontSize: '1.35rem', color: '#ffffff', marginTop: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                  💰 All Products & Product Values Matrix ({currentCategoryProducts.length} Models)
+                </h2>
+                <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                  Project: <strong>{activeProject?.name}</strong> &bull; Client: <strong>{activeProject?.client}</strong>
+                </p>
+              </div>
+
+              <button 
+                className="btn btn-secondary btn-sm"
+                onClick={() => setShowValuationModal(false)}
+                style={{ padding: '0.35rem 0.65rem' }}
+              >
+                <X size={16} /> Close
+              </button>
+            </div>
+
+            {/* Valuation KPI Summary Cards */}
+            <div className="grid-cols-4" style={{ gap: '0.85rem', marginBottom: '1.25rem' }}>
+              <div style={{ background: 'rgba(99, 102, 241, 0.1)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
+                <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700 }}>Total Candidate Models</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', marginTop: '0.15rem' }}>
+                  {currentCategoryProducts.length} Products
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Active category portfolio</div>
+              </div>
+
+              <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>Total Spec Valuation</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#34d399', marginTop: '0.15rem' }}>
+                  {formatUSD(totalValuationUSD)}
+                </div>
+                <div style={{ fontSize: '11px', color: '#34d399', marginTop: '0.1rem' }}>{formatINR(totalValuationUSD)} Total</div>
+              </div>
+
+              <div style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 700 }}>Accepted Compliant Value</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.15rem' }}>
+                  {formatUSD(acceptedValuationUSD)}
+                </div>
+                <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '0.1rem' }}>{formatINR(acceptedValuationUSD)} Compliant</div>
+              </div>
+
+              <div style={{ background: 'rgba(251, 191, 36, 0.1)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
+                <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 700 }}>Average Unit Spec Price</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.15rem' }}>
+                  {formatUSD(avgUnitPriceUSD)}
+                </div>
+                <div style={{ fontSize: '11px', color: '#fbbf24', marginTop: '0.1rem' }}>{formatINR(avgUnitPriceUSD)} / Unit</div>
+              </div>
+            </div>
+
+            {/* Valuation Search Bar */}
+            <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <div className="search-input-wrapper" style={{ flex: 1 }}>
+                <Search size={15} className="search-icon" />
+                <input 
+                  type="text"
+                  className="form-control"
+                  placeholder="Filter products by Model Name, SKU, OEM Vendor, or Brand..."
+                  value={valuationSearch}
+                  onChange={(e) => setValuationSearch(e.target.value)}
+                />
+              </div>
+              <span className="badge badge-accept" style={{ fontSize: '11px' }}>
+                Showing {filteredValuationProducts.length} of {currentCategoryProducts.length} Items
+              </span>
+            </div>
+
+            {/* Products & Valuation Table */}
+            <div className="table-container">
+              <table className="spec-table">
+                <thead>
+                  <tr>
+                    <th>Product Model Name</th>
+                    <th>SKU / Model ID</th>
+                    <th>OEM Vendor / Manufacturer</th>
+                    <th>Unit Max Price (USD $)</th>
+                    <th>Est. Unit Value (INR ₹)</th>
+                    <th>Spec Compliance</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredValuationProducts.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>
+                        No product models match search "{valuationSearch}".
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredValuationProducts.map(({ product, res }) => {
+                      const unitPriceUSD = Number(product.specs?.maxPrice || product.price) || 0;
+                      return (
+                        <tr key={product.id}>
+                          <td style={{ fontWeight: 700, color: '#ffffff' }}>{product.name}</td>
+                          <td style={{ color: '#818cf8', fontWeight: 600, fontFamily: 'monospace' }}>{product.sku || 'N/A'}</td>
+                          <td style={{ color: 'var(--text-muted)' }}>{product.vendor || product.brandMake}</td>
+                          <td style={{ color: '#34d399', fontWeight: 800, fontSize: '13px' }}>
+                            {formatUSD(unitPriceUSD)}
+                          </td>
+                          <td style={{ color: '#38bdf8', fontWeight: 700, fontSize: '12.5px' }}>
+                            {formatINR(unitPriceUSD)}
+                          </td>
+                          <td>
+                            <span style={{ color: 'var(--success)', fontWeight: 600 }}>{res.passedCount} Pass</span> / <span style={{ color: 'var(--danger)', fontWeight: 600 }}>{res.failedCount} Fail</span>
+                          </td>
+                          <td>
+                            {res.status === 'ACCEPTED' && <span className="badge badge-accept"><CheckCircle2 size={12} /> ACCEPTED</span>}
+                            {res.status === 'REJECTED' && <span className="badge badge-reject"><XCircle size={12} /> REJECTED</span>}
+                            {res.status === 'CONDITIONAL' && <span className="badge badge-conditional"><AlertTriangle size={12} /> CONDITIONAL</span>}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
