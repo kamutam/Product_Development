@@ -29,24 +29,36 @@ export default function App() {
     };
   });
 
-  // State Management with LocalStorage persistence fallback
+  // State Management with LocalStorage persistence & automatic master data sync
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('spec_categories');
-    return saved ? JSON.parse(saved) : CATEGORIES;
+    const parsed = saved ? JSON.parse(saved) : [];
+    const categoryMap = new Map();
+    CATEGORIES.forEach(c => categoryMap.set(c.id, c));
+    parsed.forEach(c => categoryMap.set(c.id, c));
+    return Array.from(categoryMap.values());
   });
 
   const [projects, setProjects] = useState(() => {
     const saved = localStorage.getItem('spec_projects');
-    return saved ? JSON.parse(saved) : INITIAL_PROJECTS;
+    const parsed = saved ? JSON.parse(saved) : [];
+    const projectMap = new Map();
+    INITIAL_PROJECTS.forEach(p => projectMap.set(p.id, p));
+    parsed.forEach(p => projectMap.set(p.id, p));
+    return Array.from(projectMap.values());
   });
 
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('spec_products');
-    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    const parsed = saved ? JSON.parse(saved) : [];
+    const productMap = new Map();
+    INITIAL_PRODUCTS.forEach(p => productMap.set(p.id, p));
+    parsed.forEach(p => productMap.set(p.id, p));
+    return Array.from(productMap.values());
   });
 
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedProjectId, setSelectedProjectId] = useState(projects[0]?.id || '');
+  const [selectedProjectId, setSelectedProjectId] = useState('proj-apcrda-smartpole');
   const [evaluatorStatusFilter, setEvaluatorStatusFilter] = useState('ALL');
   const [auditModalData, setAuditModalData] = useState(null);
   const [oemMeetingData, setOemMeetingData] = useState(null);
