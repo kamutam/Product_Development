@@ -48,6 +48,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showOffcanvasFilter, setShowOffcanvasFilter] = useState(true);
+  const [selectedDatasheetProduct, setSelectedDatasheetProduct] = useState(null);
 
   function getProductThumbnail(prod) {
     if (prod.categoryId && prod.categoryId !== 'cctv') {
@@ -531,11 +532,9 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   </div>
 
                   {/* THUMBNAIL CONTAINER (CAMERA IMAGE FOR CCTV, DOMAIN VISUAL FOR NON-CCTV) */}
-                  <a
-                    href={datasheetPdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={`Click to view ${prod.name} Datasheet PDF`}
+                  <div
+                    onClick={() => setSelectedDatasheetProduct(prod)}
+                    title={`Click to view ${prod.name} Technical Datasheet Brochure`}
                     style={{ 
                       background: '#090d16', 
                       padding: '1rem', 
@@ -545,7 +544,6 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       height: '170px', 
                       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                       position: 'relative',
-                      textDecoration: 'none',
                       cursor: 'pointer',
                       overflow: 'hidden'
                     }}
@@ -622,9 +620,9 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       gap: '0.25rem',
                       backdropFilter: 'blur(4px)'
                     }}>
-                      <ExternalLink size={10} /> Datasheet PDF
+                      <ExternalLink size={10} /> View Datasheet
                     </div>
-                  </a>
+                  </div>
 
                   {/* PRODUCT DETAILS */}
                   <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.85rem' }}>
@@ -773,15 +771,13 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                     {/* ACTIONS & DATASHEET LINK */}
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.35rem' }}>
-                      <a
-                        href={datasheetPdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => setSelectedDatasheetProduct(prod)}
                         className="btn btn-primary btn-sm"
-                        style={{ flex: 1, justifyContent: 'center', fontSize: '11.5px', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}
+                        style={{ flex: 1, justifyContent: 'center', fontSize: '11.5px', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}
                       >
-                        <FileText size={13} /> Datasheet PDF ↗
-                      </a>
+                        <FileText size={13} /> View Datasheet Brochure
+                      </button>
                       <button 
                         className="btn btn-danger btn-sm"
                         style={{ padding: '0.25rem 0.45rem' }}
@@ -839,17 +835,16 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       </td>
 
                       <td>
-                        <a
-                          href={datasheetPdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ textDecoration: 'none', display: 'block' }}
+                        <div
+                          onClick={() => setSelectedDatasheetProduct(prod)}
+                          title="Click to view full technical specification datasheet brochure"
+                          style={{ cursor: 'pointer', display: 'block' }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: 700, fontSize: '13.5px', color: '#38bdf8', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                               {prod.name}
                             </span>
-                            <ExternalLink size={12} color="#38bdf8" />
+                            <FileText size={13} color="#38bdf8" />
                             {prod.isNewLaunch && (
                               <span className="badge badge-accept" style={{ background: 'rgba(236, 72, 153, 0.2)', borderColor: 'rgba(236, 72, 153, 0.5)', color: '#f472b6', fontSize: '9.5px', padding: '0.1rem 0.35rem' }}>
                                 🚀 NEW LAUNCH 2026
@@ -859,7 +854,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                           <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '0.15rem', fontWeight: 600 }}>
                             SKU: {prod.sku || 'N/A'}
                           </div>
-                        </a>
+                        </div>
                       </td>
 
                       <td>
@@ -1521,6 +1516,169 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* INTERACTIVE TECHNICAL DATASHEET & SPEC BROCHURE MODAL */}
+      {selectedDatasheetProduct && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(5, 8, 15, 0.85)',
+          backdropFilter: 'blur(8px)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.5rem',
+          animation: 'fadeInUp 0.3s ease-out'
+        }}>
+          <div style={{
+            background: '#0d131f',
+            border: '1.5px solid rgba(56, 189, 248, 0.4)',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '820px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: '1.25rem 1.5rem',
+              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              justify: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <FileText size={24} color="#38bdf8" />
+                <div>
+                  <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    TECHNICAL DATASHEET BROCHURE
+                  </div>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#ffffff', fontWeight: 800 }}>
+                    {selectedDatasheetProduct.name}
+                  </h3>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedDatasheetProduct(null)}
+                style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#ffffff', borderRadius: '8px', padding: '0.4rem', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Main Info Strip */}
+              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '1.25rem', background: '#090d16', padding: '1.25rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#070a12', borderRadius: '8px', padding: '0.75rem' }}>
+                  {getProductThumbnail(selectedDatasheetProduct) ? (
+                    <img src={getProductThumbnail(selectedDatasheetProduct)} alt={selectedDatasheetProduct.name} style={{ maxHeight: '130px', maxWidth: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <FileText size={48} color="#38bdf8" />
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span className="badge badge-accept" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)', fontSize: '11px', fontWeight: 800 }}>
+                      🏷️ SKU: {selectedDatasheetProduct.sku || selectedDatasheetProduct.id}
+                    </span>
+                    <span style={{ background: 'rgba(167, 139, 250, 0.15)', color: '#a78bfa', border: '1px solid rgba(167, 139, 250, 0.3)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                      🏢 {selectedDatasheetProduct.brandMake || selectedDatasheetProduct.vendor}
+                    </span>
+                    {selectedDatasheetProduct.stqcCertified && (
+                      <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                        🛡️ STQC GOVT CERTIFIED ({selectedDatasheetProduct.stqcCertNo || 'MeiTY Approved'})
+                      </span>
+                    )}
+                    {selectedDatasheetProduct.araiCertified && (
+                      <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                        🚗 ARAI AIS-140 CERTIFIED
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ fontSize: '12.5px', color: '#d1d5db', lineHeight: '1.5', marginTop: '0.25rem' }}>
+                    {selectedDatasheetProduct.notes || 'Full industrial-grade specification datasheet model for enterprise government and smart city infrastructure procurement.'}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>UNIT PRICE</div>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#34d399' }}>${selectedDatasheetProduct.specs?.maxPrice || 350} USD</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>HOUSING / ENCLOSURE</div>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#38bdf8' }}>{selectedDatasheetProduct.specs?.ipRating || 'IP67 Weatherproof'}</div>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>AVAILABILITY</div>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff' }}>{selectedDatasheetProduct.availability || 'In Stock Batch Ready'}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Full Specifications Table */}
+              <div style={{ background: '#090d16', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                <div style={{ padding: '0.75rem 1rem', background: '#131b2c', borderBottom: '1px solid rgba(255,255,255,0.08)', fontWeight: 800, color: '#38bdf8', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>📋 DETAILED TECHNICAL SPECIFICATIONS MATRIX</span>
+                  <span>MODEL: {selectedDatasheetProduct.sku || selectedDatasheetProduct.id}</span>
+                </div>
+                <table className="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <tbody>
+                    {Object.entries(selectedDatasheetProduct.specs || {}).map(([key, val], idx) => (
+                      <tr key={key} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
+                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'capitalize', width: '40%' }}>
+                          {key.replace(/([A-Z])/g, ' $1')}
+                        </td>
+                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#ffffff' }}>
+                          {typeof val === 'boolean' ? (val ? '✅ Yes (Supported / Certified)' : '❌ No') : String(val)}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: 'var(--text-muted)' }}>OEM Support Contact</td>
+                      <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#38bdf8' }}>
+                        {selectedDatasheetProduct.oemEmail || 'sales.india@cpplusworld.com'} ({selectedDatasheetProduct.oemPhone || '+91 40 6888 9999'})
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button className="btn btn-secondary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Printer size={16} /> Print Technical Datasheet PDF
+                </button>
+
+                <div style={{ display: 'flex', gap: '0.65rem' }}>
+                  {selectedDatasheetProduct.link && (
+                    <a 
+                      href={selectedDatasheetProduct.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn btn-secondary"
+                      style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
+                    >
+                      <ExternalLink size={16} /> Official OEM Web Portal ↗
+                    </a>
+                  )}
+                  <button className="btn btn-primary" onClick={() => setSelectedDatasheetProduct(null)}>
+                    Close Datasheet Brochure
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
