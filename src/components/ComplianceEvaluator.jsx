@@ -3,6 +3,7 @@ import {
   CheckCircle2, XCircle, AlertTriangle, Search, Printer, ShieldCheck, Info, Sparkles, ArrowRight, Award, Calendar, Layers, Clock, Activity, CheckSquare, ShieldAlert, Sliders, Check
 } from 'lucide-react';
 import { evaluateProductAgainstProject, findSimilarProducts } from '../utils/evaluator';
+import GovtEmblemLogo from './GovtEmblemLogo';
 
 export default function ComplianceEvaluator({ 
   projects, products, categories, activeProjectId, setSelectedProjectId, onSelectProductForAudit, onScheduleOEMMeeting 
@@ -120,7 +121,8 @@ export default function ComplianceEvaluator({
       {/* Top Header & Project Selector Bar */}
       <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
+            <GovtEmblemLogo type={activeProject?.client || activeProject?.name} size={24} />
             <h2 style={{ fontSize: '1.2rem' }}>Automated Spec Compliance & Alternative Finder</h2>
             <span className={`badge ${projectStatusBadgeClass}`} style={{ textTransform: 'none', fontSize: '11px' }}>
               <Activity size={12} /> {projectStatusLabel}

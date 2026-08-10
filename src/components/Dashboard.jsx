@@ -3,6 +3,7 @@ import {
   CheckCircle2, XCircle, AlertTriangle, ShieldAlert, FileText, ArrowRight, Camera, Sun, Fingerprint, Plane, Code, Cpu, Plus, DollarSign, Layers, Search, X, ExternalLink, ShieldCheck, Building2
 } from 'lucide-react';
 import { evaluateProductAgainstProject } from '../utils/evaluator';
+import GovtEmblemLogo from './GovtEmblemLogo';
 
 const ICON_MAP = {
   Camera: Camera,
@@ -85,11 +86,13 @@ export default function Dashboard({
 
           {/* Clickable Project Title */}
           <h2 
-            style={{ fontSize: '1.5rem', marginTop: '0.15rem', color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+            style={{ fontSize: '1.4rem', marginTop: '0.15rem', color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
             onClick={() => setActiveTab('evaluator')}
             title="Click to view full product spec evaluation details for this project"
           >
-            📁 {activeProject?.name} <ArrowRight size={18} color="#818cf8" />
+            <GovtEmblemLogo type={activeProject?.client || activeProject?.name} size={26} />
+            <span>📁 {activeProject?.name}</span>
+            <ArrowRight size={18} color="#818cf8" />
           </h2>
 
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.25rem' }}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Sliders, CheckCircle2, Clock, Wand2, ShieldCheck, Check, Sparkles, AlertTriangle, Layers, Calendar, ShoppingCart, Wrench } from 'lucide-react';
 import { extractProjectReqsFromDescription } from '../utils/parser';
+import GovtEmblemLogo from './GovtEmblemLogo';
 
 export default function ProjectManager({ 
   projects, setProjects, categories, activeProjectId, setSelectedProjectId, setActiveTab 
@@ -159,8 +160,11 @@ export default function ProjectManager({
               {/* Header Strip with Status & Deadline Badges */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.65rem' }}>
                 <div>
-                  <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase' }}>
-                    PO / TENDER ID: {project.poNumber || project.code || 'N/A'}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap', marginBottom: '0.2rem' }}>
+                    <GovtEmblemLogo type={project.client || project.name} size={22} />
+                    <span style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase' }}>
+                      PO / TENDER ID: {project.poNumber || project.code || 'N/A'}
+                    </span>
                   </div>
                   <h3 style={{ fontSize: '1.15rem', marginTop: '0.15rem' }}>{project.name}</h3>
                   <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
