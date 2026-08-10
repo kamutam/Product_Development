@@ -153,7 +153,16 @@ export default function App() {
   }
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ position: 'relative' }}>
+      {/* Dynamic Animated Ambient Background Orbs & Cyber Grid */}
+      <div className="animated-bg-container">
+        <div className="aurora-orb aurora-orb-1" />
+        <div className="aurora-orb aurora-orb-2" />
+        <div className="aurora-orb aurora-orb-3" />
+        <div className="cyber-grid-overlay" />
+        <div className="beam-sweep" />
+      </div>
+
       {/* Left Sidebar Navigation */}
       <Sidebar 
         activeTab={activeTab}
