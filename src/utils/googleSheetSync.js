@@ -98,7 +98,7 @@ export function parseGoogleSheetCSV(csvText) {
           maxPrice: mp * 45 + 100
         },
         notes: `Live synced from Google Sheet. Camera Type: ${cameraType}.`,
-        link: datasheetLink || `https://cpplusworld.com/prodassets/datasheet/${sku}.pdf`,
+        link: (datasheetLink && !datasheetLink.includes('hrms.brihaspathi.in/datasheets/')) ? datasheetLink : 'https://brihaspathi.com',
         fgTechStoreLink: fgTechStoreLink
       });
     }

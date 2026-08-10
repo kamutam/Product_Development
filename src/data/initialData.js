@@ -321,7 +321,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 380
     },
     notes: '12MP Realtime, 1/2.3" Sony CMOS Sensor, Human Body & Vehicle AI Detection, 30fps@12MP(4000x3000), Two Way Audio, 3.6-10mm Motorized Lens, IP66 Lightning-protection.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-ND4AB120M.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'banovision_deepinview_bullet'
   },
   {
@@ -351,7 +351,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 395
     },
     notes: '12MP Realtime, Human Body & Vehicle Detection, 1/2.3" Sony CMOS Sensor, 20PCS SMD IR LEDs, 3.6-10mm Motorized Lens, IP66.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-NW20A120M.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'banovision_deepinview_bullet'
   },
   {
@@ -381,7 +381,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 420
     },
     notes: '12MP Realtime Heavy Duty Long Range Bullet, 4PCS Array IR LEDs (70-80M IR Range), 3.6-10mm Motorized Lens, IP66.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-NW4A120M.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'cp_plus_stqc_camera'
   },
   {
@@ -411,7 +411,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 410
     },
     notes: '12MP ColorVu 24/7 Full Color Night Vision, F1.6 Large Aperture, Warm Light + 4PCS IR LEDs, Internal Microphone & SD Slot, IP66.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-NW4A120MS-HL.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'banovision_colorvu_dome'
   },
   {
@@ -441,7 +441,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 425
     },
     notes: '12MP Realtime ColorVu Dome, 3.6-10mm Motorized Lens, F1.6 Aperture, Dual Light, Alarm & Two Way Audio, IP66.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-ND4AB120MS-FL.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'banovision_colorvu_dome'
   },
   {
@@ -471,7 +471,7 @@ export const INITIAL_PRODUCTS = [
       maxPrice: 480
     },
     notes: '180° Dual Lens Panoramic Stitching Camera, 4MP Human Body Detection, Dual Light 2*F1.6, Built-in Two Way Audio & SD Slot.',
-    link: 'https://hrms.brihaspathi.in/datasheets/BA-NW4AA40D.pdf',
+    link: 'https://brihaspathi.com',
     imageKey: 'panoramic_dual_lens'
   },
 
