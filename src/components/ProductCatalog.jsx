@@ -15,12 +15,18 @@ import cpUncTe81Img from '../assets/cp_unc_te81zl6c.jpg';
 import cpVandalDomeImg from '../assets/cp_vandal_dome.jpg';
 import cpCompactBulletImg from '../assets/cp_compact_bullet.jpg';
 import cpWedgeImg from '../assets/cp_wedge_camera.jpg';
+import cpPtzImg from '../assets/cp_ptz_speed_dome.jpg';
+import cpFisheyeImg from '../assets/cp_fisheye_360.jpg';
+import cpBoxImg from '../assets/cp_box_camera.jpg';
 
 const cameraImageList = [
   cpUncTe81Img,
   cpVandalDomeImg,
   cpCompactBulletImg,
   cpWedgeImg,
+  cpPtzImg,
+  cpFisheyeImg,
+  cpBoxImg,
   domeMountImg,
   colorvuBulletImg,
   deepinviewImg,
@@ -55,10 +61,20 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
     // 1. PTZ & SPEED DOME CAMERAS
     if (fullStr.includes('PTZ') || fullStr.includes('SPEED DOME') || skuUpper.includes('UNP') || skuUpper.includes('F4521')) {
-      return cpVandalDomeImg;
+      return cpPtzImg;
     }
 
-    // 2. PANORAMIC & DUAL-LENS 180° CAMERAS
+    // 2. FISHEYE 360° CAMERAS
+    if (fullStr.includes('FISHEYE') || fullStr.includes('EE61') || fullStr.includes('360')) {
+      return cpFisheyeImg;
+    }
+
+    // 3. BOX & SPECIALTY CAMERAS
+    if (fullStr.includes('BOX') || skuUpper.includes('BE21')) {
+      return cpBoxImg;
+    }
+
+    // 4. PANORAMIC & DUAL-LENS 180° CAMERAS
     if (fullStr.includes('PANORAMIC') || fullStr.includes('180') || fullStr.includes('DUAL LENS') || skuUpper.includes('BA-NW4AA40D')) {
       return panoramic180Img;
     }
@@ -66,47 +82,36 @@ export default function ProductCatalog({ products, setProducts, categories, sync
       return panoramicDualImg;
     }
 
-    // 3. FISHEYE 360° CAMERAS
-    if (fullStr.includes('FISHEYE') || fullStr.includes('EE61') || fullStr.includes('360')) {
-      return domeMountImg;
-    }
-
-    // 4. ANPR & AI ENFORCEMENT TRAFFIC CAMERAS
+    // 5. ANPR & AI ENFORCEMENT TRAFFIC CAMERAS
     if (fullStr.includes('ANPR') || fullStr.includes('TRAFFIC') || fullStr.includes('ENFORCEMENT') || skuUpper.includes('ME41L3') || skuUpper.includes('TT41L3')) {
       return deepinviewImg;
     }
 
-    // 5. WEDGE & MINI DOME CAMERAS
+    // 6. WEDGE & MINI DOME CAMERAS
     if (fullStr.includes('WEDGE') || skuUpper.includes('WC41') || skuUpper.includes('WE21')) {
       return cpWedgeImg;
     }
 
-    // 6. VANDAL DOME CAMERAS
+    // 7. VANDAL DOME CAMERAS
     if (fullStr.includes('VANDAL') || skuUpper.includes('VC21') || skuUpper.includes('VC41') || skuUpper.includes('VC81') || skuUpper.includes('VC61') || skuUpper.includes('VE21')) {
       return cpVandalDomeImg;
     }
 
-    // 7. DOME & TURRET CAMERAS
+    // 8. DOME & TURRET CAMERAS
     if (fullStr.includes('DOME') || skuUpper.includes('DA41') || skuUpper.includes('DA21') || skuUpper.includes('DA81') || skuUpper.includes('DA61') || skuUpper.includes('ND4AB')) {
-      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR')) return colorvuDomeImg;
-      if (fullStr.includes('TURRET') || fullStr.includes('EYEBALL')) return turretWhiteImg;
+      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR') || skuUpper.includes('Q')) return colorvuDomeImg;
+      if (fullStr.includes('TURRET') || fullStr.includes('EYEBALL') || skuUpper.includes('B-LQ')) return turretWhiteImg;
       return domeMountImg;
     }
 
-    // 8. BULLET CAMERAS (4K, Varifocal, Compact, STQC)
+    // 9. BULLET CAMERAS (4K, Varifocal, Compact, STQC, ColorVu)
     if (fullStr.includes('BULLET') || skuUpper.includes('TE81') || skuUpper.includes('TC41') || skuUpper.includes('TA41') || skuUpper.includes('TA21') || skuUpper.includes('TC81') || skuUpper.includes('TC61') || skuUpper.includes('TC21') || skuUpper.includes('BA-NW')) {
-      if (skuUpper.includes('TE81') || skuUpper.includes('TC81') || skuUpper.includes('TC41ZL')) return cpUncTe81Img;
-      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR')) return colorvuBulletImg;
-      if (fullStr.includes('COMPACT') || skuUpper.includes('TA21') || skuUpper.includes('TA41')) return cpCompactBulletImg;
+      if (skuUpper.includes('TE81') || skuUpper.includes('TC81') || skuUpper.includes('TC41ZL') || skuUpper.includes('TC81ZL')) return cpUncTe81Img;
+      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR') || skuUpper.includes('L3B')) return colorvuBulletImg;
+      if (fullStr.includes('COMPACT') || skuUpper.includes('TA21') || skuUpper.includes('TA41') || skuUpper.includes('D-LQ')) return cpCompactBulletImg;
       return stqcImg;
     }
 
-    // 9. BOX & SPECIALTY CAMERAS
-    if (fullStr.includes('BOX') || skuUpper.includes('BE21')) {
-      return deepinviewImg;
-    }
-
-    // Fallback to STQC Bullet for unrecognized camera models
     return stqcImg;
   }
 
@@ -545,6 +550,47 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       overflow: 'hidden'
                     }}
                   >
+                    {/* MODEL SKU OVERLAY BADGE */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      left: '8px',
+                      background: 'rgba(11, 15, 25, 0.88)',
+                      border: '1px solid rgba(56, 189, 248, 0.45)',
+                      color: '#38bdf8',
+                      fontSize: '9.5px',
+                      fontWeight: 800,
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: '5px',
+                      backdropFilter: 'blur(4px)',
+                      zIndex: 2,
+                      fontFamily: 'monospace',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.6)'
+                    }}>
+                      🏷️ {prod.sku || prod.name.split(' ')[2] || prod.id}
+                    </div>
+
+                    {/* LENS & SPEC OVERLAY BADGE */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '8px',
+                      left: '8px',
+                      background: 'rgba(15, 23, 42, 0.88)',
+                      border: '1px solid rgba(16, 185, 129, 0.45)',
+                      color: '#34d399',
+                      fontSize: '9px',
+                      fontWeight: 800,
+                      padding: '0.15rem 0.45rem',
+                      borderRadius: '4px',
+                      backdropFilter: 'blur(4px)',
+                      zIndex: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem'
+                    }}>
+                      ⚡ {prod.specs?.resolution ? `${prod.specs.resolution}MP` : 'HIGH-SPEC'} &bull; {prod.sku?.includes('ZL') ? 'VARIFOCAL MOTORIZED' : (prod.sku?.includes('VC') ? 'IK10 VANDAL DOME' : (prod.sku?.includes('TA') ? 'COMPACT BULLET' : (prod.sku?.includes('WC') ? 'DUAL LIGHT WEDGE' : 'SPEC CERTIFIED')))}
+                    </div>
+
                     {thumbnail ? (
                       <img 
                         src={thumbnail} 
