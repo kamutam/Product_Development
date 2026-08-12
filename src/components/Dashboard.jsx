@@ -63,18 +63,18 @@ export default function Dashboard({
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
       {/* Banner / Active Project Greeting with 1-Click Project Switcher & Product Details Hub */}
       <div className="card" style={{ 
         background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.8)',
-        boxShadow: '0 15px 35px rgba(0, 0, 0, 0.12)',
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.08)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justify: 'space-between',
         flexWrap: 'wrap',
-        gap: '1rem'
+        gap: '0.85rem'
       }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
@@ -103,8 +103,8 @@ export default function Dashboard({
 
           {/* REAL-TIME PRODUCTS COUNT & PRODUCT VALUATION STRIP */}
           <div style={{ 
-            marginTop: '0.75rem', 
-            padding: '0.55rem 0.95rem', 
+            marginTop: '0.65rem', 
+            padding: '0.45rem 0.85rem', 
             background: '#f8fafc', 
             borderRadius: '8px', 
             border: '1px solid #cbd5e1',
@@ -149,14 +149,14 @@ export default function Dashboard({
             </select>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#ffffff', fontWeight: 800, border: 'none', padding: '0.5rem 0.85rem', boxShadow: '0 4px 14px rgba(102, 126, 234, 0.4)' }} onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.65rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#ffffff', fontWeight: 800, border: 'none', padding: '0.45rem 0.85rem', boxShadow: '0 4px 14px rgba(102, 126, 234, 0.4)' }} onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
               💰 Check Products & Product Values ({currentCategoryProducts.length})
             </button>
-            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
+            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.45rem 0.85rem' }} onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
               Run Spec Inspection <ArrowRight size={15} color="#0284c7" />
             </button>
-            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
+            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.45rem 0.85rem' }} onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
               📋 All Projects Details
             </button>
           </div>
@@ -166,14 +166,12 @@ export default function Dashboard({
       {/* AP-CRDA AMARAVATI SMART POLE TENDER SPECIFICATION & QUANTITIES TABLE */}
       {activeProject?.itemsQuantity && (
         <div className="card" style={{ 
-          marginTop: '1.25rem',
-          marginBottom: '1.25rem',
           background: 'rgba(255, 255, 255, 0.95)', 
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.8)',
           borderRadius: '12px',
-          padding: '1.25rem',
-          boxShadow: '0 15px 35px rgba(0,0,0,0.12)'
+          padding: '1.1rem 1.25rem',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.08)'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
