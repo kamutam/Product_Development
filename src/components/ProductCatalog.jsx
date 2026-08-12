@@ -159,12 +159,12 @@ export default function ProductCatalog({ products, setProducts, categories, sync
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justify: 'center',
+        justifyContent: 'center',
+        background: '#f8fafc',
         padding: '0.85rem',
-        background: brandBg,
         borderRadius: '8px',
-        border: `1px solid ${borderColor}`,
-        boxShadow: `0 4px 20px rgba(0,0,0,0.5), inset 0 0 15px ${borderColor.replace('0.5', '0.08')}`,
+        border: `1px solid #cbd5e1`,
+        boxShadow: `0 4px 15px rgba(0,0,0,0.04)`,
         position: 'relative'
       }}>
         {/* BRAND EMBLEM BADGE LOGO */}
@@ -172,42 +172,42 @@ export default function ProductCatalog({ products, setProducts, categories, sync
           display: 'flex',
           alignItems: 'center',
           gap: '0.65rem',
-          background: 'rgba(15, 23, 42, 0.85)',
-          border: `1px solid ${borderColor}`,
+          background: '#ffffff',
+          border: `1px solid #cbd5e1`,
           padding: '0.55rem 0.95rem',
           borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
           marginBottom: '0.45rem'
         }}>
           <div style={{
             width: '34px',
             height: '34px',
             borderRadius: '6px',
-            background: `linear-gradient(135deg, ${textColor} 0%, rgba(15, 23, 42, 0.8) 100%)`,
+            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
             display: 'flex',
             alignItems: 'center',
-            justify: 'center',
+            justifyContent: 'center',
             fontWeight: 900,
             fontSize: '17px',
-            color: '#0f172a',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+            color: '#ffffff',
+            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)'
           }}>
             {brand.charAt(0)}
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '13px', fontWeight: 900, color: '#ffffff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '13.5px', fontWeight: 900, color: '#0f172a', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
               {brand}
             </div>
-            <div style={{ fontSize: '9.5px', color: textColor, fontWeight: 700 }}>
+            <div style={{ fontSize: '9.5px', color: '#0284c7', fontWeight: 800 }}>
               OEM Directory Certified
             </div>
           </div>
         </div>
 
         {/* COUNTRY FLAG & VENDOR LEGAL NAME */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '10.5px', color: '#475569', fontWeight: 700 }}>
           <span>{countryFlag}</span>
-          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '210px' }}>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '210px', color: '#0f172a' }}>
             {vendorFull.length > 32 ? `${vendorFull.slice(0, 30)}...` : vendorFull}
           </span>
         </div>
@@ -519,8 +519,8 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                     overflow: 'hidden', 
                     display: 'flex', 
                     flexDirection: 'column', 
-                    background: '#0d131f', 
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    background: '#ffffff', 
+                    border: '1px solid #cbd5e1',
                     position: 'relative'
                   }}
                 >
@@ -536,13 +536,13 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                     onClick={() => setSelectedDatasheetProduct(prod)}
                     title={`Click to view ${prod.name} Technical Datasheet Brochure`}
                     style={{ 
-                      background: '#090d16', 
+                      background: '#f8fafc', 
                       padding: '1rem', 
                       display: 'flex', 
                       justify: 'center', 
                       alignItems: 'center', 
                       height: '170px', 
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderBottom: '1px solid #cbd5e1',
                       position: 'relative',
                       cursor: 'pointer',
                       overflow: 'hidden'
