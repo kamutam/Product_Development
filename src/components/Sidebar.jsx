@@ -12,7 +12,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
       {/* Pinned Sticky Header - Company Logo stays 100% in the exact same place while scrolling */}
       <div className="sidebar-header-sticky">
         <div className="sidebar-brand" onClick={() => setActiveTab('dashboard')}>
-          <BrihaspathiLogo height={44} showTagline={true} darkText={true} />
+          <BrihaspathiLogo height={44} showTagline={true} darkText={false} />
         </div>
       </div>
 
@@ -20,12 +20,12 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
       <div className="sidebar-body-scrollable">
         {/* Active Project Quick Switcher Box */}
         <div className="sidebar-project-box">
-          <div style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <ShieldCheck size={14} color="#0284c7" /> Active Project:
+          <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <ShieldCheck size={14} color="#38bdf8" /> Active Project:
           </div>
           <select
             className="form-select"
-            style={{ width: '100%', fontSize: '0.82rem', padding: '0.5rem 0.65rem', background: '#ffffff', color: '#0f172a', borderColor: '#cbd5e1' }}
+            style={{ width: '100%', fontSize: '0.82rem', padding: '0.5rem 0.65rem', background: '#1e293b', color: '#ffffff', borderColor: 'rgba(255, 255, 255, 0.15)' }}
             value={selectedProjectId}
             onChange={(e) => setSelectedProjectId(e.target.value)}
           >
@@ -35,15 +35,15 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
           </select>
 
           {activeProject && (
-            <div style={{ fontSize: '0.74rem', color: '#475569', marginTop: '0.4rem', lineHeight: 1.35 }}>
-              PO/Tender: <strong style={{ color: '#0f172a' }}>{activeProject.poNumber || activeProject.code || 'N/A'}</strong>
+            <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '0.4rem', lineHeight: 1.35 }}>
+              PO/Tender: <strong style={{ color: '#ffffff' }}>{activeProject.poNumber || activeProject.code || 'N/A'}</strong>
               <div style={{ marginTop: '0.3rem' }}>
                 {activeProject.status === 'COMPLETED' ? (
                   <span className="badge badge-accept" style={{ fontSize: '10px' }}>
                     CLOSED AS COMPLETE
                   </span>
                 ) : (
-                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' }}>
+                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
                     IN PROGRESS
                   </span>
                 )}
@@ -70,7 +70,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
           >
-            <Layers size={18} color={activeTab === 'products' ? '#ffffff' : '#0284c7'} />
+            <Layers size={18} color={activeTab === 'products' ? '#ffffff' : '#38bdf8'} />
             <span>Product Development</span>
           </button>
 
@@ -79,7 +79,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'oem-directory' ? 'active' : ''}`}
             onClick={() => setActiveTab('oem-directory')}
           >
-            <Building2 size={18} color={activeTab === 'oem-directory' ? '#ffffff' : '#4f46e5'} />
+            <Building2 size={18} color={activeTab === 'oem-directory' ? '#ffffff' : '#818cf8'} />
             <span>OEM Companies (NPD Directory)</span>
           </button>
 
@@ -88,7 +88,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'evaluator' ? 'active' : ''}`}
             onClick={() => setActiveTab('evaluator')}
           >
-            <CheckSquare size={18} color={activeTab === 'evaluator' ? '#ffffff' : '#10b981'} />
+            <CheckSquare size={18} color={activeTab === 'evaluator' ? '#ffffff' : '#34d399'} />
             <span>Compliance Evaluator</span>
           </button>
 
@@ -97,7 +97,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'certifications-vault' ? 'active' : ''}`}
             onClick={() => setActiveTab('certifications-vault')}
           >
-            <Award size={18} color={activeTab === 'certifications-vault' ? '#ffffff' : '#d97706'} />
+            <Award size={18} color={activeTab === 'certifications-vault' ? '#ffffff' : '#fbbf24'} />
             <span>Certifications Vault (STQC / ARAI / CMMI)</span>
           </button>
 
@@ -118,7 +118,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'projects' ? 'active' : ''}`}
             onClick={() => setActiveTab('projects')}
           >
-            <FolderGit2 size={18} color={activeTab === 'projects' ? '#ffffff' : '#ec4899'} />
+            <FolderGit2 size={18} color={activeTab === 'projects' ? '#ffffff' : '#f472b6'} />
             <span>Projects & Specs</span>
           </button>
 
@@ -127,7 +127,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'meeting-room' ? 'active' : ''}`}
             onClick={() => setActiveTab('meeting-room')}
           >
-            <Video size={18} color={activeTab === 'meeting-room' ? '#ffffff' : '#6366f1'} />
+            <Video size={18} color={activeTab === 'meeting-room' ? '#ffffff' : '#818cf8'} />
             <span>Meeting Room & Updates</span>
           </button>
 
@@ -136,7 +136,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'inspection-summary' ? 'active' : ''}`}
             onClick={() => setActiveTab('inspection-summary')}
           >
-            <SearchCheck size={18} color={activeTab === 'inspection-summary' ? '#ffffff' : '#059669'} />
+            <SearchCheck size={18} color={activeTab === 'inspection-summary' ? '#ffffff' : '#34d399'} />
             <span>Inspection Summary</span>
           </button>
 
@@ -155,16 +155,16 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
         <div className="sidebar-footer">
           {user && (
             <div style={{
-              background: '#f8fafc',
+              background: 'rgba(255, 255, 255, 0.05)',
               padding: '0.6rem 0.75rem',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid #e2e8f0',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               marginBottom: '0.75rem'
             }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <UserCheck size={13} color="#059669" /> {user.name || 'Brihaspathi Lead'}
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <UserCheck size={13} color="#34d399" /> {user.name || 'Brihaspathi Lead'}
               </div>
-              <div style={{ fontSize: '10.5px', color: '#0284c7', marginTop: '0.1rem', fontWeight: 600 }}>
+              <div style={{ fontSize: '10.5px', color: '#38bdf8', marginTop: '0.1rem', fontWeight: 600 }}>
                 Role: {user.role || 'Product Development Team Lead'}
               </div>
             </div>
@@ -172,13 +172,13 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
 
           <button
             className="btn btn-secondary btn-sm"
-            style={{ width: '100%', fontSize: '11.5px', color: '#e11d48', borderColor: '#fecdd3', background: '#fff1f2' }}
+            style={{ width: '100%', fontSize: '11.5px', color: '#fb7185', borderColor: 'rgba(244, 63, 94, 0.3)', background: 'rgba(244, 63, 94, 0.1)' }}
             onClick={onLogout}
           >
             <LogOut size={13} /> Sign Out Portal
           </button>
 
-          <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '0.65rem', textAlign: 'center', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.65rem', textAlign: 'center', fontWeight: 600 }}>
             Brihaspathi ProcureSpec AI &bull; v2.4
           </div>
         </div>
