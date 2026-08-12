@@ -1035,7 +1035,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
       </div>
 
       {/* TOOLBAR WITH TOGGLE SIDE PANEL BUTTON */}
-      <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem' }}>
+      <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem', position: 'relative', zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           {/* OFFCANVAS SIDE PANEL TOGGLE BUTTON */}
           <button 
@@ -1048,21 +1048,21 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
           {/* ACTIVE DOMAIN & SUBTYPE BADGES */}
           {activeCategoryFilter !== 'ALL' && (
-            <span className="badge badge-accept" style={{ fontSize: '11px', background: 'rgba(56, 189, 248, 0.15)', borderColor: 'rgba(56, 189, 248, 0.3)', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span className="badge badge-accept" style={{ fontSize: '11px', background: 'rgba(56, 189, 248, 0.15)', borderColor: 'rgba(56, 189, 248, 0.3)', color: '#0284c7', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               Domain: <strong>{getCategoryName(activeCategoryFilter)}</strong>
               <X size={12} style={{ cursor: 'pointer', marginLeft: '3px' }} onClick={() => setActiveCategoryFilter('ALL')} />
             </span>
           )}
 
           {cameraTypeFilter !== 'ALL' && (
-            <span className="badge badge-accept" style={{ fontSize: '11px', background: 'rgba(99, 102, 241, 0.15)', borderColor: 'rgba(99, 102, 241, 0.3)', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span className="badge badge-accept" style={{ fontSize: '11px', background: 'rgba(99, 102, 241, 0.15)', borderColor: 'rgba(99, 102, 241, 0.3)', color: '#4f46e5', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               Type: <strong>{cameraTypeFilter}</strong>
               <X size={12} style={{ cursor: 'pointer', marginLeft: '3px' }} onClick={() => setCameraTypeFilter('ALL')} />
             </span>
           )}
 
           {/* CUSTOM SEARCHABLE OEM BRAND SELECTOR DROPDOWN (CAPPED AT 4 VISIBLE ITEMS + SEARCH BAR) */}
-          <div style={{ position: 'relative', width: '210px' }}>
+          <div style={{ position: 'relative', width: '210px', zIndex: 99999 }}>
             <button
               type="button"
               className="btn btn-secondary btn-sm"
@@ -1099,8 +1099,8 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   background: '#ffffff',
                   border: '1px solid #cbd5e1',
                   borderRadius: '8px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                  zIndex: 1000,
+                  boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
+                  zIndex: 999999,
                   padding: '0.45rem',
                   animation: 'fadeInUp 0.15s ease-out'
                 }}
