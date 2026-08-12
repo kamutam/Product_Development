@@ -66,8 +66,9 @@ export default function Dashboard({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Banner / Active Project Greeting with 1-Click Project Switcher & Product Details Hub */}
       <div className="card" style={{ 
-        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(139, 92, 246, 0.18) 100%)',
-        borderColor: 'rgba(99, 102, 241, 0.4)',
+        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%)',
+        border: '1.5px solid rgba(56, 189, 248, 0.4)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -76,54 +77,54 @@ export default function Dashboard({
       }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
-            <span style={{ fontSize: '0.85rem', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.85rem', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               PRODUCT DEVELOPMENT &bull; ACTIVE PROJECT INSPECTION
             </span>
-            <span className="badge badge-accept" style={{ fontSize: '10.5px' }}>
+            <span className="badge badge-accept" style={{ fontSize: '10.5px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid #10b981' }}>
               {projects.length} Total Projects
             </span>
           </div>
 
           {/* Clickable Project Title */}
           <h2 
-            style={{ fontSize: '1.4rem', marginTop: '0.15rem', color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
+            style={{ fontSize: '1.4rem', marginTop: '0.15rem', color: '#ffffff', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
             onClick={() => setActiveTab('evaluator')}
             title="Click to view full product spec evaluation details for this project"
           >
             <GovtEmblemLogo type={activeProject?.client || activeProject?.name} size={26} />
             <span>📁 {activeProject?.name}</span>
-            <ArrowRight size={18} color="#818cf8" />
+            <ArrowRight size={18} color="#38bdf8" />
           </h2>
 
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.25rem' }}>
-            PO / Tender ID: <strong>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional">{activeCategory?.name}</span>
+          <p style={{ color: '#cbd5e1', fontSize: '0.88rem', marginTop: '0.25rem' }}>
+            PO / Tender ID: <strong style={{ color: '#ffffff' }}>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong style={{ color: '#ffffff' }}>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional" style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid #f59e0b' }}>{activeCategory?.name}</span>
           </p>
 
           {/* REAL-TIME PRODUCTS COUNT & PRODUCT VALUATION STRIP */}
           <div style={{ 
             marginTop: '0.75rem', 
-            padding: '0.5rem 0.85rem', 
-            background: 'rgba(11, 15, 25, 0.65)', 
+            padding: '0.55rem 0.95rem', 
+            background: 'rgba(15, 23, 42, 0.9)', 
             borderRadius: '8px', 
-            border: '1px solid rgba(99, 102, 241, 0.3)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
             display: 'flex',
             alignItems: 'center',
             gap: '1.25rem',
             flexWrap: 'wrap'
           }}>
-            <div style={{ fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>📦 Candidate Products: </span>
-              <strong style={{ color: '#38bdf8' }}>{currentCategoryProducts.length} Models</strong>
+            <div style={{ fontSize: '12.5px' }}>
+              <span style={{ color: '#94a3b8', fontWeight: 600 }}>📦 Candidate Products: </span>
+              <strong style={{ color: '#38bdf8', fontWeight: 800 }}>{currentCategoryProducts.length} Models</strong>
             </div>
 
-            <div style={{ fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>💰 Total Spec Valuation: </span>
-              <strong style={{ color: '#34d399' }}>{formatUSD(totalValuationUSD)} ({formatINR(totalValuationUSD)})</strong>
+            <div style={{ fontSize: '12.5px' }}>
+              <span style={{ color: '#94a3b8', fontWeight: 600 }}>💰 Total Spec Valuation: </span>
+              <strong style={{ color: '#34d399', fontWeight: 800 }}>{formatUSD(totalValuationUSD)} ({formatINR(totalValuationUSD)})</strong>
             </div>
 
-            <div style={{ fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-muted)' }}>✅ Compliant Accepted Value: </span>
-              <strong style={{ color: '#818cf8' }}>{formatUSD(acceptedValuationUSD)} ({formatINR(acceptedValuationUSD)})</strong>
+            <div style={{ fontSize: '12.5px' }}>
+              <span style={{ color: '#94a3b8', fontWeight: 600 }}>✅ Compliant Accepted Value: </span>
+              <strong style={{ color: '#a78bfa', fontWeight: 800 }}>{formatUSD(acceptedValuationUSD)} ({formatINR(acceptedValuationUSD)})</strong>
             </div>
           </div>
         </div>
@@ -132,10 +133,10 @@ export default function Dashboard({
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           {/* Direct Project Switcher Selector */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-            <span style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700 }}>⚡ 1-Click Switch Project:</span>
+            <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>⚡ 1-Click Switch Project:</span>
             <select 
               className="form-select" 
-              style={{ width: '280px', padding: '0.4rem 0.65rem', fontSize: '12px', borderColor: 'rgba(99, 102, 241, 0.5)', background: 'rgba(11, 15, 25, 0.8)', color: '#ffffff', fontWeight: 700 }}
+              style={{ width: '280px', padding: '0.45rem 0.65rem', fontSize: '12px', borderColor: 'rgba(56, 189, 248, 0.6)', background: '#0f172a', color: '#ffffff', fontWeight: 800 }}
               value={activeProjectId} 
               onChange={(e) => setSelectedProjectId(e.target.value)}
             >
@@ -147,14 +148,14 @@ export default function Dashboard({
             </select>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.45rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-primary btn-sm" onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', color: '#ffffff', fontWeight: 800, border: '1px solid #38bdf8', padding: '0.5rem 0.85rem' }} onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
               💰 Check Products & Product Values ({currentCategoryProducts.length})
             </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
-              Run Spec Inspection <ArrowRight size={15} />
+            <button className="btn btn-secondary btn-sm" style={{ background: 'rgba(30, 41, 59, 0.9)', color: '#ffffff', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
+              Run Spec Inspection <ArrowRight size={15} color="#38bdf8" />
             </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
+            <button className="btn btn-secondary btn-sm" style={{ background: 'rgba(30, 41, 59, 0.9)', color: '#ffffff', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
               📋 All Projects Details
             </button>
           </div>
