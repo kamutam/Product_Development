@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, ShieldCheck, Award, Video, LogOut, UserCheck, SearchCheck, Building2
+  LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, ShieldCheck, Award, Video, LogOut, UserCheck, SearchCheck, Building2, Sparkles
 } from 'lucide-react';
 import BrihaspathiLogo from './BrihaspathiLogo';
 
@@ -78,13 +78,22 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             <span>Dashboard</span>
           </button>
 
-          {/* 2. Product Development */}
+          {/* 2. Product Development Flow Animation */}
+          <button
+            className={`sidebar-link ${activeTab === 'npd-flow' ? 'active' : ''}`}
+            onClick={() => setActiveTab('npd-flow')}
+          >
+            <Sparkles size={18} color={activeTab === 'npd-flow' ? '#ffffff' : '#00f2fe'} />
+            <span>NPD Flow Animation</span>
+          </button>
+
+          {/* 3. Product Development Catalog */}
           <button
             className={`sidebar-link ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
           >
             <Layers size={18} color={activeTab === 'products' ? '#ffffff' : '#38bdf8'} />
-            <span>Product Development</span>
+            <span>Product Catalog</span>
           </button>
 
           {/* 3. OEM Companies (NPD Directory) */}

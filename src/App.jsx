@@ -10,6 +10,7 @@ import ProjectManager from './components/ProjectManager';
 import ProductCatalog from './components/ProductCatalog';
 import ComparisonMatrix from './components/ComparisonMatrix';
 import CategoryBuilder from './components/CategoryBuilder';
+import ProductDevelopmentFlow from './components/ProductDevelopmentFlow';
 import AuditModal from './components/AuditModal';
 import OEMMeetingModal from './components/OEMMeetingModal';
 import AIChatbotWidget from './components/AIChatbotWidget';
@@ -204,6 +205,17 @@ export default function App() {
             onSelectProductForAudit={(prod, res) => setAuditModalData({ product: prod, res })}
             evaluatorStatusFilter={evaluatorStatusFilter}
             setEvaluatorStatusFilter={setEvaluatorStatusFilter}
+          />
+        )}
+
+        {activeTab === 'npd-flow' && (
+          <ProductDevelopmentFlow 
+            projects={projects}
+            products={products}
+            categories={categories}
+            activeProjectId={selectedProjectId}
+            setSelectedProjectId={setSelectedProjectId}
+            setActiveTab={setActiveTab}
           />
         )}
 
