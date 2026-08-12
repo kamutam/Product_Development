@@ -66,9 +66,10 @@ export default function Dashboard({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Banner / Active Project Greeting with 1-Click Project Switcher & Product Details Hub */}
       <div className="card" style={{ 
-        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%)',
-        border: '1.5px solid rgba(56, 189, 248, 0.4)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
+        boxShadow: '0 15px 35px rgba(0, 0, 0, 0.12)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -77,54 +78,54 @@ export default function Dashboard({
       }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
-            <span style={{ fontSize: '0.85rem', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.85rem', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               PRODUCT DEVELOPMENT &bull; ACTIVE PROJECT INSPECTION
             </span>
-            <span className="badge badge-accept" style={{ fontSize: '10.5px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid #10b981' }}>
+            <span className="badge badge-accept" style={{ fontSize: '10.5px', background: '#dcfce7', color: '#166534', border: '1px solid #86efac' }}>
               {projects.length} Total Projects
             </span>
           </div>
 
           {/* Clickable Project Title */}
           <h2 
-            style={{ fontSize: '1.4rem', marginTop: '0.15rem', color: '#ffffff', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
+            style={{ fontSize: '1.4rem', marginTop: '0.15rem', color: '#0f172a', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
             onClick={() => setActiveTab('evaluator')}
             title="Click to view full product spec evaluation details for this project"
           >
             <GovtEmblemLogo type={activeProject?.client || activeProject?.name} size={26} />
             <span>📁 {activeProject?.name}</span>
-            <ArrowRight size={18} color="#38bdf8" />
+            <ArrowRight size={18} color="#0284c7" />
           </h2>
 
-          <p style={{ color: '#cbd5e1', fontSize: '0.88rem', marginTop: '0.25rem' }}>
-            PO / Tender ID: <strong style={{ color: '#ffffff' }}>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong style={{ color: '#ffffff' }}>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional" style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid #f59e0b' }}>{activeCategory?.name}</span>
+          <p style={{ color: '#475569', fontSize: '0.88rem', marginTop: '0.25rem' }}>
+            PO / Tender ID: <strong style={{ color: '#0f172a' }}>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong style={{ color: '#0f172a' }}>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional" style={{ background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' }}>{activeCategory?.name}</span>
           </p>
 
           {/* REAL-TIME PRODUCTS COUNT & PRODUCT VALUATION STRIP */}
           <div style={{ 
             marginTop: '0.75rem', 
             padding: '0.55rem 0.95rem', 
-            background: 'rgba(15, 23, 42, 0.9)', 
+            background: '#f8fafc', 
             borderRadius: '8px', 
-            border: '1px solid rgba(56, 189, 248, 0.3)',
+            border: '1px solid #cbd5e1',
             display: 'flex',
             alignItems: 'center',
             gap: '1.25rem',
             flexWrap: 'wrap'
           }}>
             <div style={{ fontSize: '12.5px' }}>
-              <span style={{ color: '#94a3b8', fontWeight: 600 }}>📦 Candidate Products: </span>
-              <strong style={{ color: '#38bdf8', fontWeight: 800 }}>{currentCategoryProducts.length} Models</strong>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>📦 Candidate Products: </span>
+              <strong style={{ color: '#0284c7', fontWeight: 800 }}>{currentCategoryProducts.length} Models</strong>
             </div>
 
             <div style={{ fontSize: '12.5px' }}>
-              <span style={{ color: '#94a3b8', fontWeight: 600 }}>💰 Total Spec Valuation: </span>
-              <strong style={{ color: '#34d399', fontWeight: 800 }}>{formatUSD(totalValuationUSD)} ({formatINR(totalValuationUSD)})</strong>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>💰 Total Spec Valuation: </span>
+              <strong style={{ color: '#059669', fontWeight: 800 }}>{formatUSD(totalValuationUSD)} ({formatINR(totalValuationUSD)})</strong>
             </div>
 
             <div style={{ fontSize: '12.5px' }}>
-              <span style={{ color: '#94a3b8', fontWeight: 600 }}>✅ Compliant Accepted Value: </span>
-              <strong style={{ color: '#a78bfa', fontWeight: 800 }}>{formatUSD(acceptedValuationUSD)} ({formatINR(acceptedValuationUSD)})</strong>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>✅ Compliant Accepted Value: </span>
+              <strong style={{ color: '#4f46e5', fontWeight: 800 }}>{formatUSD(acceptedValuationUSD)} ({formatINR(acceptedValuationUSD)})</strong>
             </div>
           </div>
         </div>
@@ -133,10 +134,10 @@ export default function Dashboard({
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           {/* Direct Project Switcher Selector */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-            <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }}>⚡ 1-Click Switch Project:</span>
+            <span style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800 }}>⚡ 1-Click Switch Project:</span>
             <select 
               className="form-select" 
-              style={{ width: '280px', padding: '0.45rem 0.65rem', fontSize: '12px', borderColor: 'rgba(56, 189, 248, 0.6)', background: '#0f172a', color: '#ffffff', fontWeight: 800 }}
+              style={{ width: '280px', padding: '0.45rem 0.65rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 800 }}
               value={activeProjectId} 
               onChange={(e) => setSelectedProjectId(e.target.value)}
             >
@@ -149,13 +150,13 @@ export default function Dashboard({
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', color: '#ffffff', fontWeight: 800, border: '1px solid #38bdf8', padding: '0.5rem 0.85rem' }} onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
+            <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#ffffff', fontWeight: 800, border: 'none', padding: '0.5rem 0.85rem', boxShadow: '0 4px 14px rgba(102, 126, 234, 0.4)' }} onClick={() => setShowValuationModal(true)} title="Check all candidate products and product unit/total values">
               💰 Check Products & Product Values ({currentCategoryProducts.length})
             </button>
-            <button className="btn btn-secondary btn-sm" style={{ background: 'rgba(30, 41, 59, 0.9)', color: '#ffffff', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
-              Run Spec Inspection <ArrowRight size={15} color="#38bdf8" />
+            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('evaluator')} title="Inspect candidate products for selected project">
+              Run Spec Inspection <ArrowRight size={15} color="#0284c7" />
             </button>
-            <button className="btn btn-secondary btn-sm" style={{ background: 'rgba(30, 41, 59, 0.9)', color: '#ffffff', border: '1px solid rgba(56, 189, 248, 0.4)', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
+            <button className="btn btn-secondary btn-sm" style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', fontWeight: 700, padding: '0.5rem 0.85rem' }} onClick={() => setActiveTab('inspection-summary')} title="View decision summary table for all projects">
               📋 All Projects Details
             </button>
           </div>
@@ -167,49 +168,50 @@ export default function Dashboard({
         <div className="card" style={{ 
           marginTop: '1.25rem',
           marginBottom: '1.25rem',
-          background: '#0d131f', 
-          border: '1.5px solid rgba(56, 189, 248, 0.4)',
+          background: 'rgba(255, 255, 255, 0.95)', 
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.8)',
           borderRadius: '12px',
           padding: '1.25rem',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+          boxShadow: '0 15px 35px rgba(0,0,0,0.12)'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontSize: '1.2rem' }}>🏛️</span>
-                <h3 style={{ margin: 0, color: '#38bdf8', fontSize: '1.1rem', fontWeight: 800 }}>
+                <h3 style={{ margin: 0, color: '#0284c7', fontSize: '1.1rem', fontWeight: 800 }}>
                   AP-CRDA Amaravati Smart City Smart Pole Project - Indicative Specs & Quantity Breakdown
                 </h3>
               </div>
-              <p style={{ margin: '0.25rem 0 0 0', fontSize: '11.5px', color: 'var(--text-muted)' }}>
-                Tender PO No: <strong>{activeProject.poNumber}</strong> | Client: <strong>{activeProject.client}</strong>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '11.5px', color: '#475569' }}>
+                Tender PO No: <strong style={{ color: '#0f172a' }}>{activeProject.poNumber}</strong> | Client: <strong style={{ color: '#0f172a' }}>{activeProject.client}</strong>
               </p>
             </div>
-            <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)', padding: '0.3rem 0.75rem', borderRadius: '6px', fontSize: '11px', fontWeight: 700 }}>
+            <span style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', padding: '0.3rem 0.75rem', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>
               📊 11 Subsystems Registered
             </span>
           </div>
 
-          <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
               <thead>
-                <tr style={{ background: '#161f30', borderBottom: '2px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8' }}>
+                <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #0284c7', color: '#0284c7' }}>
                   <th style={{ padding: '0.65rem', textAlign: 'center', width: '50px' }}>S.No.</th>
                   <th style={{ padding: '0.65rem', textAlign: 'left', minWidth: '170px' }}>Smart Pole Feature</th>
                   <th style={{ padding: '0.65rem', textAlign: 'left' }}>Indicative Specification</th>
-                  <th style={{ padding: '0.65rem', textAlign: 'center', width: '160px', background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', fontWeight: 800 }}>Indicative Units (Qty)</th>
+                  <th style={{ padding: '0.65rem', textAlign: 'center', width: '160px', background: '#dcfce7', color: '#15803d', fontWeight: 800 }}>Indicative Units (Qty)</th>
                 </tr>
               </thead>
               <tbody>
                 {activeProject.itemsQuantity.map((item) => (
-                  <tr key={item.sNo} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: item.sNo % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
-                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 700, color: 'var(--text-muted)' }}>{item.sNo}</td>
-                    <td style={{ padding: '0.65rem', fontWeight: 700, color: '#ffffff' }}>
-                      <div style={{ color: '#38bdf8', fontSize: '12px' }}>{item.feature}</div>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.06)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>{item.category}</span>
+                  <tr key={item.sNo} style={{ borderBottom: '1px solid #e2e8f0', background: item.sNo % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 700, color: '#64748b' }}>{item.sNo}</td>
+                    <td style={{ padding: '0.65rem', fontWeight: 700, color: '#0f172a' }}>
+                      <div style={{ color: '#0284c7', fontSize: '12px', fontWeight: 800 }}>{item.feature}</div>
+                      <span style={{ fontSize: '10px', color: '#475569', background: '#f1f5f9', padding: '0.1rem 0.35rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}>{item.category}</span>
                     </td>
-                    <td style={{ padding: '0.65rem', color: '#d1d5db', lineHeight: '1.45', fontSize: '11.5px' }}>{item.spec}</td>
-                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 800, color: '#34d399', background: 'rgba(16, 185, 129, 0.04)', fontSize: '12.5px' }}>
+                    <td style={{ padding: '0.65rem', color: '#334155', lineHeight: '1.45', fontSize: '11.5px' }}>{item.spec}</td>
+                    <td style={{ padding: '0.65rem', textAlign: 'center', fontWeight: 800, color: '#059669', background: '#f0fdf4', fontSize: '12.5px' }}>
                       {item.qty}
                     </td>
                   </tr>
@@ -222,18 +224,18 @@ export default function Dashboard({
           <div style={{
             marginTop: '1rem',
             padding: '0.85rem 1.1rem',
-            background: 'rgba(245, 158, 11, 0.08)',
-            border: '1px solid rgba(245, 158, 11, 0.35)',
+            background: '#fef3c7',
+            border: '1px solid #fde68a',
             borderRadius: '8px',
-            color: '#fde047'
+            color: '#92400e'
           }}>
-            <div style={{ fontWeight: 800, fontSize: '12px', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontWeight: 800, fontSize: '12px', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#b45309' }}>
               ⚠️ Smart Pole Customisation (Mandatory Tender Condition)
             </div>
-            <p style={{ margin: '0 0 0.35rem 0', fontSize: '11.5px', color: '#e5e7eb', lineHeight: '1.45' }}>
+            <p style={{ margin: '0 0 0.35rem 0', fontSize: '11.5px', color: '#451a03', lineHeight: '1.45' }}>
               All Smart Pole components, subsystems, accessories, civil works, electrical works, networking components, IoT devices, display systems, AI-enabled modules and associated infrastructure shall be supplied and implemented strictly on the basis of stakeholder-specific requirements, site conditions, engineering feasibility, regulatory approvals and final approved implementation designs.
             </p>
-            <p style={{ margin: 0, fontSize: '11.5px', color: '#fef08a', fontWeight: 600 }}>
+            <p style={{ margin: 0, fontSize: '11.5px', color: '#78350f', fontWeight: 700 }}>
               The entire Smart Pole component shall be delivered as per the stakeholder-customised needs and site-feasibility conditions. The selected vendor shall accommodate such customisation without altering the overall project objectives and performance requirements, and without any additional cost over the accepted unit rates.
             </p>
           </div>
