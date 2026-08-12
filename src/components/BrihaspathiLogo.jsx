@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function BrihaspathiLogo({ height = 44, showTagline = true, darkText = true, className = '' }) {
+export default function BrihaspathiLogo({ height = 44, showTagline = false, darkText = true, className = '' }) {
   const logoUrl = "https://hrms.brihaspathi.in/images/btlwhitelogo.png";
 
   return (

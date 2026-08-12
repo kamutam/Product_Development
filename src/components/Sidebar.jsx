@@ -12,7 +12,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
       {/* Pinned Sticky Header - Company Logo stays 100% in the exact same place while scrolling */}
       <div className="sidebar-header-sticky">
         <div className="sidebar-brand" onClick={() => setActiveTab('dashboard')}>
-          <BrihaspathiLogo height={44} showTagline={true} darkText={false} />
+          <BrihaspathiLogo height={44} showTagline={false} darkText={false} />
         </div>
       </div>
 
