@@ -143,6 +143,9 @@ export default function OEMCompanyDirectory() {
   const [selectedStateCity, setSelectedStateCity] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   
+  const [showSolutionDropdown, setShowSolutionDropdown] = useState(false);
+  const [solutionSearchQuery, setSolutionSearchQuery] = useState('');
+
   const [activeContactModal, setActiveContactModal] = useState(null); // Active OEM contact execution modal
 
   const domains = Array.from(new Set(companies.map(c => c.domain))).filter(Boolean);
@@ -188,27 +191,154 @@ export default function OEMCompanyDirectory() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem' }}>
+      <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem', position: 'relative', zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           {/* Solutions / Product Category Filter */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#0284c7' }}>
             <Layers size={14} /> Solutions:
           </div>
 
-          <select 
-            className="form-select"
-            style={{ width: '230px', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
-            value={selectedDomain}
-            onChange={(e) => setSelectedDomain(e.target.value)}
-          >
-            <option value="ALL">All Solutions & Categories ({companies.length})</option>
-            {domains.map(d => (
-              <option key={d} value={d}>
-                {d.includes('Robotics') ? '🤖 ' : d.includes('Drone') ? '🛩️ ' : d.includes('CCTV') || d.includes('STQC') ? '📷 ' : d.includes('Elephant') || d.includes('PIDS') ? '🐘 ' : d.includes('Biometric') ? '👆 ' : d.includes('Interlock') ? '🔒 ' : d.includes('Display') || d.includes('IDP') ? '🖥️ ' : d.includes('GPS') ? '📍 ' : d.includes('Wi-Fi') ? '📶 ' : d.includes('X-Ray') ? '🔍 ' : d.includes('EV') ? '⚡ ' : '📦 '}
-                {d} ({companies.filter(c => c.domain === d).length})
-              </option>
-            ))}
-          </select>
+          {/* CUSTOM SEARCHABLE SOLUTIONS & CATEGORIES DROPDOWN (CAPPED AT 4 VISIBLE ITEMS MAX) */}
+          <div style={{ position: 'relative', width: '250px', zIndex: 99999 }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{
+                width: '100%',
+                justify: 'space-between',
+                fontSize: '12px',
+                fontWeight: 800,
+                background: '#ffffff',
+                color: '#0f172a',
+                borderColor: '#cbd5e1',
+                padding: '0.4rem 0.65rem'
+              }}
+              onClick={() => setShowSolutionDropdown(!showSolutionDropdown)}
+            >
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>
+                {selectedDomain === 'ALL'
+                  ? `All Solutions & Categories (${companies.length})`
+                  : `${selectedDomain} (${companies.filter(c => c.domain === selectedDomain).length})`}
+              </span>
+              <span style={{ fontSize: '10px', marginLeft: '4px', color: '#0284c7' }}>
+                {showSolutionDropdown ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {/* Dropdown Menu Popup (Capped at 4 items height + Search Input) */}
+            {showSolutionDropdown && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  left: 0,
+                  width: '280px',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '8px',
+                  boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
+                  zIndex: 999999,
+                  padding: '0.45rem',
+                  animation: 'fadeInUp 0.15s ease-out'
+                }}
+              >
+                {/* Real-time Search Input Field */}
+                <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+                  <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#0284c7' }} />
+                  <input
+                    type="text"
+                    placeholder="Search solution or category..."
+                    value={solutionSearchQuery}
+                    onChange={(e) => setSolutionSearchQuery(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '0.35rem 0.5rem 0.35rem 1.75rem',
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      borderRadius: '6px',
+                      border: '1px solid #cbd5e1',
+                      background: '#f8fafc',
+                      color: '#0f172a',
+                      outline: 'none'
+                    }}
+                  />
+                  {solutionSearchQuery && (
+                    <X
+                      size={12}
+                      style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }}
+                      onClick={() => setSolutionSearchQuery('')}
+                    />
+                  )}
+                </div>
+
+                {/* Scrollable Solutions List capped at 4 items max height (~140px) */}
+                <div style={{ maxHeight: '140px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+                  <div
+                    style={{
+                      padding: '0.35rem 0.65rem',
+                      borderRadius: '5px',
+                      fontSize: '11.5px',
+                      fontWeight: selectedDomain === 'ALL' ? 800 : 600,
+                      background: selectedDomain === 'ALL' ? '#e0f2fe' : 'transparent',
+                      color: selectedDomain === 'ALL' ? '#0369a1' : '#0f172a',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justify: 'space-between',
+                      alignItems: 'center'
+                    }}
+                    onClick={() => {
+                      setSelectedDomain('ALL');
+                      setShowSolutionDropdown(false);
+                      setSolutionSearchQuery('');
+                    }}
+                  >
+                    <span>All Solutions & Categories</span>
+                    <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({companies.length})</span>
+                  </div>
+
+                  {domains
+                    .filter(d => d.toLowerCase().includes(solutionSearchQuery.toLowerCase()))
+                    .map(d => {
+                      const count = companies.filter(c => c.domain === d).length;
+                      const isSelected = selectedDomain === d;
+                      const icon = d.includes('Robotics') ? '🤖 ' : d.includes('Drone') ? '🛩️ ' : d.includes('CCTV') || d.includes('STQC') ? '📷 ' : d.includes('Elephant') || d.includes('PIDS') ? '🐘 ' : d.includes('Biometric') ? '👆 ' : d.includes('Interlock') ? '🔒 ' : d.includes('Display') || d.includes('IDP') ? '🖥️ ' : d.includes('GPS') ? '📍 ' : d.includes('Wi-Fi') ? '📶 ' : d.includes('X-Ray') ? '🔍 ' : d.includes('EV') ? '⚡ ' : '📦 ';
+                      return (
+                        <div
+                          key={d}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '5px',
+                            fontSize: '11.5px',
+                            fontWeight: isSelected ? 800 : 600,
+                            background: isSelected ? '#e0f2fe' : 'transparent',
+                            color: isSelected ? '#0369a1' : '#0f172a',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            justify: 'space-between',
+                            alignItems: 'center'
+                          }}
+                          onClick={() => {
+                            setSelectedDomain(d);
+                            setShowSolutionDropdown(false);
+                            setSolutionSearchQuery('');
+                          }}
+                        >
+                          <span>{icon}{d}</span>
+                          <span style={{ fontSize: '10.5px', color: isSelected ? '#0369a1' : '#64748b', fontWeight: 800 }}>({count})</span>
+                        </div>
+                      );
+                    })}
+
+                  {domains.filter(d => d.toLowerCase().includes(solutionSearchQuery.toLowerCase())).length === 0 && (
+                    <div style={{ padding: '0.5rem', textAlign: 'center', fontSize: '11px', color: '#64748b' }}>
+                      No matching category found
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* MASTER COUNTRY FILTER */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#0369a1' }}>
