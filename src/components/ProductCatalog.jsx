@@ -800,15 +800,15 @@ export default function ProductCatalog({ products, setProducts, categories, sync
         <div className="table-container">
           <table className="spec-table">
             <thead>
-              <tr>
-                <th style={{ width: '45px' }}>S.No</th>
-                <th style={{ width: '260px' }}>Models</th>
-                <th style={{ width: '160px' }}>OEM Brand / Make</th>
-                <th style={{ width: '130px' }}>Megapixel (MP) / Spec</th>
-                <th style={{ width: '180px' }}>ONVIF Profile M (AI Metadata)</th>
-                <th style={{ width: '210px' }}>STQC Certification Datasheet</th>
-                <th style={{ width: '120px' }}>Store Link</th>
-                <th style={{ width: '60px' }}>Actions</th>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                <th style={{ width: '45px', color: '#0f172a', fontWeight: 800 }}>S.No</th>
+                <th style={{ width: '260px', color: '#0f172a', fontWeight: 800 }}>Models</th>
+                <th style={{ width: '160px', color: '#0f172a', fontWeight: 800 }}>OEM Brand / Make</th>
+                <th style={{ width: '130px', color: '#0f172a', fontWeight: 800 }}>Megapixel (MP) / Spec</th>
+                <th style={{ width: '180px', color: '#0f172a', fontWeight: 800 }}>ONVIF Profile M (AI Metadata)</th>
+                <th style={{ width: '210px', color: '#0f172a', fontWeight: 800 }}>STQC Certification Datasheet</th>
+                <th style={{ width: '120px', color: '#0f172a', fontWeight: 800 }}>Store Link</th>
+                <th style={{ width: '60px', color: '#0f172a', fontWeight: 800 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -858,10 +858,10 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       </td>
 
                       <td>
-                        <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#ffffff' }}>
+                        <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#0f172a' }}>
                           {prod.brandMake || prod.vendor}
                         </div>
-                        <div style={{ fontSize: '10.5px', color: '#34d399', marginTop: '0.1rem', fontWeight: 600 }}>
+                        <div style={{ fontSize: '10.5px', color: '#059669', marginTop: '0.1rem', fontWeight: 700 }}>
                           📦 {prod.availability || 'In Stock'}
                         </div>
                       </td>

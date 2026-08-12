@@ -154,24 +154,25 @@ export default function ComplianceEvaluator({
 
       {/* PROJECT & PRODUCTS STATUS SUMMARY PANEL */}
       <div className="card" style={{ 
-        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)', 
-        borderColor: 'rgba(99, 102, 241, 0.25)', padding: '1rem 1.25rem' 
+        background: '#ffffff', 
+        borderColor: '#cbd5e1', 
+        padding: '1rem 1.25rem' 
       }}>
-        <div style={{ fontSize: '12px', color: '#818cf8', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ fontSize: '12px', color: '#0284c7', fontWeight: 800, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <Activity size={14} /> LIVE PROJECT & PRODUCTS COMPLIANCE STATUS DASHBOARD:
         </div>
 
         <div className="grid-cols-4" style={{ gap: '0.85rem' }}>
           {/* Project Status */}
           <div style={{ 
-            background: 'rgba(11, 15, 25, 0.7)', padding: '0.75rem', borderRadius: '8px', 
-            border: '1px solid var(--border-color)' 
+            background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', 
+            border: '1px solid #cbd5e1' 
           }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Project PO / Tender ID</div>
-            <div style={{ fontWeight: 700, fontSize: '13px', color: '#ffffff', marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Project PO / Tender ID</div>
+            <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', marginTop: '0.2rem' }}>
               {activeProject?.poNumber || activeProject?.code || 'N/A'}
             </div>
-            <div style={{ fontSize: '11px', color: '#34d399', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '11px', color: '#0284c7', marginTop: '0.25rem', fontWeight: 700 }}>
               Client: {activeProject?.client}
             </div>
           </div>
@@ -179,25 +180,25 @@ export default function ComplianceEvaluator({
           {/* Accepted Products Status - 1-CLICK INTERACTIVE FILTER */}
           <div 
             style={{ 
-              background: statusFilter === 'ACCEPTED' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              background: '#ffffff', 
               padding: '0.75rem', 
               borderRadius: '8px', 
-              border: statusFilter === 'ACCEPTED' ? '2px solid #34d399' : '1px solid var(--success-border)',
+              border: statusFilter === 'ACCEPTED' ? '2.5px solid #059669' : '1px solid #86efac',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              boxShadow: statusFilter === 'ACCEPTED' ? '0 0 12px rgba(52, 211, 153, 0.3)' : 'none'
+              boxShadow: statusFilter === 'ACCEPTED' ? '0 0 12px rgba(5, 150, 105, 0.25)' : 'none'
             }}
             onClick={() => setStatusFilter(statusFilter === 'ACCEPTED' ? 'ALL' : 'ACCEPTED')}
             title="Click 1-Click to view only Accepted compliant products"
           >
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#34d399', fontWeight: 700 }}>Accepted Compliant</span>
-              <CheckCircle2 size={13} color="var(--success)" />
+            <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#166534', fontWeight: 800 }}>Accepted Compliant</span>
+              <CheckCircle2 size={13} color="#059669" />
             </div>
-            <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#34d399', marginTop: '0.1rem' }}>
+            <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#059669', marginTop: '0.1rem' }}>
               {acceptedCount} Products
             </div>
-            <div style={{ fontSize: '10.5px', color: '#34d399', fontWeight: 700, marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '10.5px', color: '#15803d', fontWeight: 800, marginTop: '0.2rem' }}>
               👉 1-Click: View {acceptedCount} Compliant
             </div>
           </div>
@@ -205,25 +206,25 @@ export default function ComplianceEvaluator({
           {/* Rejected Products Status - 1-CLICK INTERACTIVE FILTER */}
           <div 
             style={{ 
-              background: statusFilter === 'REJECTED' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              background: '#ffffff', 
               padding: '0.75rem', 
               borderRadius: '8px', 
-              border: statusFilter === 'REJECTED' ? '2px solid #fb7185' : '1px solid var(--danger-border)',
+              border: statusFilter === 'REJECTED' ? '2.5px solid #e11d48' : '1px solid #fecdd3',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              boxShadow: statusFilter === 'REJECTED' ? '0 0 12px rgba(251, 113, 133, 0.3)' : 'none'
+              boxShadow: statusFilter === 'REJECTED' ? '0 0 12px rgba(225, 29, 72, 0.25)' : 'none'
             }}
             onClick={() => setStatusFilter(statusFilter === 'REJECTED' ? 'ALL' : 'REJECTED')}
             title="Click 1-Click to view only Rejected products"
           >
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#fb7185', fontWeight: 700 }}>Rejected / Non-Compliant</span>
-              <XCircle size={13} color="var(--danger)" />
+            <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#991b1b', fontWeight: 800 }}>Rejected / Non-Compliant</span>
+              <XCircle size={13} color="#e11d48" />
             </div>
-            <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#fb7185', marginTop: '0.1rem' }}>
+            <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#e11d48', marginTop: '0.1rem' }}>
               {rejectedCount} Products
             </div>
-            <div style={{ fontSize: '10.5px', color: '#fb7185', fontWeight: 700, marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '10.5px', color: '#b91c1c', fontWeight: 800, marginTop: '0.2rem' }}>
               👉 1-Click: View {rejectedCount} Rejected
             </div>
           </div>
@@ -231,24 +232,24 @@ export default function ComplianceEvaluator({
           {/* Total Evaluated & Domain Status - 1-CLICK SHOW ALL */}
           <div 
             style={{ 
-              background: statusFilter === 'ALL' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(11, 15, 25, 0.7)', 
+              background: '#ffffff', 
               padding: '0.75rem', 
               borderRadius: '8px', 
-              border: statusFilter === 'ALL' ? '1.5px solid #818cf8' : '1px solid var(--border-color)',
+              border: statusFilter === 'ALL' ? '2.5px solid #0284c7' : '1px solid #cbd5e1',
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
             onClick={() => setStatusFilter('ALL')}
             title="Click to view all candidate models"
           >
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Product Domain Category</div>
-            <div style={{ fontWeight: 700, fontSize: '13px', color: '#ffffff', marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Product Domain Category</div>
+            <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', marginTop: '0.2rem' }}>
               {activeCategory?.name}
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              Total Screened: <strong>{categoryProducts.length} candidate models</strong>
+            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '0.25rem' }}>
+              Total Screened: <strong style={{ color: '#0f172a' }}>{categoryProducts.length} candidate models</strong>
             </div>
-            <div style={{ fontSize: '10.5px', color: '#818cf8', fontWeight: 700, marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, marginTop: '0.2rem' }}>
               👉 1-Click: Show All ({categoryProducts.length})
             </div>
           </div>
@@ -539,15 +540,15 @@ export default function ComplianceEvaluator({
                 {/* Rejection Rationale Summary Box */}
                 {res.status === 'REJECTED' && res.rejectionSummary.length > 0 && (
                   <div style={{ 
-                    marginTop: '0.75rem', padding: '0.6rem 0.85rem', background: 'var(--danger-bg)', 
-                    borderRadius: 'var(--radius-md)', border: '1px solid var(--danger-border)' 
+                    marginTop: '0.75rem', padding: '0.6rem 0.85rem', background: '#fef2f2', 
+                    borderRadius: 'var(--radius-md)', border: '1px solid #fca5a5' 
                   }}>
-                    <div style={{ fontWeight: 700, color: '#fb7185', fontSize: '12px', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <XCircle size={13} /> Rejection Reasons ({res.failedCount} failed specs):
+                    <div style={{ fontWeight: 800, color: '#991b1b', fontSize: '12px', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <XCircle size={13} color="#dc2626" /> Rejection Reasons ({res.failedCount} failed specs):
                     </div>
-                    <ul style={{ paddingLeft: '1.1rem', fontSize: '12px', color: '#fecdd3' }}>
+                    <ul style={{ paddingLeft: '1.1rem', fontSize: '12px', color: '#991b1b', fontWeight: 600 }}>
                       {res.rejectionSummary.map((reason, idx) => (
-                        <li key={idx}>{reason}</li>
+                        <li key={idx} style={{ color: '#991b1b' }}>{reason}</li>
                       ))}
                     </ul>
                   </div>

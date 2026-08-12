@@ -69,17 +69,17 @@ export default function ComparisonMatrix({ projects, products, categories, activ
         <div className="table-container">
           <table className="spec-table">
             <thead>
-              <tr>
-                <th style={{ width: '220px' }}>Specification Parameter</th>
-                <th style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', width: '200px' }}>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                <th style={{ width: '220px', background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>Specification Parameter</th>
+                <th style={{ background: '#e0e7ff', color: '#4338ca', width: '200px', fontWeight: 800 }}>
                   Project Required Threshold
                 </th>
                 {selectedProducts.map(prod => {
                   const evalRes = evaluateProductAgainstProject(prod, activeProject, activeCategory);
                   return (
-                    <th key={prod.id} style={{ minWidth: '220px', textAlign: 'center' }}>
-                      <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#ffffff' }}>{prod.name}</div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 400 }}>{prod.vendor}</div>
+                    <th key={prod.id} style={{ minWidth: '220px', textAlign: 'center', background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                      <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>{prod.name}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>{prod.vendor}</div>
                       <div style={{ marginTop: '0.4rem' }}>
                         {evalRes.status === 'ACCEPTED' && <span className="badge badge-accept">ACCEPTED</span>}
                         {evalRes.status === 'REJECTED' && <span className="badge badge-reject">REJECTED</span>}
