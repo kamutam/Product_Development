@@ -25,12 +25,25 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
           </div>
           <select
             className="form-select"
-            style={{ width: '100%', fontSize: '0.82rem', padding: '0.5rem 0.65rem', background: '#1e293b', color: '#ffffff', borderColor: 'rgba(255, 255, 255, 0.15)' }}
+            style={{ 
+              width: '100%', 
+              maxWidth: '100%', 
+              fontSize: '0.8rem', 
+              fontWeight: 700, 
+              padding: '0.45rem 0.5rem', 
+              background: '#1e293b', 
+              color: '#ffffff', 
+              borderColor: 'rgba(255, 255, 255, 0.15)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}
             value={selectedProjectId}
             onChange={(e) => setSelectedProjectId(e.target.value)}
           >
             {projects.map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+              <option key={p.id} value={p.id} style={{ background: '#0f172a', color: '#ffffff', fontSize: '11.5px' }}>
+                📁 {p.name.length > 24 ? `${p.name.slice(0, 22)}...` : p.name}
+              </option>
             ))}
           </select>
 
