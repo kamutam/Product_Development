@@ -1244,36 +1244,42 @@ export default function ProductCatalog({ products, setProducts, categories, sync
         </div>
       </div>
 
-      {/* SPLIT 2-COLUMN VIEW: LEFT OFFCANVAS FILTER PANEL + RIGHT LIVE PRODUCTS TABLE */}
-      <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
-        {/* LEFT HAND SIDE OFFCANVAS FILTER PANEL */}
+      {/* SPLIT 2-COLUMN VIEW: LEFT LIVE PRODUCTS VIEW + RIGHT HAND SIDE OFFCANVAS FILTER PANEL */}
+      <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start', width: '100%' }}>
+        {/* LEFT HAND SIDE LIVE MAIN PRODUCTS VIEW (VISUAL GRID SHOWCASE vs DATA TABLE) */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {renderProductsView()}
+        </div>
+
+        {/* RIGHT HAND SIDE OFFCANVAS FILTER PANEL */}
         {showOffcanvasFilter && (
           <div 
             className="card"
             style={{
               width: '320px',
               minWidth: '320px',
-              background: '#121826',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
               display: 'flex',
               flexDirection: 'column',
               padding: '1.1rem',
               gap: '1.15rem',
               position: 'sticky',
-              top: '1.5rem'
+              top: '1rem'
             }}
           >
             {/* Panel Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.75rem', borderBottom: '1px solid #cbd5e1' }}>
               <div>
-                <h3 style={{ fontSize: '1.05rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Sliders size={16} color="#818cf8" /> Filter Domains & Types
+                <h3 style={{ fontSize: '1.05rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 800 }}>
+                  <Sliders size={16} color="#0284c7" /> Filter Domains & Types
                 </h3>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                  Click to filter live table &rarr;
+                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
+                  Click to filter live workspace &rarr;
                 </div>
               </div>
-              <button className="btn btn-secondary btn-sm" style={{ padding: '0.2rem 0.4rem' }} onClick={() => setShowOffcanvasFilter(false)}>
+              <button className="btn btn-secondary btn-sm" style={{ padding: '0.2rem 0.4rem', color: '#0f172a', borderColor: '#cbd5e1' }} onClick={() => setShowOffcanvasFilter(false)} title="Close Side Filter Panel">
                 <X size={14} />
               </button>
             </div>
@@ -1281,7 +1287,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
             {/* Reset Option */}
             <button 
               className={`btn ${activeCategoryFilter === 'ALL' && cameraTypeFilter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-              style={{ width: '100%', justifyContent: 'flex-start' }}
+              style={{ width: '100%', justifyContent: 'flex-start', fontWeight: 800 }}
               onClick={() => {
                 setActiveCategoryFilter('ALL');
                 setCameraTypeFilter('ALL');
@@ -1292,18 +1298,19 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
             {/* SECTION 1: MASTER PRODUCT CATEGORY DOMAINS */}
             <div>
-              <div style={{ fontSize: '10.5px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>
                 📦 Product Category Domains:
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                 <button 
                   className={`btn ${activeCategoryFilter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                   style={{ 
-                    justify: 'flex-start', 
+                    justifyContent: 'flex-start', 
                     fontSize: '11.5px', 
                     fontWeight: 800, 
-                    background: activeCategoryFilter === 'ALL' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : 'rgba(255,255,255,0.04)',
-                    borderColor: activeCategoryFilter === 'ALL' ? '#818cf8' : 'rgba(255,255,255,0.1)'
+                    background: activeCategoryFilter === 'ALL' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#ffffff',
+                    color: activeCategoryFilter === 'ALL' ? '#ffffff' : '#0f172a',
+                    borderColor: activeCategoryFilter === 'ALL' ? 'transparent' : '#cbd5e1'
                   }}
                   onClick={() => handleSelectCategoryDomain('ALL')}
                 >
@@ -1312,7 +1319,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'cctv' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('cctv')}
                 >
                   📷 CCTV Cameras & Surveillance ({products.filter(p => p.categoryId === 'cctv').length})
@@ -1320,7 +1327,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'robotics' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#38bdf8' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('robotics')}
                 >
                   🤖 Robotics & Autonomous Service ({products.filter(p => p.categoryId === 'robotics').length})
@@ -1328,7 +1335,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'drones' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#34d399' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('drones')}
                 >
                   🛩️ Drones, Anti-Drone & Robot Dogs ({products.filter(p => p.categoryId === 'drones').length})
@@ -1336,7 +1343,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'wildlife-pids' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#fbbf24' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('wildlife-pids')}
                 >
                   🐘 Wildlife & Perimeter PIDS ({products.filter(p => p.categoryId === 'wildlife-pids').length})
@@ -1344,7 +1351,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'transit-surveillance' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('transit-surveillance')}
                 >
                   🚌 Transit Fleet & MDVR ({products.filter(p => p.categoryId === 'transit-surveillance').length})
@@ -1352,7 +1359,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'interlock' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#f472b6' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('interlock')}
                 >
                   🔒 Ignition Interlock Devices ({products.filter(p => p.categoryId === 'interlock').length})
@@ -1360,7 +1367,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'solar' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('solar')}
                 >
                   ☀️ Rooftop Solar & PV Systems ({products.filter(p => p.categoryId === 'solar').length})
@@ -1368,7 +1375,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'biometrics' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('biometrics')}
                 >
                   👆 Biometric Access & Smart Gates ({products.filter(p => p.categoryId === 'biometrics').length})
@@ -1376,7 +1383,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
                 <button 
                   className={`btn ${activeCategoryFilter === 'idp-display' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', color: '#a78bfa' }}
+                  style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                   onClick={() => handleSelectCategoryDomain('idp-display')}
                 >
                   🖥️ Interactive Display Panels (IDP) ({products.filter(p => p.categoryId === 'idp-display').length})
@@ -1384,9 +1391,9 @@ export default function ProductCatalog({ products, setProducts, categories, sync
               </div>
             </div>
 
-            {/* SECTION 2: SPECIFIC HARDWARE MODEL SUB-TYPES (CONTEXTUAL TO ACTIVE DOMAIN) */}
+            {/* SECTION 2: HARDWARE SUB-TYPES */}
             <div>
-              <div style={{ fontSize: '10.5px', color: '#34d399', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>
                 🎯 Hardware Sub-Types:
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -1394,28 +1401,28 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   <>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Delivery & Hospitality' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Delivery & Hospitality')}
                     >
                       🍱 Delivery & Hospitality ({domainProducts.filter(p => p.name.toLowerCase().includes('delivery') || p.name.toLowerCase().includes('hospitality')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Floor Scrubber' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Floor Scrubber')}
                     >
                       🧽 Commercial Floor Scrubbers ({domainProducts.filter(p => p.name.toLowerCase().includes('scrub')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'AMR Sweeper' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('AMR Sweeper')}
                     >
                       🧹 Industrial AMR Sweepers ({domainProducts.filter(p => p.name.toLowerCase().includes('sweep')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Cleaning System' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Cleaning System')}
                     >
                       ✨ Autonomous Cleaning Systems ({domainProducts.filter(p => p.name.toLowerCase().includes('clean') || p.name.toLowerCase().includes('kira')).length})
@@ -1425,76 +1432,76 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   <>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Anti-Drone Jammer' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Anti-Drone Jammer')}
                     >
-                      📡 Anti-Drone RF Jammers ({domainProducts.filter(p => p.name.toLowerCase().includes('anti-drone') || p.name.toLowerCase().includes('ardronis')).length})
+                      📡 Anti-Drone Jammers ({domainProducts.filter(p => p.name.toLowerCase().includes('anti-drone') || p.name.toLowerCase().includes('ardronis') || p.name.toLowerCase().includes('jammer')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Robot Dog' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Robot Dog')}
                     >
-                      🐕 Quadruped Security Dogs ({domainProducts.filter(p => p.name.toLowerCase().includes('quadruped') || p.name.toLowerCase().includes('dog')).length})
+                      🐕 Autonomous Quadruped Robot Dog ({domainProducts.filter(p => p.name.toLowerCase().includes('quadruped') || p.name.toLowerCase().includes('dog') || p.name.toLowerCase().includes('vision 60')).length})
                     </button>
                   </>
                 ) : activeCategoryFilter === 'wildlife-pids' ? (
                   <>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Fiber DAS' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Fiber DAS')}
                     >
-                      🌐 Fiber Optic Acoustic DAS ({domainProducts.filter(p => p.name.toLowerCase().includes('fiber') || p.name.toLowerCase().includes('das')).length})
+                      🌐 Fiber DAS Perimeter PIDS ({domainProducts.filter(p => p.name.toLowerCase().includes('fiber') || p.name.toLowerCase().includes('das')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Animal Repellent' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Animal Repellent')}
                     >
-                      ☀️ Solar Animal Repellents ({domainProducts.filter(p => p.name.toLowerCase().includes('aniders') || p.name.toLowerCase().includes('solar')).length})
+                      🐘 Solar Elephant/Animal Repellent ({domainProducts.filter(p => p.name.toLowerCase().includes('aniders') || p.name.toLowerCase().includes('solar')).length})
                     </button>
                   </>
                 ) : (
                   <>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Bullet Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Bullet Camera')}
                     >
                       🎯 Bullet Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('bullet')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Dome Camera' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Dome Camera')}
                     >
                       🔮 Dome Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('dome') && !p.name.toLowerCase().includes('vandal')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'Vandal Dome' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('Vandal Dome')}
                     >
                       🛡️ Vandal Dome Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('vandal')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === '4K Bullet' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('4K Bullet')}
                     >
                       ⚡ 4K Ultra HD Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('4k') || p.specs?.resolution >= 8).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'AI & ANPR' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('AI & ANPR')}
                     >
                       🚨 AI Enforcement & ANPR ({domainProducts.filter(p => p.name.toLowerCase().includes('anpr') || p.name.toLowerCase().includes('ai')).length})
                     </button>
                     <button 
                       className={`btn ${cameraTypeFilter === 'PTZ & Fisheye' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ justifyContent: 'flex-start', fontSize: '11.5px' }}
+                      style={{ justifyContent: 'flex-start', fontSize: '11.5px', fontWeight: 700 }}
                       onClick={() => setCameraTypeFilter('PTZ & Fisheye')}
                     >
                       🔄 PTZ & Fisheye Cameras ({domainProducts.filter(p => p.name.toLowerCase().includes('ptz') || p.name.toLowerCase().includes('fisheye')).length})
@@ -1503,11 +1510,8 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                 )}
               </div>
             </div>
-      </div>
-      )}
-
-      {/* RIGHT HAND SIDE LIVE MAIN PRODUCTS VIEW (VISUAL GRID SHOWCASE vs DATA TABLE) */}
-      {renderProductsView()}
+          </div>
+        )}
       </div>
 
       {/* Connect Custom Google Sheet / Upload CSV Modal */}
