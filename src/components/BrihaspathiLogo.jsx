@@ -32,22 +32,6 @@ export default function BrihaspathiLogo({ height = 44, showTagline = true, darkT
           </span>
         )}
       </div>
-
-      <div style={{ 
-        padding: '0.25rem 0.6rem', 
-        background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', 
-        border: '1px solid #38bdf8', 
-        borderRadius: '6px', 
-        fontSize: '11.5px', 
-        fontWeight: 800, 
-        color: '#ffffff', 
-        letterSpacing: '0.04em',
-        textTransform: 'uppercase',
-        boxShadow: '0 2px 10px rgba(2, 132, 199, 0.35)',
-        whiteSpace: 'nowrap'
-      }}>
-        🚀 Product Development
-      </div>
     </div>
   );
 }
