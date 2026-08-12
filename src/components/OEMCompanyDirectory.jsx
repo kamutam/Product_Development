@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { 
-  Building2, Globe, Phone, Mail, FileCheck, ShieldCheck, CheckCircle2, Clock, Search, Filter, MapPin, Compass, ExternalLink, MessageSquare, Send, X, AlertCircle, Layers
+  Building2, Globe, Phone, Mail, FileCheck, ShieldCheck, CheckCircle2, Clock, Search, Filter, MapPin, Compass, ExternalLink, MessageSquare, Send, X, AlertCircle, Layers, ArrowDown
 } from 'lucide-react';
 import { NPD_MASTER_OEM_COMPANIES } from '../data/fullDatabase';
+import DirectMailComposer from './DirectMailComposer';
 
 // Brand company logo badge generator for OEM Directory
 const getCompanyLogoBadge = (company) => {
@@ -145,8 +146,13 @@ export default function OEMCompanyDirectory() {
   
   const [showSolutionDropdown, setShowSolutionDropdown] = useState(false);
   const [solutionSearchQuery, setSolutionSearchQuery] = useState('');
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearchQuery, setCountrySearchQuery] = useState('');
+  const [showStateDropdown, setShowStateDropdown] = useState(false);
+  const [stateSearchQuery, setStateSearchQuery] = useState('');
 
   const [activeContactModal, setActiveContactModal] = useState(null); // Active OEM contact execution modal
+  const [activeMailComposer, setActiveMailComposer] = useState(null); // Active OEM direct mail composer
 
   const domains = Array.from(new Set(companies.map(c => c.domain))).filter(Boolean);
   const countries = Array.from(new Set(companies.map(c => c.country))).filter(Boolean);
@@ -340,40 +346,87 @@ export default function OEMCompanyDirectory() {
             )}
           </div>
 
-          {/* MASTER COUNTRY FILTER */}
+          {/* MASTER COUNTRY FILTER (Custom Select) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#0369a1' }}>
             <Globe size={14} /> Country:
           </div>
-          <select 
-            className="form-select"
-            style={{ width: '160px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
-            value={selectedCountry}
-            onChange={(e) => {
-              setSelectedCountry(e.target.value);
-              setSelectedStateCity('ALL');
-            }}
-          >
-            <option value="ALL">All Countries ({countries.length})</option>
-            {countries.map(c => (
-              <option key={c} value={c}>{c} ({companies.filter(co => co.country === c).length})</option>
-            ))}
-          </select>
+          <div style={{ position: 'relative', width: '200px', zIndex: 99998 }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ width: '100%', justifyContent: 'space-between', fontSize: '12px', fontWeight: 800, background: '#ffffff', color: '#0f172a', borderColor: '#cbd5e1', padding: '0.4rem 0.65rem' }}
+              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+            >
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px' }}>
+                {selectedCountry === 'ALL' ? `All Countries (${countries.length})` : selectedCountry}
+              </span>
+              <ArrowDown size={14} style={{ color: '#64748b' }} />
+            </button>
+            {showCountryDropdown && (
+              <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, width: '240px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', boxShadow: '0 20px 45px rgba(0,0,0,0.25)', zIndex: 999999, padding: '0.45rem', animation: 'fadeInUp 0.15s ease-out' }}>
+                <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+                  <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#0284c7' }} />
+                  <input type="text" placeholder="Search country..." value={countrySearchQuery} onChange={(e) => setCountrySearchQuery(e.target.value)} autoFocus style={{ width: '100%', padding: '0.35rem 0.5rem 0.35rem 1.75rem', fontSize: '11.5px', fontWeight: 700, borderRadius: '6px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', outline: 'none' }} />
+                  {countrySearchQuery && <X size={12} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }} onClick={() => setCountrySearchQuery('')} />}
+                </div>
+                <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+                  <div style={{ padding: '0.35rem 0.65rem', borderRadius: '5px', fontSize: '11.5px', fontWeight: selectedCountry === 'ALL' ? 800 : 600, background: selectedCountry === 'ALL' ? '#e0f2fe' : 'transparent', color: selectedCountry === 'ALL' ? '#0369a1' : '#0f172a', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => { setSelectedCountry('ALL'); setSelectedStateCity('ALL'); setShowCountryDropdown(false); setCountrySearchQuery(''); }}>
+                    <span>All Countries</span><span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({countries.length})</span>
+                  </div>
+                  {countries.filter(c => c.toLowerCase().includes(countrySearchQuery.toLowerCase())).map(c => {
+                    const count = companies.filter(co => co.country === c).length;
+                    const isSelected = selectedCountry === c;
+                    return (
+                      <div key={c} style={{ padding: '0.35rem 0.65rem', borderRadius: '5px', fontSize: '11.5px', fontWeight: isSelected ? 800 : 600, background: isSelected ? '#e0f2fe' : 'transparent', color: isSelected ? '#0369a1' : '#0f172a', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => { setSelectedCountry(c); setSelectedStateCity('ALL'); setShowCountryDropdown(false); setCountrySearchQuery(''); }}>
+                        <span>{c}</span><span style={{ fontSize: '10.5px', color: isSelected ? '#0369a1' : '#64748b', fontWeight: 800 }}>({count})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
-          {/* STATE & CITY SUB-FILTER */}
+          {/* STATE & CITY SUB-FILTER (Custom Select) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#059669' }}>
             <MapPin size={14} /> State & City:
           </div>
-          <select 
-            className="form-select"
-            style={{ width: '190px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
-            value={selectedStateCity}
-            onChange={(e) => setSelectedStateCity(e.target.value)}
-          >
-            <option value="ALL">All States & Cities</option>
-            {stateCityList.map(sc => (
-              <option key={sc} value={sc}>{sc}</option>
-            ))}
-          </select>
+          <div style={{ position: 'relative', width: '220px', zIndex: 99997 }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ width: '100%', justifyContent: 'space-between', fontSize: '12px', fontWeight: 800, background: '#ffffff', color: '#0f172a', borderColor: '#cbd5e1', padding: '0.4rem 0.65rem' }}
+              onClick={() => setShowStateDropdown(!showStateDropdown)}
+            >
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>
+                {selectedStateCity === 'ALL' ? `All States/Cities (${stateCityList.length})` : selectedStateCity}
+              </span>
+              <ArrowDown size={14} style={{ color: '#64748b' }} />
+            </button>
+            {showStateDropdown && (
+              <div style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, width: '260px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', boxShadow: '0 20px 45px rgba(0,0,0,0.25)', zIndex: 999999, padding: '0.45rem', animation: 'fadeInUp 0.15s ease-out' }}>
+                <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+                  <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#059669' }} />
+                  <input type="text" placeholder="Search state or city..." value={stateSearchQuery} onChange={(e) => setStateSearchQuery(e.target.value)} autoFocus style={{ width: '100%', padding: '0.35rem 0.5rem 0.35rem 1.75rem', fontSize: '11.5px', fontWeight: 700, borderRadius: '6px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', outline: 'none' }} />
+                  {stateSearchQuery && <X size={12} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }} onClick={() => setStateSearchQuery('')} />}
+                </div>
+                <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+                  <div style={{ padding: '0.35rem 0.65rem', borderRadius: '5px', fontSize: '11.5px', fontWeight: selectedStateCity === 'ALL' ? 800 : 600, background: selectedStateCity === 'ALL' ? '#dcfce7' : 'transparent', color: selectedStateCity === 'ALL' ? '#059669' : '#0f172a', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => { setSelectedStateCity('ALL'); setShowStateDropdown(false); setStateSearchQuery(''); }}>
+                    <span>All States/Cities</span><span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({stateCityList.length})</span>
+                  </div>
+                  {stateCityList.filter(sc => sc.toLowerCase().includes(stateSearchQuery.toLowerCase())).map(sc => {
+                    const count = companies.filter(co => `${co.city} (${co.state})` === sc).length;
+                    const isSelected = selectedStateCity === sc;
+                    return (
+                      <div key={sc} style={{ padding: '0.35rem 0.65rem', borderRadius: '5px', fontSize: '11.5px', fontWeight: isSelected ? 800 : 600, background: isSelected ? '#dcfce7' : 'transparent', color: isSelected ? '#059669' : '#0f172a', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => { setSelectedStateCity(sc); setShowStateDropdown(false); setStateSearchQuery(''); }}>
+                        <span>{sc}</span><span style={{ fontSize: '10.5px', color: isSelected ? '#059669' : '#64748b', fontWeight: 800 }}>({count})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '220px' }}>
@@ -567,27 +620,39 @@ export default function OEMCompanyDirectory() {
                 </div>
 
                 {activeContactModal.contactDetails && activeContactModal.contactDetails.includes('@') ? (
-                  <a 
-                    href={`mailto:${activeContactModal.contactDetails}?subject=Brihaspathi%20Procurement%20Inquiry%20-%20${encodeURIComponent(activeContactModal.products)}&body=Dear%20${encodeURIComponent(activeContactModal.contactPerson)},%0A%0AWe%20are%20reaching%20out%20from%20Brihaspathi%20Technologies%20regarding%20${encodeURIComponent(activeContactModal.products)}.`}
+                  <button 
+                    onClick={() => {
+                      setActiveMailComposer(activeContactModal);
+                      setActiveContactModal(null);
+                    }}
                     className="btn btn-primary btn-sm"
                     style={{ background: '#0284c7', borderColor: '#0369a1', fontSize: '11.5px', color: '#ffffff', fontWeight: 800 }}
                   >
-                    ✉️ Send Email
-                  </a>
+                    ✉️ Generate Smart Email
+                  </button>
                 ) : (
-                  <a 
-                    href={`mailto:venu.m@brihaspathi.com?subject=OEM%20Inquiry%20-%20${encodeURIComponent(activeContactModal.name)}&body=OEM%20Vendor:%20${encodeURIComponent(activeContactModal.name)}%0AProducts:%20${encodeURIComponent(activeContactModal.products)}`}
+                  <button 
+                    onClick={() => {
+                      setActiveMailComposer(activeContactModal);
+                      setActiveContactModal(null);
+                    }}
                     className="btn btn-secondary btn-sm"
                     style={{ fontSize: '11.5px', color: '#0284c7', background: '#ffffff', border: '1px solid #cbd5e1', fontWeight: 700 }}
                   >
-                    ✉️ Draft Email (Lead)
-                  </a>
+                    ✉️ Generate Smart Email
+                  </button>
                 )}
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* DIRECT MAIL COMPOSER MODAL */}
+      <DirectMailComposer 
+        oem={activeMailComposer} 
+        onClose={() => setActiveMailComposer(null)} 
+      />
     </div>
   );
 }

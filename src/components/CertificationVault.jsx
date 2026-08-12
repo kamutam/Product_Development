@@ -649,23 +649,23 @@ export default function CertificationVault() {
                   return (
                     <tr key={item.id}>
                       {/* Sr. No */}
-                      <td style={{ fontWeight: 700, color: 'var(--text-muted)' }}>
+                      <td style={{ fontWeight: 700, color: '#64748b' }}>
                         {idx + 1}.
                       </td>
 
                       {/* Model Name / SKU */}
                       <td>
-                        <div style={{ fontWeight: 800, fontSize: '13px', color: '#38bdf8' }}>
+                        <div style={{ fontWeight: 800, fontSize: '13px', color: '#0284c7' }}>
                           {item.sku}
                         </div>
-                        <div style={{ fontSize: '11.5px', color: 'var(--text-main)', marginTop: '0.1rem' }}>
+                        <div style={{ fontSize: '11.5px', color: '#475569', marginTop: '0.1rem' }}>
                           {item.name}
                         </div>
                       </td>
 
                       {/* Camera Type */}
                       <td>
-                        <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#ffffff' }}>
+                        <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#0f172a' }}>
                           {item.cameraType}
                         </div>
                       </td>
@@ -699,17 +699,17 @@ export default function CertificationVault() {
 
                       {/* OEM Make */}
                       <td>
-                        <div style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontWeight: 700, fontSize: '12px', color: '#0f172a' }}>
                           {item.brandMake}
                         </div>
                       </td>
 
                       {/* STQC Certificate PDF Document */}
                       <td>
-                        <div style={{ fontWeight: 700, fontSize: '11.5px', color: '#34d399' }}>
+                        <div style={{ fontWeight: 800, fontSize: '11.5px', color: '#059669' }}>
                           {item.certName || 'Master Certificate'}
                         </div>
-                        <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '10.5px', color: '#64748b' }}>
                           Ref: {item.certRef}
                         </div>
                       </td>
