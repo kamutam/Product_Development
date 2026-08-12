@@ -1083,7 +1083,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           {/* VIEW MODE TOGGLE BUTTONS (VISUAL CATALOG SHOWCASE vs DATA TABLE) */}
-          <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', padding: '0.2rem', border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', background: '#f8fafc', borderRadius: '8px', padding: '0.2rem', border: '1px solid #cbd5e1' }}>
             <button 
               className={`btn btn-sm ${viewMode === 'grid' ? 'btn-primary' : 'btn-secondary'}`}
               style={{ padding: '0.3rem 0.65rem', fontSize: '11.5px', borderRadius: '6px' }}
@@ -1101,7 +1101,7 @@ export default function ProductCatalog({ products, setProducts, categories, sync
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '210px' }}>
-            <Search size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-muted)' }} />
+            <Search size={14} style={{ position: 'absolute', left: '10px', color: '#0284c7' }} />
             <input 
               type="text" 
               className="form-input" 
