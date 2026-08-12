@@ -112,15 +112,15 @@ const getCompanyLogoBadge = (company) => {
 
   return (
     <div style={{
-      width: '30px',
-      height: '30px',
-      minWidth: '30px',
+      width: '32px',
+      height: '32px',
+      minWidth: '32px',
       borderRadius: '7px',
       background: bgGradient,
       border: `1.5px solid ${borderColor}`,
       display: 'inline-flex',
       alignItems: 'center',
-      justify: 'center',
+      justifyContent: 'center',
       fontWeight: 900,
       fontSize: '12px',
       color: textColor,
@@ -171,17 +171,17 @@ export default function OEMCompanyDirectory() {
       {/* Header Banner */}
       <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>
+          <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>
             New Product Development (NPD) Vendor Directory
           </div>
-          <h2 style={{ fontSize: '1.25rem' }}>OEM Companies & Vendor Partners</h2>
-          <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+          <h2 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 800 }}>OEM Companies & Vendor Partners</h2>
+          <p style={{ fontSize: '12.5px', color: '#475569', marginTop: '0.15rem' }}>
             Verified OEM suppliers with 1-click contact execution, interactive dialer, and clean N/A missing data indicators.
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '0.65rem' }}>
-          <span className="badge badge-accept" style={{ fontSize: '11px', padding: '0.35rem 0.75rem', background: 'rgba(99, 102, 241, 0.15)', borderColor: 'rgba(99, 102, 241, 0.3)', color: '#818cf8' }}>
+          <span className="badge badge-accept" style={{ fontSize: '11px', padding: '0.35rem 0.75rem', background: '#e0f2fe', borderColor: '#bae6fd', color: '#0369a1', fontWeight: 800 }}>
             🏢 {companies.length} Registered OEM Partners
           </span>
         </div>
@@ -191,13 +191,13 @@ export default function OEMCompanyDirectory() {
       <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           {/* Solutions / Product Category Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 600, color: '#818cf8' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#0284c7' }}>
             <Layers size={14} /> Solutions:
           </div>
 
           <select 
             className="form-select"
-            style={{ width: '230px', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: 'rgba(99, 102, 241, 0.4)', fontWeight: 600 }}
+            style={{ width: '230px', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
             value={selectedDomain}
             onChange={(e) => setSelectedDomain(e.target.value)}
           >
@@ -211,12 +211,12 @@ export default function OEMCompanyDirectory() {
           </select>
 
           {/* MASTER COUNTRY FILTER */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 600, color: '#38bdf8' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#0369a1' }}>
             <Globe size={14} /> Country:
           </div>
           <select 
             className="form-select"
-            style={{ width: '160px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: 'rgba(56, 189, 248, 0.4)' }}
+            style={{ width: '160px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
             value={selectedCountry}
             onChange={(e) => {
               setSelectedCountry(e.target.value);
@@ -230,12 +230,12 @@ export default function OEMCompanyDirectory() {
           </select>
 
           {/* STATE & CITY SUB-FILTER */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 600, color: '#34d399' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#059669' }}>
             <MapPin size={14} /> State & City:
           </div>
           <select 
             className="form-select"
-            style={{ width: '190px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: 'rgba(16, 185, 129, 0.4)' }}
+            style={{ width: '190px', padding: '0.35rem 0.6rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: 700 }}
             value={selectedStateCity}
             onChange={(e) => setSelectedStateCity(e.target.value)}
           >
@@ -247,12 +247,12 @@ export default function OEMCompanyDirectory() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '220px' }}>
-          <Search size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-muted)' }} />
+          <Search size={14} style={{ position: 'absolute', left: '10px', color: '#64748b' }} />
           <input 
             type="text" 
             className="form-input"
             placeholder="Search company, product, or city..."
-            style={{ paddingLeft: '2.1rem', padding: '0.35rem 0.65rem', fontSize: '12px' }}
+            style={{ paddingLeft: '2.1rem', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a' }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -271,16 +271,17 @@ export default function OEMCompanyDirectory() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       S.NO {idx + 1} &bull; OEM MANUFACTURER
                     </div>
-                    <h3 style={{ fontSize: '1.2rem', marginTop: '0.15rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    {/* High-Contrast Bold Company Name - Dark Slate Navy for 100% Readability */}
+                    <h3 style={{ fontSize: '1.25rem', marginTop: '0.15rem', color: '#0f172a', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                       {getCompanyLogoBadge(comp)} {comp.name}
                     </h3>
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <span className="badge badge-accept" style={{ fontSize: '11px', background: 'rgba(255, 255, 255, 0.06)', borderColor: 'var(--border-color)', color: '#ffffff' }}>
+                    <span className="badge badge-accept" style={{ fontSize: '11px', background: '#f1f5f9', borderColor: '#cbd5e1', color: '#0f172a', fontWeight: 700 }}>
                       {comp.flag} {comp.country}
                     </span>
                   </div>
@@ -288,54 +289,54 @@ export default function OEMCompanyDirectory() {
 
                 {/* GEOGRAPHIC LOCATION HIERARCHY */}
                 <div style={{ 
-                  fontSize: '11.5px', color: '#34d399', background: 'rgba(16, 185, 129, 0.08)', 
-                  border: '1px solid rgba(16, 185, 129, 0.25)', padding: '0.35rem 0.65rem', 
-                  borderRadius: '6px', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' 
+                  fontSize: '11.5px', color: '#047857', background: '#ecfdf5', 
+                  border: '1px solid #a7f3d0', padding: '0.35rem 0.65rem', 
+                  borderRadius: '6px', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600
                 }}>
-                  <Compass size={13} color="#34d399" />
-                  <span>Location Hierarchy: <strong>{comp.country}</strong> &bull; {comp.state || 'N/A'} &bull; <strong>{comp.city || 'N/A'}</strong></span>
+                  <Compass size={13} color="#047857" />
+                  <span>Location Hierarchy: <strong style={{ color: '#065f46' }}>{comp.country}</strong> &bull; {comp.state || 'N/A'} &bull; <strong style={{ color: '#065f46' }}>{comp.city || 'N/A'}</strong></span>
                 </div>
 
                 {/* Products Provided */}
                 <div style={{ 
-                  background: 'rgba(11, 15, 25, 0.65)', padding: '0.65rem 0.8rem', 
-                  borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '0.65rem' 
+                  background: '#f8fafc', padding: '0.65rem 0.8rem', 
+                  borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1', marginBottom: '0.65rem' 
                 }}>
-                  <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
                     PRODUCTS & SOLUTIONS PROVIDED:
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#38bdf8', marginTop: '0.2rem' }}>
+                  <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#0284c7', marginTop: '0.2rem' }}>
                     {comp.products || 'N/A'}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                    Domain: <strong>{comp.domain || 'N/A'}</strong>
+                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '0.25rem' }}>
+                    Domain: <strong style={{ color: '#0f172a' }}>{comp.domain || 'N/A'}</strong>
                   </div>
                 </div>
 
                 {/* Agreement Status & Contact Details */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <FileCheck size={14} color="#34d399" />
-                    <span style={{ color: 'var(--text-muted)' }}>Agreement Status:</span>
-                    <span className="badge badge-accept" style={{ fontSize: '10px', padding: '0.1rem 0.4rem' }}>
+                    <FileCheck size={14} color="#059669" />
+                    <span style={{ color: '#475569' }}>Agreement Status:</span>
+                    <span className="badge badge-accept" style={{ fontSize: '10px', padding: '0.1rem 0.4rem', background: '#dcfce7', color: '#166534', border: '1px solid #86efac' }}>
                       {comp.agreementStatus || 'N/A'}
                     </span>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Phone size={14} color="#fbbf24" />
-                    <span style={{ color: 'var(--text-muted)' }}>Contact Person:</span>
-                    <strong style={{ color: '#ffffff' }}>
+                    <Phone size={14} color="#d97706" />
+                    <span style={{ color: '#475569' }}>Contact Person:</span>
+                    <strong style={{ color: '#0f172a' }}>
                       {comp.contactPerson || 'N/A'} {comp.contactDetails ? `(${comp.contactDetails})` : '(N/A)'}
                     </strong>
                   </div>
 
                   {comp.remarks ? (
-                    <div style={{ fontSize: '11.5px', color: '#fb7185', background: 'rgba(244, 63, 94, 0.08)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(244, 63, 94, 0.2)', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '11.5px', color: '#9f1239', background: '#ffe4e6', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid #fecdd3', marginTop: '0.2rem' }}>
                       💡 <strong>Remarks:</strong> {comp.remarks}
                     </div>
                   ) : (
-                    <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '0.2rem' }}>
                       💡 <strong>Remarks:</strong> N/A
                     </div>
                   )}
@@ -343,10 +344,10 @@ export default function OEMCompanyDirectory() {
               </div>
 
               {/* 1-CLICK EXECUTION ACTION BAR */}
-              <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.65rem', borderTop: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.65rem', borderTop: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
                 <button 
                   className="btn btn-primary btn-sm"
-                  style={{ fontSize: '11px', padding: '0.3rem 0.65rem', background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' }}
+                  style={{ fontSize: '11px', padding: '0.35rem 0.75rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#ffffff', fontWeight: 800, border: 'none', boxShadow: '0 4px 12px rgba(102, 126, 234, 0.35)' }}
                   onClick={() => setActiveContactModal(comp)}
                 >
                   ⚡ Execute Contact Action
@@ -358,7 +359,7 @@ export default function OEMCompanyDirectory() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '11px', padding: '0.25rem 0.55rem', color: '#38bdf8' }}
+                    style={{ fontSize: '11px', padding: '0.3rem 0.65rem', color: '#0284c7', background: '#ffffff', border: '1px solid #cbd5e1', fontWeight: 700 }}
                   >
                     <ExternalLink size={12} /> Visit OEM Website
                   </a>
@@ -372,39 +373,39 @@ export default function OEMCompanyDirectory() {
       {/* INTERACTIVE 1-CLICK OEM CONTACT EXECUTION LAUNCHER MODAL */}
       {activeContactModal && (
         <div className="modal-overlay" onClick={() => setActiveContactModal(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '540px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '540px', background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid #e2e8f0' }}>
               <div>
-                <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 800, textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase' }}>
                   1-CLICK OEM EXECUTION LAUNCHER
                 </div>
-                <h3 style={{ fontSize: '1.2rem', color: '#ffffff', marginTop: '0.1rem' }}>
+                <h3 style={{ fontSize: '1.25rem', color: '#0f172a', marginTop: '0.1rem', fontWeight: 800 }}>
                   {activeContactModal.name}
                 </h3>
               </div>
-              <button className="btn btn-secondary btn-sm" onClick={() => setActiveContactModal(null)}>
+              <button className="btn btn-secondary btn-sm" style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#0f172a' }} onClick={() => setActiveContactModal(null)}>
                 <X size={16} />
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {/* Contact Summary Box */}
-              <div style={{ background: 'rgba(18, 24, 38, 0.8)', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '12.5px' }}>
-                <div style={{ color: 'var(--text-muted)', marginBottom: '0.2rem' }}>
-                  Primary Contact: <strong style={{ color: '#ffffff' }}>{activeContactModal.contactPerson || 'N/A'}</strong>
+              <div style={{ background: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12.5px' }}>
+                <div style={{ color: '#475569', marginBottom: '0.2rem' }}>
+                  Primary Contact: <strong style={{ color: '#0f172a' }}>{activeContactModal.contactPerson || 'N/A'}</strong>
                 </div>
-                <div style={{ color: '#38bdf8', fontWeight: 700 }}>
+                <div style={{ color: '#0284c7', fontWeight: 800 }}>
                   Phone/Details: {activeContactModal.contactDetails || 'N/A'}
                 </div>
               </div>
 
               {/* Action 1: Direct Phone Call */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(16, 185, 129, 0.08)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ecfdf5', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #a7f3d0' }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '13px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div style={{ fontWeight: 800, fontSize: '13px', color: '#047857', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <Phone size={15} /> Execute Voice Call Dialing
                   </div>
-                  <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                  <div style={{ fontSize: '11.5px', color: '#475569', marginTop: '0.15rem' }}>
                     {activeContactModal.contactDetails && !activeContactModal.contactDetails.includes('@') && !activeContactModal.contactDetails.includes('http') ? `Dial ${activeContactModal.contactDetails}` : 'Phone dialer execution ready'}
                   </div>
                 </div>
@@ -413,24 +414,24 @@ export default function OEMCompanyDirectory() {
                   <a 
                     href={`tel:${activeContactModal.contactDetails}`}
                     className="btn btn-primary btn-sm"
-                    style={{ background: '#10b981', borderColor: '#059669', fontSize: '11.5px' }}
+                    style={{ background: '#059669', borderColor: '#047857', fontSize: '11.5px', color: '#ffffff', fontWeight: 800 }}
                   >
                     📞 Call Now
                   </a>
                 ) : (
-                  <span className="badge badge-conditional" style={{ fontSize: '10px' }}>
+                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' }}>
                     Phone: N/A
                   </span>
                 )}
               </div>
 
               {/* Action 2: Send Official Email Inquiry */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(99, 102, 241, 0.08)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(99, 102, 241, 0.25)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f0f9ff', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bae6fd' }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '13px', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <div style={{ fontWeight: 800, fontSize: '13px', color: '#0369a1', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <Mail size={15} /> Send Procurement Email Inquiry
                   </div>
-                  <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                  <div style={{ fontSize: '11.5px', color: '#475569', marginTop: '0.15rem' }}>
                     {activeContactModal.contactDetails && activeContactModal.contactDetails.includes('@') ? activeContactModal.contactDetails : 'Draft procurement inquiry email'}
                   </div>
                 </div>
@@ -439,7 +440,7 @@ export default function OEMCompanyDirectory() {
                   <a 
                     href={`mailto:${activeContactModal.contactDetails}?subject=Brihaspathi%20Procurement%20Inquiry%20-%20${encodeURIComponent(activeContactModal.products)}&body=Dear%20${encodeURIComponent(activeContactModal.contactPerson)},%0A%0AWe%20are%20reaching%20out%20from%20Brihaspathi%20Technologies%20regarding%20${encodeURIComponent(activeContactModal.products)}.`}
                     className="btn btn-primary btn-sm"
-                    style={{ background: '#6366f1', borderColor: '#4f46e5', fontSize: '11.5px' }}
+                    style={{ background: '#0284c7', borderColor: '#0369a1', fontSize: '11.5px', color: '#ffffff', fontWeight: 800 }}
                   >
                     ✉️ Send Email
                   </a>
@@ -447,18 +448,12 @@ export default function OEMCompanyDirectory() {
                   <a 
                     href={`mailto:venu.m@brihaspathi.com?subject=OEM%20Inquiry%20-%20${encodeURIComponent(activeContactModal.name)}&body=OEM%20Vendor:%20${encodeURIComponent(activeContactModal.name)}%0AProducts:%20${encodeURIComponent(activeContactModal.products)}`}
                     className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '11.5px', color: '#818cf8' }}
+                    style={{ fontSize: '11.5px', color: '#0284c7', background: '#ffffff', border: '1px solid #cbd5e1', fontWeight: 700 }}
                   >
-                    ✉️ Draft Inquiry
+                    ✉️ Draft Email (Lead)
                   </a>
                 )}
               </div>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-color)' }}>
-              <button className="btn btn-secondary" onClick={() => setActiveContactModal(null)}>
-                Close Launcher
-              </button>
             </div>
           </div>
         </div>

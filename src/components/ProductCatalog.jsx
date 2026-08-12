@@ -638,11 +638,11 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       </div>
 
                       {/* MODEL NAME TITLE */}
-                      <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.25)', marginBottom: '0.65rem' }}>
-                        <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <div style={{ background: '#f8fafc', padding: '0.5rem 0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1', marginBottom: '0.65rem' }}>
+                        <div style={{ fontSize: '10px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           {modelTitleHeader}
                         </div>
-                        <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#ffffff', lineHeight: '1.35', margin: 0 }}>
+                        <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#0f172a', lineHeight: '1.35', margin: 0 }}>
                           {prod.name}
                         </h4>
                       </div>
@@ -1549,105 +1549,105 @@ export default function ProductCatalog({ products, setProducts, categories, sync
             {/* Header */}
             <div style={{
               padding: '1.25rem 1.5rem',
-              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'linear-gradient(135deg, #e0f2fe 0%, #e0e7ff 100%)',
+              borderBottom: '1px solid #cbd5e1',
               display: 'flex',
-              justify: 'space-between',
+              justifyContent: 'space-between',
               alignItems: 'center'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                <FileText size={24} color="#38bdf8" />
+                <FileText size={24} color="#0284c7" />
                 <div>
-                  <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     TECHNICAL DATASHEET BROCHURE
                   </div>
-                  <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#ffffff', fontWeight: 800 }}>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', fontWeight: 800 }}>
                     {selectedDatasheetProduct.name}
                   </h3>
                 </div>
               </div>
               <button 
                 onClick={() => setSelectedDatasheetProduct(null)}
-                style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#ffffff', borderRadius: '8px', padding: '0.4rem', cursor: 'pointer' }}
+                style={{ background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', borderRadius: '8px', padding: '0.4rem', cursor: 'pointer' }}
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', background: '#ffffff', color: '#0f172a' }}>
               {/* Main Info Strip */}
-              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '1.25rem', background: '#090d16', padding: '1.25rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#070a12', borderRadius: '8px', padding: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '1.25rem', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#ffffff', borderRadius: '8px', padding: '0.75rem', border: '1px solid #e2e8f0' }}>
                   {getProductThumbnail(selectedDatasheetProduct) ? (
                     <img src={getProductThumbnail(selectedDatasheetProduct)} alt={selectedDatasheetProduct.name} style={{ maxHeight: '130px', maxWidth: '100%', objectFit: 'contain' }} />
                   ) : (
-                    <FileText size={48} color="#38bdf8" />
+                    <FileText size={48} color="#0284c7" />
                   )}
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span className="badge badge-accept" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)', fontSize: '11px', fontWeight: 800 }}>
+                    <span className="badge badge-accept" style={{ background: '#e0f2fe', color: '#0369a1', borderColor: '#bae6fd', fontSize: '11px', fontWeight: 800 }}>
                       🏷️ SKU: {selectedDatasheetProduct.sku || selectedDatasheetProduct.id}
                     </span>
-                    <span style={{ background: 'rgba(167, 139, 250, 0.15)', color: '#a78bfa', border: '1px solid rgba(167, 139, 250, 0.3)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                    <span style={{ background: '#f3e8ff', color: '#6b21a8', border: '1px solid #e9d5ff', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
                       🏢 {selectedDatasheetProduct.brandMake || selectedDatasheetProduct.vendor}
                     </span>
                     {selectedDatasheetProduct.stqcCertified && (
-                      <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                      <span style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
                         🛡️ STQC GOVT CERTIFIED ({selectedDatasheetProduct.stqcCertNo || 'MeiTY Approved'})
                       </span>
                     )}
                     {selectedDatasheetProduct.araiCertified && (
-                      <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
+                      <span style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', borderRadius: '6px', padding: '0.15rem 0.5rem', fontSize: '11px', fontWeight: 800 }}>
                         🚗 ARAI AIS-140 CERTIFIED
                       </span>
                     )}
                   </div>
 
-                  <div style={{ fontSize: '12.5px', color: '#d1d5db', lineHeight: '1.5', marginTop: '0.25rem' }}>
+                  <div style={{ fontSize: '12.5px', color: '#334155', lineHeight: '1.5', marginTop: '0.25rem' }}>
                     {selectedDatasheetProduct.notes || 'Full industrial-grade specification datasheet model for enterprise government and smart city infrastructure procurement.'}
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.5rem', marginTop: '0.5rem' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>UNIT PRICE</div>
-                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#34d399' }}>${selectedDatasheetProduct.specs?.maxPrice || 350} USD</div>
+                    <div style={{ background: '#ffffff', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                      <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700 }}>UNIT PRICE</div>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#059669' }}>${selectedDatasheetProduct.specs?.maxPrice || 350} USD</div>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>HOUSING / ENCLOSURE</div>
-                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#38bdf8' }}>{selectedDatasheetProduct.specs?.ipRating || 'IP67 Weatherproof'}</div>
+                    <div style={{ background: '#ffffff', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                      <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700 }}>HOUSING / ENCLOSURE</div>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#0284c7' }}>{selectedDatasheetProduct.specs?.ipRating || 'IP67 Weatherproof'}</div>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>AVAILABILITY</div>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff' }}>{selectedDatasheetProduct.availability || 'In Stock Batch Ready'}</div>
+                    <div style={{ background: '#ffffff', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                      <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700 }}>AVAILABILITY</div>
+                      <div style={{ fontSize: '12px', fontWeight: 800, color: '#0f172a' }}>{selectedDatasheetProduct.availability || 'In Stock Batch Ready'}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Full Specifications Table */}
-              <div style={{ background: '#090d16', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                <div style={{ padding: '0.75rem 1rem', background: '#131b2c', borderBottom: '1px solid rgba(255,255,255,0.08)', fontWeight: 800, color: '#38bdf8', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #cbd5e1', overflow: 'hidden' }}>
+                <div style={{ padding: '0.75rem 1rem', background: '#f1f5f9', borderBottom: '1px solid #cbd5e1', fontWeight: 800, color: '#0284c7', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>📋 DETAILED TECHNICAL SPECIFICATIONS MATRIX</span>
                   <span>MODEL: {selectedDatasheetProduct.sku || selectedDatasheetProduct.id}</span>
                 </div>
                 <table className="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <tbody>
                     {Object.entries(selectedDatasheetProduct.specs || {}).map(([key, val], idx) => (
-                      <tr key={key} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
-                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'capitalize', width: '40%' }}>
+                      <tr key={key} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#64748b', textTransform: 'capitalize', width: '40%' }}>
                           {key.replace(/([A-Z])/g, ' $1')}
                         </td>
-                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#ffffff' }}>
+                        <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#0f172a' }}>
                           {typeof val === 'boolean' ? (val ? '✅ Yes (Supported / Certified)' : '❌ No') : String(val)}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: 'var(--text-muted)' }}>OEM Support Contact</td>
-                      <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#38bdf8' }}>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '0.6rem 1rem', fontWeight: 700, color: '#64748b' }}>OEM Support Contact</td>
+                      <td style={{ padding: '0.6rem 1rem', fontWeight: 800, color: '#0284c7' }}>
                         {selectedDatasheetProduct.oemEmail || 'sales.india@cpplusworld.com'} ({selectedDatasheetProduct.oemPhone || '+91 40 6888 9999'})
                       </td>
                     </tr>
