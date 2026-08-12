@@ -44,6 +44,8 @@ export default function ProductCatalog({ products, setProducts, categories, sync
   const [stqcOnlyFilter, setStqcOnlyFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' (Brochure Showcase) vs 'table'
+  const [showBrandDropdown, setShowBrandDropdown] = useState(false);
+  const [brandSearchQuery, setBrandSearchQuery] = useState('');
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -1059,18 +1061,146 @@ export default function ProductCatalog({ products, setProducts, categories, sync
             </span>
           )}
 
-          {/* OEM BRAND SELECTOR */}
-          <select 
-            className="form-select" 
-            style={{ width: '180px', padding: '0.35rem 0.6rem', fontSize: '12px' }}
-            value={activeBrandFilter}
-            onChange={(e) => setActiveBrandFilter(e.target.value)}
-          >
-            <option value="ALL">All OEM Brands ({products.length})</option>
-            {availableBrands.map(b => (
-              <option key={b} value={b}>{b} ({products.filter(p => (p.brandMake || p.vendor).includes(b)).length})</option>
-            ))}
-          </select>
+          {/* CUSTOM SEARCHABLE OEM BRAND SELECTOR DROPDOWN (CAPPED AT 4 VISIBLE ITEMS + SEARCH BAR) */}
+          <div style={{ position: 'relative', width: '210px' }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{
+                width: '100%',
+                justify: 'space-between',
+                fontSize: '12px',
+                fontWeight: 800,
+                background: '#ffffff',
+                color: '#0f172a',
+                borderColor: '#cbd5e1',
+                padding: '0.4rem 0.65rem'
+              }}
+              onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+            >
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px' }}>
+                {activeBrandFilter === 'ALL'
+                  ? `All OEM Brands (${products.length})`
+                  : `${activeBrandFilter} (${products.filter(p => (p.brandMake || p.vendor || '').includes(activeBrandFilter)).length})`}
+              </span>
+              <span style={{ fontSize: '10px', marginLeft: '4px', color: '#0284c7' }}>
+                {showBrandDropdown ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {/* Dropdown Menu Popup (Capped at 4 items height + Search Input) */}
+            {showBrandDropdown && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  left: 0,
+                  width: '240px',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                  zIndex: 1000,
+                  padding: '0.45rem',
+                  animation: 'fadeInUp 0.15s ease-out'
+                }}
+              >
+                {/* Real-time Search Input Field */}
+                <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+                  <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#0284c7' }} />
+                  <input
+                    type="text"
+                    placeholder="Search OEM brand..."
+                    value={brandSearchQuery}
+                    onChange={(e) => setBrandSearchQuery(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '0.35rem 0.5rem 0.35rem 1.75rem',
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      borderRadius: '6px',
+                      border: '1px solid #cbd5e1',
+                      background: '#f8fafc',
+                      color: '#0f172a',
+                      outline: 'none'
+                    }}
+                  />
+                  {brandSearchQuery && (
+                    <X
+                      size={12}
+                      style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }}
+                      onClick={() => setBrandSearchQuery('')}
+                    />
+                  )}
+                </div>
+
+                {/* Scrollable Brand List capped at 4 items max height (~140px) */}
+                <div style={{ maxHeight: '140px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+                  <div
+                    style={{
+                      padding: '0.35rem 0.65rem',
+                      borderRadius: '5px',
+                      fontSize: '11.5px',
+                      fontWeight: activeBrandFilter === 'ALL' ? 800 : 600,
+                      background: activeBrandFilter === 'ALL' ? '#e0f2fe' : 'transparent',
+                      color: activeBrandFilter === 'ALL' ? '#0369a1' : '#0f172a',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justify: 'space-between',
+                      alignItems: 'center'
+                    }}
+                    onClick={() => {
+                      setActiveBrandFilter('ALL');
+                      setShowBrandDropdown(false);
+                      setBrandSearchQuery('');
+                    }}
+                  >
+                    <span>All OEM Brands</span>
+                    <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({products.length})</span>
+                  </div>
+
+                  {availableBrands
+                    .filter(b => b.toLowerCase().includes(brandSearchQuery.toLowerCase()))
+                    .map(b => {
+                      const count = products.filter(p => (p.brandMake || p.vendor || '').includes(b)).length;
+                      const isSelected = activeBrandFilter === b;
+                      return (
+                        <div
+                          key={b}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '5px',
+                            fontSize: '11.5px',
+                            fontWeight: isSelected ? 800 : 600,
+                            background: isSelected ? '#e0f2fe' : 'transparent',
+                            color: isSelected ? '#0369a1' : '#0f172a',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            justify: 'space-between',
+                            alignItems: 'center'
+                          }}
+                          onClick={() => {
+                            setActiveBrandFilter(b);
+                            setShowBrandDropdown(false);
+                            setBrandSearchQuery('');
+                          }}
+                        >
+                          <span>{b}</span>
+                          <span style={{ fontSize: '10.5px', color: isSelected ? '#0369a1' : '#64748b', fontWeight: 800 }}>({count})</span>
+                        </div>
+                      );
+                    })}
+
+                  {availableBrands.filter(b => b.toLowerCase().includes(brandSearchQuery.toLowerCase())).length === 0 && (
+                    <div style={{ padding: '0.5rem', textAlign: 'center', fontSize: '11px', color: '#64748b' }}>
+                      No matching brand found
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           <button 
             className={`btn ${stqcOnlyFilter ? 'btn-primary' : 'btn-secondary'} btn-sm`}
