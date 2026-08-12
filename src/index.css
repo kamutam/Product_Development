@@ -141,6 +141,11 @@
   animation: sweepBeam 12s infinite linear;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 13px;
@@ -151,7 +156,6 @@ body {
     radial-gradient(at 50% 50%, rgba(14, 165, 233, 0.14) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--text-main);
-  min-height: 100vh;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
@@ -171,8 +175,9 @@ h4 { font-size: 0.9rem; }
 .app-container {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 /* Left Sidebar Navigation - Crisp White Theme */
@@ -185,11 +190,10 @@ h4 { font-size: 0.9rem; }
   display: flex;
   flex-direction: column;
   height: 100vh;
-  position: sticky;
-  top: 0;
   padding: 0;
   z-index: 100;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .sidebar-header-sticky {
@@ -213,6 +217,7 @@ h4 { font-size: 0.9rem; }
 .sidebar-body-scrollable {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0.95rem 0.85rem 1.1rem 0.85rem;
   display: flex;
   flex-direction: column;
@@ -300,14 +305,17 @@ h4 { font-size: 0.9rem; }
   margin-top: 1rem;
 }
 
-/* Main Content Workspace */
+/* Main Content Workspace - Independent Isolated Scroll Area */
 .main-content {
   flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 1.5rem 1.75rem;
-  max-width: 1440px;
   width: 100%;
-  overflow-x: hidden;
   animation: fadeInUp 0.35s ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.4) transparent;
 }
 
 /* Animated Glass Cards */
