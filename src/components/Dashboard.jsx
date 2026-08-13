@@ -581,12 +581,12 @@ export default function Dashboard({
                 <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '0.1rem' }}>{formatINR(acceptedValuationUSD)} Compliant</div>
               </div>
 
-              <div style={{ background: 'rgba(251, 191, 36, 0.1)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
-                <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 700 }}>Average Unit Spec Price</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.15rem' }}>
+              <div style={{ background: 'rgba(217, 119, 6, 0.25)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(251, 191, 36, 0.5)' }}>
+                <div style={{ fontSize: '11px', color: '#fef08a', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Average Unit Spec Price</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fde047', marginTop: '0.15rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
                   {formatUSD(avgUnitPriceUSD)}
                 </div>
-                <div style={{ fontSize: '11px', color: '#fbbf24', marginTop: '0.1rem' }}>{formatINR(avgUnitPriceUSD)} / Unit</div>
+                <div style={{ fontSize: '11px', color: '#fef08a', marginTop: '0.1rem', fontWeight: 700 }}>{formatINR(avgUnitPriceUSD)} / Unit</div>
               </div>
             </div>
 

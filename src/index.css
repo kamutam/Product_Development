@@ -613,3 +613,89 @@ h4 { font-size: 0.9rem; }
     color: #000000 !important;
   }
 }
+
+@keyframes radarScanClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* High-Tech Flow Diagram Keyframe Animations */
+@keyframes laserDashFlow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes floatCore {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-8px);
+  }
+}
+
+@keyframes corePulseWave {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes coreOrbitRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes coreOrbitRotateReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes boxGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px #00f2fe);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px #00f2fe);
+    transform: scale(1.12);
+  }
+}
+
+@keyframes nodeGlowActive {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.14);
+  }
+}
+
+@keyframes nodeFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-4px);
+  }
+}

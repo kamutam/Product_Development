@@ -216,11 +216,11 @@ export default function ProjectManager({
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
                   {/* Step 1: Product Purchase Deadline */}
-                  <div style={{ background: 'rgba(11, 15, 25, 0.65)', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                      <ShoppingCart size={11} color="#fbbf24" /> Product Purchase Cutoff Date:
+                  <div style={{ background: 'rgba(217, 119, 6, 0.2)', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(245, 158, 11, 0.5)' }}>
+                    <div style={{ fontSize: '10.5px', color: '#fef08a', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700 }}>
+                      <ShoppingCart size={11} color="#fde047" /> Product Purchase Cutoff Date:
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#fbbf24', marginTop: '0.15rem' }}>
+                    <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#fde047', marginTop: '0.15rem' }}>
                       {project.purchaseDeadline || '2026-08-20'}
                     </div>
                   </div>

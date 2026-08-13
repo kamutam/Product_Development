@@ -10,7 +10,6 @@ import ProjectManager from './components/ProjectManager';
 import ProductCatalog from './components/ProductCatalog';
 import ComparisonMatrix from './components/ComparisonMatrix';
 import CategoryBuilder from './components/CategoryBuilder';
-import ProductDevelopmentFlow from './components/ProductDevelopmentFlow';
 import AuditModal from './components/AuditModal';
 import OEMMeetingModal from './components/OEMMeetingModal';
 import AIChatbotWidget from './components/AIChatbotWidget';
@@ -20,15 +19,13 @@ import { CATEGORIES, INITIAL_PROJECTS, INITIAL_PRODUCTS } from './data/initialDa
 import { fetchLiveGoogleSheetData } from './utils/googleSheetSync';
 
 export default function App() {
-  // Authentication State (Auto-authenticates for Brihaspathi Team Lead)
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('brihaspathi_user');
-    return savedUser ? JSON.parse(savedUser) : {
-      email: 'venu.m@brihaspathi.com',
-      role: 'Product Development Team Lead',
-      name: 'Venu M (Product Development)'
-    };
-  });
+  // Authentication State (Strict security: Always starts as null on refresh)
+  const [user, setUser] = useState(null);
+
+  // Clear any legacy saved session on startup to guarantee login prompt on every refresh
+  useEffect(() => {
+    localStorage.removeItem('brihaspathi_user');
+  }, []);
 
   // State Management with LocalStorage persistence & automatic master data sync
   const [categories, setCategories] = useState(() => {
@@ -57,6 +54,11 @@ export default function App() {
     parsed.forEach(p => {
       if (p.link && p.link.includes('hrms.brihaspathi.in')) {
         p.link = 'https://brihaspathi.com';
+      }
+      // Preserve user additions but sync fresh imageKey from master data
+      const initMatch = INITIAL_PRODUCTS.find(i => i.id === p.id);
+      if (initMatch) {
+        p.imageKey = initMatch.imageKey;
       }
       productMap.set(p.id, p);
     });
@@ -157,7 +159,6 @@ export default function App() {
 
   const handleLogin = (userInfo) => {
     setUser(userInfo);
-    localStorage.setItem('brihaspathi_user', JSON.stringify(userInfo));
   };
 
   const handleLogout = () => {
@@ -205,17 +206,6 @@ export default function App() {
             onSelectProductForAudit={(prod, res) => setAuditModalData({ product: prod, res })}
             evaluatorStatusFilter={evaluatorStatusFilter}
             setEvaluatorStatusFilter={setEvaluatorStatusFilter}
-          />
-        )}
-
-        {activeTab === 'npd-flow' && (
-          <ProductDevelopmentFlow 
-            projects={projects}
-            products={products}
-            categories={categories}
-            activeProjectId={selectedProjectId}
-            setSelectedProjectId={setSelectedProjectId}
-            setActiveTab={setActiveTab}
           />
         )}
 

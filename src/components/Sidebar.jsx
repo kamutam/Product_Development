@@ -56,7 +56,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
                     CLOSED AS COMPLETE
                   </span>
                 ) : (
-                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: 'rgba(217, 119, 6, 0.35)', color: '#fef08a', border: '1px solid rgba(245, 158, 11, 0.6)', fontWeight: 800 }}>
                     IN PROGRESS
                   </span>
                 )}
@@ -78,16 +78,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             <span>Dashboard</span>
           </button>
 
-          {/* 2. Product Development Flow Animation */}
-          <button
-            className={`sidebar-link ${activeTab === 'npd-flow' ? 'active' : ''}`}
-            onClick={() => setActiveTab('npd-flow')}
-          >
-            <Sparkles size={18} color={activeTab === 'npd-flow' ? '#ffffff' : '#00f2fe'} />
-            <span>NPD Flow Animation</span>
-          </button>
-
-          {/* 3. Product Development Catalog */}
+          {/* 2. Product Catalog */}
           <button
             className={`sidebar-link ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
@@ -119,7 +110,7 @@ export default function Sidebar({ activeTab, setActiveTab, projects, selectedPro
             className={`sidebar-link ${activeTab === 'certifications-vault' ? 'active' : ''}`}
             onClick={() => setActiveTab('certifications-vault')}
           >
-            <Award size={18} color={activeTab === 'certifications-vault' ? '#ffffff' : '#fbbf24'} />
+            <Award size={18} color={activeTab === 'certifications-vault' ? '#ffffff' : '#fde047'} />
             <span>Certifications Vault (STQC / ARAI / CMMI)</span>
           </button>
 

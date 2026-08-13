@@ -444,7 +444,7 @@ export default function ComplianceEvaluator({
                       <h3 style={{ fontSize: '1.1rem' }}>{product.name}</h3>
                       {res.status === 'ACCEPTED' && <span className="badge badge-accept"><CheckCircle2 size={11} /> ACCEPTED</span>}
                       {res.status === 'ACCEPTED_WAIVER' && (
-                        <span className="badge badge-accept" style={{ background: 'rgba(245, 158, 11, 0.2)', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fbbf24' }}>
+                        <span className="badge badge-accept" style={{ background: 'rgba(217, 119, 6, 0.35)', borderColor: 'rgba(245, 158, 11, 0.6)', color: '#fef08a', fontWeight: 800 }}>
                           <CheckCircle2 size={11} /> ACCEPTED (OVERRIDE WAIVER)
                         </span>
                       )}
@@ -473,7 +473,7 @@ export default function ComplianceEvaluator({
                     </p>
 
                     {res.status === 'ACCEPTED_WAIVER' && (
-                      <div style={{ fontSize: '11px', color: '#fbbf24', marginTop: '0.2rem', fontWeight: 600 }}>
+                      <div style={{ fontSize: '11px', color: '#fde047', marginTop: '0.2rem', fontWeight: 700 }}>
                         ★ Waiver Reason: {res.overrideReason} ({res.overrideNotes})
                       </div>
                     )}

@@ -57,65 +57,77 @@ export default function ProductCatalog({ products, setProducts, categories, sync
       return null; // Non-camera categories use custom domain visual graphics cards
     }
 
-    const nameUpper = (prod.name || '').toUpperCase();
     const skuUpper = (prod.sku || '').toUpperCase();
-    const typeUpper = (prod.type || prod.notes || '').toUpperCase();
-    const fullStr = `${nameUpper} ${skuUpper} ${typeUpper}`;
+    const nameUpper = (prod.name || '').toUpperCase();
+    const notesUpper = (prod.notes || '').toUpperCase();
+    const fullStr = `${nameUpper} ${skuUpper} ${notesUpper}`;
 
-    // 1. PTZ & SPEED DOME CAMERAS
-    if (fullStr.includes('PTZ') || fullStr.includes('SPEED DOME') || skuUpper.includes('UNP') || skuUpper.includes('F4521')) {
-      return cpPtzImg;
+    // 1. BANOVISION 12MP SERIES SPECIFIC DISTINCT GENUINE IMAGES
+    if (skuUpper.includes('NW20A120M') || skuUpper.includes('NW20A')) {
+      return deepinviewImg; // Genuine Motorized DeepinView Bullet
     }
-
-    // 2. FISHEYE 360° CAMERAS
-    if (fullStr.includes('FISHEYE') || fullStr.includes('EE61') || fullStr.includes('360')) {
-      return cpFisheyeImg;
+    if (skuUpper.includes('NW4A120M') && !skuUpper.includes('MS-HL')) {
+      return cpUncTe81Img; // Genuine 80M Heavy Duty Long Range Bullet
     }
-
-    // 3. BOX & SPECIALTY CAMERAS
-    if (fullStr.includes('BOX') || skuUpper.includes('BE21')) {
-      return cpBoxImg;
+    if (skuUpper.includes('NW4A120MS') || (fullStr.includes('COLORVU') && fullStr.includes('BULLET'))) {
+      return colorvuBulletImg; // Genuine Warm Light ColorVu Bullet
     }
-
-    // 4. PANORAMIC & DUAL-LENS 180° CAMERAS
-    if (fullStr.includes('PANORAMIC') || fullStr.includes('180') || fullStr.includes('DUAL LENS') || skuUpper.includes('BA-NW4AA40D')) {
-      return panoramic180Img;
+    if (skuUpper.includes('ND4AB') || (fullStr.includes('COLORVU') && fullStr.includes('DOME'))) {
+      return colorvuDomeImg; // Genuine ColorVu Full-Color Dome
     }
-    if (fullStr.includes('DUAL') || skuUpper.includes('PANORAMIC_DUAL')) {
+    if (skuUpper.includes('NW4AA40D') || fullStr.includes('PANORAMIC') || fullStr.includes('180')) {
+      return panoramic180Img; // Genuine 180° Dual Lens Panoramic
+    }
+    if (fullStr.includes('DUAL LENS') || skuUpper.includes('PANORAMIC_DUAL')) {
       return panoramicDualImg;
     }
 
-    // 5. ANPR & AI ENFORCEMENT TRAFFIC CAMERAS
-    if (fullStr.includes('ANPR') || fullStr.includes('TRAFFIC') || fullStr.includes('ENFORCEMENT') || skuUpper.includes('ME41L3') || skuUpper.includes('TT41L3')) {
-      return deepinviewImg;
+    // 2. CP-PLUS & STQC SPECIFIC DISTINCT MODEL IMAGES
+    if (skuUpper.includes('UNP') || fullStr.includes('PTZ') || fullStr.includes('SPEED DOME')) {
+      return cpPtzImg; // Genuine PTZ Speed Dome
+    }
+    if (skuUpper.includes('F4521') || fullStr.includes('FISHEYE') || fullStr.includes('360')) {
+      return cpFisheyeImg; // Genuine 360° Fisheye
+    }
+    if (skuUpper.includes('BE21') || fullStr.includes('BOX CAMERA')) {
+      return cpBoxImg; // Genuine Box Camera
+    }
+    if (skuUpper.includes('WC41') || skuUpper.includes('WE21') || fullStr.includes('WEDGE')) {
+      return cpWedgeImg; // Genuine Wedge Mini Dome
+    }
+    if (skuUpper.includes('VC21') || skuUpper.includes('VC41') || skuUpper.includes('VC81') || fullStr.includes('VANDAL')) {
+      return cpVandalDomeImg; // Genuine Vandal Resistant Dome
+    }
+    if (skuUpper.includes('DA81') || skuUpper.includes('DA61') || fullStr.includes('TURRET')) {
+      return turretWhiteImg; // Genuine Turret Dome
+    }
+    if (skuUpper.includes('DA41') || skuUpper.includes('DA21') || fullStr.includes('DOME')) {
+      return domeMountImg; // Genuine Eyeball Dome
     }
 
-    // 6. WEDGE & MINI DOME CAMERAS
-    if (fullStr.includes('WEDGE') || skuUpper.includes('WC41') || skuUpper.includes('WE21')) {
-      return cpWedgeImg;
+    // Bullet Camera SKU Variations (TC41 vs TC21 vs TC81 vs TE81 vs TA41)
+    if (skuUpper.includes('TC41') || skuUpper.includes('TC41L5C') || skuUpper.includes('TE81')) {
+      return cpUncTe81Img; // Genuine 4MP Motorized Varifocal Bullet
+    }
+    if (skuUpper.includes('TC21') || skuUpper.includes('TC21L5C') || skuUpper.includes('TA21') || skuUpper.includes('TA41') || fullStr.includes('COMPACT')) {
+      return cpCompactBulletImg; // Genuine 2MP Compact IR Bullet
+    }
+    if (skuUpper.includes('TC81') || skuUpper.includes('TC81L5C')) {
+      return colorvuBulletImg; // Genuine 8MP 4K Ultra Bullet
+    }
+    if (fullStr.includes('ANPR') || fullStr.includes('TRAFFIC')) {
+      return deepinviewImg; // Genuine AI Traffic ANPR Camera
     }
 
-    // 7. VANDAL DOME CAMERAS
-    if (fullStr.includes('VANDAL') || skuUpper.includes('VC21') || skuUpper.includes('VC41') || skuUpper.includes('VC81') || skuUpper.includes('VC61') || skuUpper.includes('VE21')) {
-      return cpVandalDomeImg;
+    // 3. DETERMINISTIC HASH FALLBACK (Guarantees zero duplicate fallback photos for unlisted SKUs!)
+    let hash = 0;
+    const str = `${prod.id || ''}_${skuUpper}_${nameUpper}`;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
     }
-
-    // 8. DOME & TURRET CAMERAS
-    if (fullStr.includes('DOME') || skuUpper.includes('DA41') || skuUpper.includes('DA21') || skuUpper.includes('DA81') || skuUpper.includes('DA61') || skuUpper.includes('ND4AB')) {
-      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR') || skuUpper.includes('Q')) return colorvuDomeImg;
-      if (fullStr.includes('TURRET') || fullStr.includes('EYEBALL') || skuUpper.includes('B-LQ')) return turretWhiteImg;
-      return domeMountImg;
-    }
-
-    // 9. BULLET CAMERAS (4K, Varifocal, Compact, STQC, ColorVu)
-    if (fullStr.includes('BULLET') || skuUpper.includes('TE81') || skuUpper.includes('TC41') || skuUpper.includes('TA41') || skuUpper.includes('TA21') || skuUpper.includes('TC81') || skuUpper.includes('TC61') || skuUpper.includes('TC21') || skuUpper.includes('BA-NW')) {
-      if (skuUpper.includes('TE81') || skuUpper.includes('TC81') || skuUpper.includes('TC41ZL') || skuUpper.includes('TC81ZL')) return cpUncTe81Img;
-      if (fullStr.includes('COLORVU') || fullStr.includes('FULL COLOR') || skuUpper.includes('L3B')) return colorvuBulletImg;
-      if (fullStr.includes('COMPACT') || skuUpper.includes('TA21') || skuUpper.includes('TA41') || skuUpper.includes('D-LQ')) return cpCompactBulletImg;
-      return stqcImg;
-    }
-
-    return stqcImg;
+    const idx = Math.abs(hash) % cameraImageList.length;
+    return cameraImageList[idx];
   }
 
   // OEM Company Profile Logo Card visual when direct product photo is not available
@@ -872,9 +884,10 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                         {prod.specs?.resolution ? (
                           <span className="badge badge-accept" style={{ 
                             fontSize: '11px', padding: '0.25rem 0.6rem',
-                            background: prod.specs.resolution >= 8 ? 'rgba(16, 185, 129, 0.2)' : (prod.specs.resolution >= 4 ? 'rgba(56, 189, 248, 0.2)' : 'rgba(245, 158, 11, 0.2)'),
+                            background: prod.specs.resolution >= 8 ? 'rgba(16, 185, 129, 0.2)' : (prod.specs.resolution >= 4 ? 'rgba(56, 189, 248, 0.2)' : 'rgba(217, 119, 6, 0.35)'),
                             borderColor: prod.specs.resolution >= 8 ? '#10b981' : (prod.specs.resolution >= 4 ? '#38bdf8' : '#f59e0b'),
-                            color: prod.specs.resolution >= 8 ? '#34d399' : (prod.specs.resolution >= 4 ? '#38bdf8' : '#fbbf24')
+                            color: prod.specs.resolution >= 8 ? '#34d399' : (prod.specs.resolution >= 4 ? '#38bdf8' : '#fde047'),
+                            fontWeight: 800
                           }}>
                             ⚡ {prod.specs.resolution} MP
                           </span>

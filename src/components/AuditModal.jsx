@@ -66,7 +66,7 @@ export default function AuditModal({ data, activeProject, activeCategory, allPro
             {res.status === 'REJECTED' && <XCircle size={36} color="var(--danger)" />}
             {res.status === 'CONDITIONAL' && <AlertTriangle size={36} color="var(--warning)" />}
             <div>
-              <div style={{ fontWeight: 800, fontSize: '1.2rem', color: res.status === 'ACCEPTED' ? '#34d399' : (res.status === 'REJECTED' ? '#fb7185' : '#fbbf24') }}>
+              <div style={{ fontWeight: 900, fontSize: '1.2rem', color: res.status === 'ACCEPTED' ? '#34d399' : (res.status === 'REJECTED' ? '#fb7185' : '#fde047'), textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}>
                 EVALUATION DECISION: {res.status}
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: '0.1rem' }}>

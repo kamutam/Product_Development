@@ -382,7 +382,7 @@ export const INITIAL_PRODUCTS = [
     },
     notes: '12MP Realtime Heavy Duty Long Range Bullet, 4PCS Array IR LEDs (70-80M IR Range), 3.6-10mm Motorized Lens, IP66.',
     link: 'https://brihaspathi.com',
-    imageKey: 'cp_plus_stqc_camera'
+    imageKey: 'cp_unc_te81zl6c'
   },
   {
     id: 'prod-bano-4',
