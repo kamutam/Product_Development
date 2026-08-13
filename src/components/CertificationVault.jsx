@@ -555,7 +555,7 @@ export default function CertificationVault() {
       <div className="card" style={{ padding: '0.85rem 1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.85rem', background: 'rgba(99, 102, 241, 0.06)', borderColor: 'rgba(99, 102, 241, 0.25)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           {/* Resolution Filter (2MP, 4MP, 6MP, 8MP) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700, color: '#38bdf8' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '12px', fontWeight: 700 }}>
             <Sliders size={14} /> Resolution:
           </div>
           <select 
@@ -635,13 +635,13 @@ export default function CertificationVault() {
                 </tr>
               ) : (
                 filteredList.map((item, idx) => {
-                  let resBadgeStyle = { background: 'rgba(59, 130, 246, 0.15)', borderColor: 'rgba(59, 130, 246, 0.4)', color: '#60a5fa' };
+                  let resBadgeStyle = { background: 'rgba(59, 130, 246, 0.15)', borderColor: 'rgba(59, 130, 246, 0.4)' };
                   if (item.resolution?.includes('8 MP')) {
-                    resBadgeStyle = { background: 'rgba(16, 185, 129, 0.2)', borderColor: 'rgba(16, 185, 129, 0.5)', color: '#34d399' };
+                    resBadgeStyle = { background: 'rgba(16, 185, 129, 0.2)', borderColor: 'rgba(16, 185, 129, 0.5)' };
                   } else if (item.resolution?.includes('4 MP')) {
-                    resBadgeStyle = { background: 'rgba(99, 102, 241, 0.2)', borderColor: 'rgba(99, 102, 241, 0.5)', color: '#818cf8' };
+                    resBadgeStyle = { background: 'rgba(99, 102, 241, 0.2)', borderColor: 'rgba(99, 102, 241, 0.5)' };
                   } else if (item.resolution?.includes('6 MP')) {
-                    resBadgeStyle = { background: 'rgba(139, 92, 246, 0.2)', borderColor: 'rgba(139, 92, 246, 0.5)', color: '#a78bfa' };
+                    resBadgeStyle = { background: 'rgba(139, 92, 246, 0.2)', borderColor: 'rgba(139, 92, 246, 0.5)' };
                   }
 
                   const isRareProfileM = item.sku?.includes('TT41L3') || item.sku?.includes('ME41L3') || item.name?.toLowerCase().includes('anpr') || item.name?.toLowerCase().includes('deepinview');
@@ -655,7 +655,7 @@ export default function CertificationVault() {
 
                       {/* Model Name / SKU */}
                       <td>
-                        <div style={{ fontWeight: 800, fontSize: '13px', color: '#38bdf8' }}>
+                        <div style={{ fontWeight: 800, fontSize: '13px' }}>
                           {item.sku}
                         </div>
                         <div style={{ fontSize: '11.5px', color: 'var(--text-main)', marginTop: '0.1rem' }}>
@@ -665,7 +665,7 @@ export default function CertificationVault() {
 
                       {/* Camera Type */}
                       <td>
-                        <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#ffffff' }}>
+                        <div style={{ fontWeight: 700, fontSize: '12.5px' }}>
                           {item.cameraType}
                         </div>
                       </td>
@@ -683,7 +683,7 @@ export default function CertificationVault() {
                           <span className="badge badge-accept" style={{ 
                             background: 'rgba(56, 189, 248, 0.15)', 
                             borderColor: 'rgba(56, 189, 248, 0.35)', 
-                            color: '#38bdf8', 
+                            borderColor: 'rgba(56, 189, 248, 0.35)', 
                             fontSize: '10.5px', 
                             padding: '0.2rem 0.55rem', 
                             fontWeight: 700,
@@ -706,7 +706,7 @@ export default function CertificationVault() {
 
                       {/* STQC Certificate PDF Document */}
                       <td>
-                        <div style={{ fontWeight: 700, fontSize: '11.5px', color: '#34d399' }}>
+                        <div style={{ fontWeight: 700, fontSize: '11.5px' }}>
                           {item.certName || 'Master Certificate'}
                         </div>
                         <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
@@ -747,7 +747,7 @@ export default function CertificationVault() {
                               target="_blank" 
                               rel="noreferrer" 
                               className="btn btn-secondary btn-sm"
-                              style={{ fontSize: '11px', padding: '0.25rem 0.55rem', color: '#38bdf8' }}
+                              style={{ fontSize: '11px', padding: '0.25rem 0.55rem' }}
                             >
                               <ShoppingCart size={12} /> FGTech Store
                             </a>

@@ -62,6 +62,7 @@ export default function LoginPage({ onLogin }) {
   const [password, setPassword] = useState('123');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Continuous 360° Clockwise Orbit Rotation State
   const [rotationAngle, setRotationAngle] = useState(0);
@@ -83,11 +84,22 @@ export default function LoginPage({ onLogin }) {
   }, [isOrbiting]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     
-    // Strict authentication check as requested by user (venu / 123)
+    // Prevent duplicate form submissions when Enter is pressed multiple times rapidly
+    if (isSubmitting) return;
+
+    // Form input validation
+    if (!username || !username.trim() || !password) {
+      setErrorMsg('Please enter both username/email and password.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Strict authentication check (accepts username 'venu' or email 'venu.m@brihaspathi.com' with password '123')
     const normUser = username.trim().toLowerCase();
-    if (normUser === 'venu' && password === '123') {
+    if ((normUser === 'venu' || normUser === 'venu.m@brihaspathi.com') && password === '123') {
       setErrorMsg('');
       onLogin({
         email: 'venu.m@brihaspathi.com',
@@ -96,6 +108,13 @@ export default function LoginPage({ onLogin }) {
       });
     } else {
       setErrorMsg('Invalid Username or Password. Enter valid credentials (venu / 123).');
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e);
     }
   };
 
@@ -477,6 +496,7 @@ export default function LoginPage({ onLogin }) {
                   }}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   required
                 />
               </div>
@@ -516,6 +536,7 @@ export default function LoginPage({ onLogin }) {
                   }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   required
                 />
               </div>

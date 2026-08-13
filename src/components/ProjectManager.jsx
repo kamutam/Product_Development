@@ -206,31 +206,31 @@ export default function ProjectManager({
 
               {/* PURCHASING & IMPLEMENTATION DEADLINE TIMELINE STRIP */}
               <div style={{ 
-                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(56, 189, 248, 0.1) 100%)', 
-                border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: 'var(--radius-md)', 
+                background: '#f8fafc', 
+                border: '1px solid #cbd5e1', borderRadius: 'var(--radius-md)', 
                 padding: '0.75rem 0.9rem', marginBottom: '1rem' 
               }}>
-                <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <Calendar size={13} /> PROCUREMENT & IMPLEMENTATION DEADLINES:
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
                   {/* Step 1: Product Purchase Deadline */}
-                  <div style={{ background: 'rgba(217, 119, 6, 0.2)', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(245, 158, 11, 0.5)' }}>
-                    <div style={{ fontSize: '10.5px', color: '#fef08a', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700 }}>
-                      <ShoppingCart size={11} color="#fde047" /> Product Purchase Cutoff Date:
+                  <div style={{ background: '#fef3c7', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid #fde68a' }}>
+                    <div style={{ fontSize: '10.5px', color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700 }}>
+                      <ShoppingCart size={11} color="#b45309" /> Product Purchase Cutoff Date:
                     </div>
-                    <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#fde047', marginTop: '0.15rem' }}>
+                    <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#b45309', marginTop: '0.15rem' }}>
                       {project.purchaseDeadline || '2026-08-20'}
                     </div>
                   </div>
 
                   {/* Step 2: Solution Implementation Deadline */}
-                  <div style={{ background: 'rgba(11, 15, 25, 0.65)', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                      <Wrench size={11} color="#34d399" /> Solution Deployment Deadline:
+                  <div style={{ background: '#dcfce7', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid #86efac' }}>
+                    <div style={{ fontSize: '10.5px', color: '#166534', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700 }}>
+                      <Wrench size={11} color="#15803d" /> Solution Deployment Deadline:
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#34d399', marginTop: '0.15rem' }}>
+                    <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#15803d', marginTop: '0.15rem' }}>
                       {project.implementationDeadline || '2026-09-15'}
                     </div>
                   </div>
@@ -239,19 +239,19 @@ export default function ProjectManager({
 
               {/* Target Specs Summary formatted in neat Serial Number (S.No) list */}
               <div style={{ 
-                background: 'rgba(11, 15, 25, 0.6)', padding: '0.75rem 0.9rem', 
-                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1rem'
+                background: '#ffffff', padding: '0.75rem 0.9rem', 
+                borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1', marginBottom: '1rem'
               }}>
-                <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Sliders size={13} /> REQUIRED PROJECT SPECIFICATIONS (S.NO WISE):
                 </div>
 
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '11px', textTransform: 'uppercase' }}>
-                      <th style={{ textAlign: 'left', padding: '0.3rem 0.4rem', width: '35px' }}>S.No</th>
-                      <th style={{ textAlign: 'left', padding: '0.3rem 0.4rem' }}>Specification Parameter</th>
-                      <th style={{ textAlign: 'right', padding: '0.3rem 0.4rem' }}>Required Value</th>
+                    <tr style={{ borderBottom: '2px solid #0284c7', color: '#0284c7', fontSize: '11px', textTransform: 'uppercase' }}>
+                      <th style={{ textAlign: 'left', padding: '0.4rem', width: '45px', fontWeight: 800 }}>S.No</th>
+                      <th style={{ textAlign: 'left', padding: '0.4rem', fontWeight: 800 }}>Specification Parameter</th>
+                      <th style={{ textAlign: 'right', padding: '0.4rem', fontWeight: 800 }}>Required Value</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -260,14 +260,14 @@ export default function ProjectManager({
                       if (val === undefined || val === null || val === '') return null;
 
                       return (
-                        <tr key={field.key} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                          <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-muted)', fontWeight: 700 }}>
+                        <tr key={field.key} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                          <td style={{ padding: '0.45rem 0.4rem', color: '#64748b', fontWeight: 700 }}>
                             {idx + 1}.
                           </td>
-                          <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-main)' }}>
+                          <td style={{ padding: '0.45rem 0.4rem', color: '#0f172a', fontWeight: 700 }}>
                             {field.label}
                           </td>
-                          <td style={{ padding: '0.35rem 0.4rem', textAlign: 'right', fontWeight: 700, color: '#38bdf8' }}>
+                          <td style={{ padding: '0.45rem 0.4rem', textAlign: 'right', fontWeight: 800, color: '#0284c7' }}>
                             {typeof val === 'boolean' ? (val ? 'Yes (Required)' : 'No') : `${String(val)}${field.unit ? ' ' + field.unit : ''}`}
                           </td>
                         </tr>
@@ -452,10 +452,10 @@ export default function ProjectManager({
 
               {/* Dynamic Target Threshold Inputs */}
               <div style={{ 
-                marginTop: '0.85rem', padding: '0.85rem', background: 'rgba(11, 15, 25, 0.7)', 
-                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' 
+                marginTop: '0.85rem', padding: '0.85rem', background: '#f8fafc', 
+                borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' 
               }}>
-                <h4 style={{ fontSize: '12px', color: '#818cf8', marginBottom: '0.65rem' }}>
+                <h4 style={{ fontSize: '12px', color: '#0284c7', fontWeight: 800, marginBottom: '0.65rem' }}>
                   Set Target Specification Requirements
                 </h4>
 

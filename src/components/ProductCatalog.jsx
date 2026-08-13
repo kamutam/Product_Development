@@ -52,6 +52,31 @@ export default function ProductCatalog({ products, setProducts, categories, sync
   const [showOffcanvasFilter, setShowOffcanvasFilter] = useState(true);
   const [selectedDatasheetProduct, setSelectedDatasheetProduct] = useState(null);
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+
+  const handleStartEdit = (prod) => {
+    setEditingProduct({
+      ...prod,
+      specs: { ...(prod.specs || {}) }
+    });
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!editingProduct || !editingProduct.name) {
+      alert('Product Name is required.');
+      return;
+    }
+
+    const updated = products.map(p => p.id === editingProduct.id ? editingProduct : p);
+    setProducts(updated);
+    localStorage.setItem('spec_products', JSON.stringify(updated));
+    setShowEditModal(false);
+    setEditingProduct(null);
+  };
+
   function getProductThumbnail(prod) {
     if (prod.categoryId && prod.categoryId !== 'cctv') {
       return null; // Non-camera categories use custom domain visual graphics cards
@@ -307,13 +332,17 @@ export default function ProductCatalog({ products, setProducts, categories, sync
       }
     };
 
-    setProducts([created, ...products]);
+    const updated = [created, ...products];
+    setProducts(updated);
+    localStorage.setItem('spec_products', JSON.stringify(updated));
     setShowAddModal(false);
   };
 
   const handleDeleteProduct = (id) => {
     if (confirm('Are you sure you want to delete this product model?')) {
-      setProducts(products.filter(p => p.id !== id));
+      const updated = products.filter(p => p.id !== id);
+      setProducts(updated);
+      localStorage.setItem('spec_products', JSON.stringify(updated));
     }
   };
 
@@ -784,18 +813,27 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                     </div>
 
                     {/* ACTIONS & DATASHEET LINK */}
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.35rem' }}>
+                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.35rem' }}>
                       <button
                         onClick={() => setSelectedDatasheetProduct(prod)}
                         className="btn btn-primary btn-sm"
-                        style={{ flex: 1, justifyContent: 'center', fontSize: '11.5px', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}
+                        style={{ flex: 1, justifyContent: 'center', fontSize: '11px', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', padding: '0.3rem 0.5rem' }}
                       >
-                        <FileText size={13} /> View Datasheet Brochure
+                        <FileText size={12} /> Datasheet
+                      </button>
+                      <button 
+                        className="btn btn-secondary btn-sm"
+                        style={{ fontSize: '11px', color: '#0f172a', fontWeight: 800, borderColor: '#cbd5e1', padding: '0.3rem 0.5rem' }}
+                        onClick={() => handleStartEdit(prod)}
+                        title="Edit product specifications"
+                      >
+                        ✏️ Edit
                       </button>
                       <button 
                         className="btn btn-danger btn-sm"
                         style={{ padding: '0.25rem 0.45rem' }}
                         onClick={() => handleDeleteProduct(prod.id)}
+                        title="Delete product from catalog"
                       >
                         <Trash2 size={12} />
                       </button>
@@ -985,13 +1023,25 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                       </td>
 
                       <td>
-                        <button 
-                          className="btn btn-danger btn-sm"
-                          style={{ padding: '0.25rem 0.5rem' }}
-                          onClick={() => handleDeleteProduct(prod.id)}
-                        >
-                          <Trash2 size={12} />
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.35rem' }}>
+                          <button 
+                            className="btn btn-secondary btn-sm"
+                            style={{ fontSize: '10.5px', padding: '0.2rem 0.45rem', color: '#0f172a', fontWeight: 800 }}
+                            onClick={() => handleStartEdit(prod)}
+                            title="Edit Product"
+                          >
+                            ✏️ Edit
+                          </button>
+
+                          <button 
+                            className="btn btn-danger btn-sm"
+                            style={{ padding: '0.2rem 0.45rem' }}
+                            onClick={() => handleDeleteProduct(prod.id)}
+                            title="Delete Product"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -1072,6 +1122,36 @@ export default function ProductCatalog({ products, setProducts, categories, sync
               Type: <strong>{cameraTypeFilter}</strong>
               <X size={12} style={{ cursor: 'pointer', marginLeft: '3px' }} onClick={() => setCameraTypeFilter('ALL')} />
             </span>
+          )}
+
+          {activeBrandFilter !== 'ALL' && (
+            <span className="badge badge-accept" style={{ fontSize: '11px', background: '#dcfce7', borderColor: '#86efac', color: '#15803d', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              Brand: <strong>{activeBrandFilter}</strong>
+              <X size={12} style={{ cursor: 'pointer', marginLeft: '3px' }} onClick={() => setActiveBrandFilter('ALL')} />
+            </span>
+          )}
+
+          {stqcOnlyFilter && (
+            <span className="badge badge-accept" style={{ fontSize: '11px', background: '#e0f2fe', borderColor: '#bae6fd', color: '#0369a1', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              STQC Only
+              <X size={12} style={{ cursor: 'pointer', marginLeft: '3px' }} onClick={() => setStqcOnlyFilter(false)} />
+            </span>
+          )}
+
+          {(activeCategoryFilter !== 'ALL' || cameraTypeFilter !== 'ALL' || activeBrandFilter !== 'ALL' || stqcOnlyFilter || searchQuery) && (
+            <button 
+              className="btn btn-secondary btn-sm"
+              style={{ fontSize: '11px', padding: '0.2rem 0.5rem', color: '#e11d48', borderColor: '#fecdd3' }}
+              onClick={() => {
+                setActiveCategoryFilter('ALL');
+                setCameraTypeFilter('ALL');
+                setActiveBrandFilter('ALL');
+                setStqcOnlyFilter(false);
+                setSearchQuery('');
+              }}
+            >
+              Clear All Filters
+            </button>
           )}
 
           {/* CUSTOM SEARCHABLE OEM BRAND SELECTOR DROPDOWN (CAPPED AT 4 VISIBLE ITEMS + SEARCH BAR) */}
@@ -1667,6 +1747,128 @@ export default function ProductCatalog({ products, setProducts, categories, sync
         </div>
       )}
 
+      {/* Edit Product Modal */}
+      {showEditModal && editingProduct && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '720px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', borderBottom: '1px solid #cbd5e1', paddingBottom: '0.65rem' }}>
+              <div>
+                <span style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase' }}>PRODUCT CATALOG EDITOR</span>
+                <h3 style={{ fontSize: '1.25rem', margin: '0.1rem 0 0 0', color: '#0f172a', fontWeight: 800 }}>
+                  ✏️ Edit Product: {editingProduct.name}
+                </h3>
+              </div>
+              <button className="btn btn-secondary btn-sm" onClick={() => setShowEditModal(false)}>
+                <X size={16} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSaveEdit}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Product Name *</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={editingProduct.name || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Model SKU / Part Number</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={editingProduct.sku || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, sku: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>OEM Brand / Make</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={editingProduct.brandMake || editingProduct.vendor || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, brandMake: e.target.value, vendor: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Product Domain Category</label>
+                  <select 
+                    className="form-select"
+                    value={editingProduct.categoryId || 'cctv'}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, categoryId: e.target.value })}
+                  >
+                    {categories.map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>STQC Certificate No (If Certified)</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. STQC/NPD/2026/CCTV-4412"
+                    value={editingProduct.stqcCertNo || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, stqcCertNo: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>STQC / Testing Status</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="e.g. Pass / Certified / Compliant"
+                    value={editingProduct.testingStatus || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, testingStatus: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Datasheet PDF Download URL</label>
+                <input 
+                  type="url" 
+                  className="form-input" 
+                  value={editingProduct.link || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, link: e.target.value })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Technical Specifications & Notes</label>
+                <textarea 
+                  className="form-textarea"
+                  rows="3"
+                  value={editingProduct.notes || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, notes: e.target.value })}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.65rem', marginTop: '1.25rem' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>
+                  💾 Save Product Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* INTERACTIVE TECHNICAL DATASHEET & SPEC BROCHURE MODAL */}
       {selectedDatasheetProduct && (
         <div style={{
@@ -1713,12 +1915,25 @@ export default function ProductCatalog({ products, setProducts, categories, sync
                   </h3>
                 </div>
               </div>
-              <button 
-                onClick={() => setSelectedDatasheetProduct(null)}
-                style={{ background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', borderRadius: '8px', padding: '0.4rem', cursor: 'pointer' }}
-              >
-                <X size={20} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  className="btn btn-secondary btn-sm"
+                  style={{ background: '#ffffff', color: '#0f172a', fontWeight: 800, borderColor: '#cbd5e1' }}
+                  onClick={() => {
+                    const prodToEdit = selectedDatasheetProduct;
+                    setSelectedDatasheetProduct(null);
+                    handleStartEdit(prodToEdit);
+                  }}
+                >
+                  ✏️ Edit Specs
+                </button>
+                <button 
+                  onClick={() => setSelectedDatasheetProduct(null)}
+                  style={{ background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', borderRadius: '8px', padding: '0.4rem', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             {/* Modal Body */}

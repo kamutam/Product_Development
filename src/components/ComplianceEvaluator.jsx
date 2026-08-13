@@ -10,6 +10,8 @@ export default function ComplianceEvaluator({
 }) {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showProjectDropdown, setShowProjectDropdown] = useState(false);
+  const [projectSearchQuery, setProjectSearchQuery] = useState('');
 
   const activeProject = projects.find(p => p.id === activeProjectId) || projects[0];
   const activeCategory = categories.find(c => c.id === activeProject?.categoryId);
@@ -135,16 +137,102 @@ export default function ComplianceEvaluator({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Change Project:</span>
-          <select 
-            className="form-select" 
-            style={{ width: '260px', padding: '0.4rem 0.65rem', fontSize: '12.5px' }}
-            value={activeProjectId} 
-            onChange={(e) => setSelectedProjectId(e.target.value)}
-          >
-            {projects.map(p => (
-              <option key={p.id} value={p.id}>{p.name} (PO: {p.poNumber || p.code || 'N/A'})</option>
-            ))}
-          </select>
+          
+          {/* CUSTOM SEARCHABLE PROJECT DROPDOWN (CAPPED AT 4 VISIBLE ITEMS MAX) */}
+          <div style={{ position: 'relative', width: '260px', zIndex: 99999 }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{
+                width: '100%',
+                justify: 'space-between',
+                fontSize: '12px',
+                fontWeight: 800,
+                background: '#ffffff',
+                color: '#0f172a',
+                borderColor: '#cbd5e1',
+                padding: '0.4rem 0.65rem'
+              }}
+              onClick={() => setShowProjectDropdown(!showProjectDropdown)}
+            >
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '210px' }}>
+                📁 {activeProject?.name || 'Select Project'}
+              </span>
+              <span style={{ fontSize: '10px', marginLeft: '4px', color: '#0284c7' }}>
+                {showProjectDropdown ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {showProjectDropdown && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  right: 0,
+                  width: '280px',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '8px',
+                  boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
+                  zIndex: 999999,
+                  padding: '0.45rem',
+                  animation: 'fadeInUp 0.15s ease-out'
+                }}
+              >
+                <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+                  <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#0284c7' }} />
+                  <input
+                    type="text"
+                    placeholder="Search project..."
+                    value={projectSearchQuery}
+                    onChange={(e) => setProjectSearchQuery(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '0.35rem 0.5rem 0.35rem 1.75rem',
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      borderRadius: '6px',
+                      border: '1px solid #cbd5e1',
+                      background: '#f8fafc',
+                      color: '#0f172a',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                <div style={{ maxHeight: '140px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+                  {projects
+                    .filter(p => p.name.toLowerCase().includes(projectSearchQuery.toLowerCase()) || p.client.toLowerCase().includes(projectSearchQuery.toLowerCase()))
+                    .map(p => {
+                      const isSelected = p.id === activeProjectId;
+                      return (
+                        <div
+                          key={p.id}
+                          style={{
+                            padding: '0.4rem 0.65rem',
+                            borderRadius: '5px',
+                            fontSize: '11.5px',
+                            fontWeight: isSelected ? 800 : 600,
+                            background: isSelected ? '#e0f2fe' : 'transparent',
+                            color: isSelected ? '#0369a1' : '#0f172a',
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => {
+                            setSelectedProjectId(p.id);
+                            setShowProjectDropdown(false);
+                            setProjectSearchQuery('');
+                          }}
+                        >
+                          <div>📁 {p.name}</div>
+                          <div style={{ fontSize: '10px', color: '#64748b' }}>Client: {p.client}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+          </div>
 
           <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>
             <Printer size={15} /> Print Report
@@ -189,7 +277,7 @@ export default function ComplianceEvaluator({
               boxShadow: statusFilter === 'ACCEPTED' ? '0 0 12px rgba(5, 150, 105, 0.25)' : 'none'
             }}
             onClick={() => setStatusFilter(statusFilter === 'ACCEPTED' ? 'ALL' : 'ACCEPTED')}
-            title="Click 1-Click to view only Accepted compliant products"
+            title="Click to view only Accepted compliant products"
           >
             <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: '#166534', fontWeight: 800 }}>Accepted Compliant</span>
@@ -198,9 +286,7 @@ export default function ComplianceEvaluator({
             <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#059669', marginTop: '0.1rem' }}>
               {acceptedCount} Products
             </div>
-            <div style={{ fontSize: '10.5px', color: '#15803d', fontWeight: 800, marginTop: '0.2rem' }}>
-              👉 1-Click: View {acceptedCount} Compliant
-            </div>
+
           </div>
 
           {/* Rejected Products Status - 1-CLICK INTERACTIVE FILTER */}
@@ -215,7 +301,7 @@ export default function ComplianceEvaluator({
               boxShadow: statusFilter === 'REJECTED' ? '0 0 12px rgba(225, 29, 72, 0.25)' : 'none'
             }}
             onClick={() => setStatusFilter(statusFilter === 'REJECTED' ? 'ALL' : 'REJECTED')}
-            title="Click 1-Click to view only Rejected products"
+            title="Click to view only Rejected products"
           >
             <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: '#991b1b', fontWeight: 800 }}>Rejected / Non-Compliant</span>
@@ -224,9 +310,7 @@ export default function ComplianceEvaluator({
             <div style={{ fontWeight: 800, fontSize: '1.4rem', color: '#e11d48', marginTop: '0.1rem' }}>
               {rejectedCount} Products
             </div>
-            <div style={{ fontSize: '10.5px', color: '#b91c1c', fontWeight: 800, marginTop: '0.2rem' }}>
-              👉 1-Click: View {rejectedCount} Rejected
-            </div>
+
           </div>
 
           {/* Total Evaluated & Domain Status - 1-CLICK SHOW ALL */}
@@ -249,9 +333,7 @@ export default function ComplianceEvaluator({
             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '0.25rem' }}>
               Total Screened: <strong style={{ color: '#0f172a' }}>{categoryProducts.length} candidate models</strong>
             </div>
-            <div style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, marginTop: '0.2rem' }}>
-              👉 1-Click: Show All ({categoryProducts.length})
-            </div>
+
           </div>
         </div>
       </div>
@@ -485,7 +567,7 @@ export default function ComplianceEvaluator({
                       <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>Product Status:</span>
                       <select 
                         className="form-select" 
-                        style={{ width: '180px', padding: '0.3rem 0.5rem', fontSize: '11px', background: 'rgba(11, 15, 25, 0.8)' }}
+                        style={{ width: '180px', padding: '0.3rem 0.5rem', fontSize: '11px' }}
                         value={currentProductStatus}
                         onChange={(e) => handleProductStatusChange(product.id, e.target.value)}
                       >
@@ -568,14 +650,14 @@ export default function ComplianceEvaluator({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                       {similarProds.slice(0, 2).map(({ product: altP, res: altR, recommendationReason }) => (
                         <div key={altP.id} style={{ 
-                          padding: '0.45rem 0.65rem', background: 'rgba(11, 15, 25, 0.6)', 
-                          borderRadius: '6px', border: '1px solid var(--border-color)',
+                          padding: '0.45rem 0.65rem', background: '#ffffff', 
+                          borderRadius: '6px', border: '1px solid #cbd5e1',
                           display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px'
                         }}>
                           <div>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{altP.name}</span>{' '}
+                            <span style={{ fontWeight: 700, color: '#0f172a' }}>{altP.name}</span>{' '}
                             <span className="badge badge-accept" style={{ fontSize: '10px', padding: '0.1rem 0.35rem' }}>ACCEPTED</span>
-                            <span style={{ color: 'var(--text-muted)', fontSize: '11px', marginLeft: '0.4rem' }}>
+                            <span style={{ color: '#475569', fontSize: '11px', marginLeft: '0.4rem' }}>
                               ({altP.vendor} - {altP.testingStatus || 'Tested'})
                             </span>
                           </div>
