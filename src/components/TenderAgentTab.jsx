@@ -1233,13 +1233,13 @@ export default function TenderAgentTab({ products = [] }) {
       {/* SUITE VIEW 1: TENDER & GEM INTELLIGENCE SUITE                             */}
       {/* ========================================================================= */}
       {activeSuiteView === 'VIEW_DOSSIER' && (
-        <div className="grid-cols-2" style={{ alignItems: 'start', animation: 'fadeInUp 0.35s ease' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%', animation: 'fadeInUp 0.35s ease' }}>
           
-          {/* Left Column: Multi-Document Ingestion & AI Stream */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* Top Section: Multi-Document Ingestion & Neural OCR Terminal (Side-by-side Top Row) */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem', width: '100%' }}>
             
             {/* Ingestion Hub */}
-            <div className="card" style={{ border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '18px' }}>
+            <div className="card" style={{ border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
                 <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: 800 }}>
                   <UploadCloud size={18} color="var(--primary)" /> Multi-Document Ingestion Engine
@@ -1426,8 +1426,8 @@ export default function TenderAgentTab({ products = [] }) {
             </div>
           </div>
 
-          {/* Right Column: Complete Executive Dossier */}
-          <div className="card" style={{ minHeight: '640px', display: 'flex', flexDirection: 'column', borderRadius: '20px' }}>
+          {/* Full Screen Output Section: Complete Executive Dossier (Positioned Below) */}
+          <div className="card" style={{ minHeight: '640px', display: 'flex', flexDirection: 'column', borderRadius: '22px', width: '100%', boxSizing: 'border-box', border: '1.5px solid rgba(56, 189, 248, 0.3)', padding: '1.75rem', background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)', boxShadow: '0 15px 45px rgba(0,0,0,0.5)' }}>
             
             {!result ? (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', padding: '4rem 1rem' }}>
