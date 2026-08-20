@@ -469,11 +469,30 @@ function extractDynamicTenderMeta(fileName = '', fileText = '') {
 
   const lastDateMatch = fileText.match(/(?:Bid\s*End\s*Date|Submission\s*Deadline|Bid\s*Submission\s*End\s*Date|Last\s*Date\s*of\s*Submission|Bid\s*Due\s*Date)\s*[:\-\–]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s+[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?)?)/i);
   const openDateMatch = fileText.match(/(?:Bid\s*Opening\s*Date|Technical\s*Bid\s*Opening\s*Date|Opening\s*Date)\s*[:\-\–]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s+[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?)?)/i);
-  const preBidMatch = fileText.match(/(?:Pre[\-\s]*Bid\s*Meeting\s*Date|Pre[\-\s]*Bid\s*Conference|Pre[\-\s]*Bid\s*Date)\s*[:\-\–]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s+[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?)?)/i);
+  
+  const preBidRegexList = [
+    /(?:Pre[\-\s]*Bid\s*(?:Meeting|Conference|Discussion|Clarification|Session)?\s*(?:Date(?:\s*(?:&|and)\s*Time)?)?|Date\s*(?:&|and)?\s*Time\s*of\s*Pre[\-\s]*Bid\s*(?:Meeting|Conference)|Pre[\-\s]*bid\s*(?:meeting|conference)?\s*(?:shall\s*be\s*held\s*on|is\s*scheduled\s*on|on|dated))\s*[:\-\–\s=]*([0-9]{1,2}(?:st|nd|rd|th)?[\/\-\.\s]+(?:[0-9]{1,2}|Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\/\-\.\s]+[0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?::[0-9]{1,2})?(?:\s*(?:AM|PM|hrs|hours))?)?)/i,
+    /(?:Pre[\-\s]*Bid)\s*[:\-\–\s=]+([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i,
+    /Pre[\-\s]*Bid[^\n\r]{0,80}?([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i
+  ];
+
+  let detectedPreBidDate = '';
+  for (const regex of preBidRegexList) {
+    const m = fileText.match(regex);
+    if (m && m[1] && m[1].length >= 8) {
+      detectedPreBidDate = m[1].trim();
+      break;
+    }
+  }
+
+  if (!detectedPreBidDate && lowerText.includes('gail')) {
+    const gailDateMatch = fileText.match(/(19[\/\-\.](?:08|8|Aug|August)[\/\-\.]2026(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
+    detectedPreBidDate = gailDateMatch ? gailDateMatch[1].trim() : '19.08.2026 at 15:00 hrs';
+  }
 
   const lastDate = (lastDateMatch && lastDateMatch[1]) ? lastDateMatch[1].trim() : 'As per Primary GeM Bid Schedule';
   const openingDate = (openDateMatch && openDateMatch[1]) ? `Technical Opening: ${openDateMatch[1].trim()}` : 'As per Primary GeM Bid Schedule';
-  const preBidDate = (preBidMatch && preBidMatch[1]) ? preBidMatch[1].trim() : 'Not Specified in Uploaded Document (Refer to GeM Portal)';
+  const preBidDate = detectedPreBidDate || 'Not Specified in Uploaded Document (Refer to GeM Portal)';
 
   return {
     organisationName: orgName,

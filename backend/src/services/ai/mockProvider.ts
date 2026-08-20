@@ -15,7 +15,7 @@ export class MockDevProvider implements AIProvider {
         point3_orgName: 'GAIL (India) Limited',
         point4_emdModeAndValue: '₹4,95,000 / BG / RTGS (MSME Exempted)',
         point5_processingFee: 'N/A (Free Download on GeM Portal)',
-        point6_preBidMeeting: '20.08.2026 at 15:00 hrs',
+        point6_preBidMeeting: '19.08.2026 at 15:00 hrs',
         point7_transactionFee: 'N/A (As per GeM Portal Slabs)',
         point8_address: 'GAIL (India) Limited, Project Site, Noida',
         point9_eligibility: 'Turnover min ₹126 Lakhs + STQC MeiTY TAC Mandate',

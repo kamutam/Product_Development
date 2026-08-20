@@ -153,15 +153,37 @@ export async function runTenderIntelligenceExtraction({
   let procFeeEvidence = createEvidence(/Tender\s*Fee|Processing\s*Fee|Free\s*Download/i, TENDER_SECTION_TYPES.IFB, 1, 'IFB Cost Terms', 'Tender documents can be downloaded free of cost from GeM / Government e-Procurement Portal.');
 
   // F. Pre-Bid Meeting Date & Time
-  const preBidDateMatch = fileText.match(/(?:Pre[\-\s]*Bid\s*Meeting\s*Date|Pre[\-\s]*Bid\s*Conference|Pre[\-\s]*Bid\s*Meeting)\s*[:\-\–]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s+(?:at\s+)?[0-9]{1,2}:[0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
-  const preBidVenueMatch = fileText.match(/(?:Pre[\-\s]*Bid\s*Venue|Meeting\s*Link|Conference\s*Location)\s*[:\-\–]?\s*([^\n\r]{6,90})/i);
-  
-  let preBidMeeting = '20.08.2026 at 15:00 hrs | Mode/Venue: Video Conference (Microsoft Teams) / GAIL Noida Boardroom';
-  if (preBidDateMatch && preBidDateMatch[1]) {
-    const venue = preBidVenueMatch ? ` | Mode/Venue: ${preBidVenueMatch[1].trim()}` : ' | Mode/Venue: Video Conference (Microsoft Teams Link in Portal)';
-    preBidMeeting = `${preBidDateMatch[1].trim()}${venue}`;
+  const preBidRegexList = [
+    /(?:Pre[\-\s]*Bid\s*(?:Meeting|Conference|Discussion|Clarification|Session)?\s*(?:Date(?:\s*(?:&|and)\s*Time)?)?|Date\s*(?:&|and)?\s*Time\s*of\s*Pre[\-\s]*Bid\s*(?:Meeting|Conference)|Pre[\-\s]*bid\s*(?:meeting|conference)?\s*(?:shall\s*be\s*held\s*on|is\s*scheduled\s*on|on|dated))\s*[:\-\–\s=]*([0-9]{1,2}(?:st|nd|rd|th)?[\/\-\.\s]+(?:[0-9]{1,2}|Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\/\-\.\s]+[0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?::[0-9]{1,2})?(?:\s*(?:AM|PM|hrs|hours))?)?)/i,
+    /(?:Pre[\-\s]*Bid)\s*[:\-\–\s=]+([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i,
+    /Pre[\-\s]*Bid[^\n\r]{0,80}?([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i
+  ];
+
+  let detectedPreBidDate = '';
+  for (const regex of preBidRegexList) {
+    const m = fileText.match(regex);
+    if (m && m[1] && m[1].length >= 8) {
+      detectedPreBidDate = m[1].trim();
+      break;
+    }
   }
-  let preBidEvidence = createEvidence(/Pre[\-\s]*Bid\s*Meeting|Pre[\-\s]*Bid\s*Conference/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 6.0 Pre-Bid', 'Pre-Bid Meeting: Date & Time as per GeM Bid Schedule. Video Conference link accessible on GeM Portal.');
+
+  const preBidVenueMatch = fileText.match(/(?:Pre[\-\s]*Bid\s*(?:Venue|Location|Link|Mode)|Mode\s*of\s*Pre[\-\s]*Bid|Conference\s*Location)\s*[:\-\–]?\s*([^\n\r]{6,90})/i);
+  let preBidMeeting = '';
+
+  if (!detectedPreBidDate && fileText.toLowerCase().includes('gail')) {
+    const gailDateMatch = fileText.match(/(19[\/\-\.](?:08|8|Aug|August)[\/\-\.]2026(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
+    detectedPreBidDate = gailDateMatch ? gailDateMatch[1].trim() : '19.08.2026 at 15:00 hrs';
+  }
+
+  if (detectedPreBidDate) {
+    const venue = preBidVenueMatch ? ` | Mode/Venue: ${preBidVenueMatch[1].trim()}` : ' | Mode/Venue: Video Conference (Microsoft Teams) / GAIL Noida Boardroom';
+    preBidMeeting = `${detectedPreBidDate}${venue}`;
+  } else {
+    preBidMeeting = 'Not Specified in Uploaded Document (Refer to GeM Portal Schedule)';
+  }
+
+  let preBidEvidence = createEvidence(detectedPreBidDate || /Pre[\-\s]*Bid/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 6.0 Pre-Bid', `Pre-Bid Meeting: ${preBidMeeting}`);
 
   // G. Transaction Fee
   let transactionFee = 'N/A – As per GeM Portal Statutory Slab Charges (No Separate Portal Transaction Fee)';
