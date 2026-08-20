@@ -1824,7 +1824,15 @@ export default function TenderAgentTab({ products = [] }) {
                               </button>
                             </div>
                             <div className="dossier-card-value" style={{ fontSize: '12px' }}>
-                              {result.gemDocument?.preBidMeetingDate || result.statutory14Points?.point6_preBidMeeting || 'N/A (Refer to GeM Portal Schedule)'}
+                              {(() => {
+                                const p6 = result.statutory14Points?.point6_preBidMeeting;
+                                const g6 = result.gemDocument?.preBidMeetingDate;
+                                const d6 = result.dossierSummary?.preBidMeetingDate;
+                                if (p6 && !p6.startsWith('Not Specified') && !p6.startsWith('N/A')) return p6;
+                                if (g6 && !g6.startsWith('Not Specified') && !g6.startsWith('N/A')) return g6;
+                                if (d6 && !d6.startsWith('Not Specified') && !d6.startsWith('N/A')) return d6;
+                                return p6 || g6 || d6 || 'Not Specified in Uploaded Document (Refer to GeM Portal Schedule)';
+                              })()}
                             </div>
                           </div>
                         </div>

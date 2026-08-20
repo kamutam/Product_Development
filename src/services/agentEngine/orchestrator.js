@@ -61,14 +61,16 @@ export async function runMultiAgentPipeline({
       organisationName: intelligenceDossier.statutory14Points.point3_orgName || metadata.organisationName,
       tenderName: intelligenceDossier.statutory14Points.point2_tenderName || metadata.tenderName,
       tenderRefNo: intelligenceDossier.statutory14Points.point1_tenderNumber || metadata.tenderRefNo,
-      gemId: intelligenceDossier.statutory14Points.point1_gemBidNo || metadata.gemId
+      gemId: intelligenceDossier.statutory14Points.point1_gemBidNo || metadata.gemId,
+      preBidMeetingDate: intelligenceDossier.statutory14Points.point6_preBidMeeting || metadata.preBidMeetingDate
     },
     gemDocument: {
       ...intelligenceDossier.gemDocument,
       gemId: intelligenceDossier.statutory14Points.point1_gemBidNo || metadata.gemId,
       tenderRefNo: intelligenceDossier.statutory14Points.point1_tenderNumber || metadata.tenderRefNo,
       organisationName: intelligenceDossier.statutory14Points.point3_orgName || metadata.organisationName,
-      emdAmount: intelligenceDossier.statutory14Points.point4_emdModeAndValue || metadata.emdAmount
+      emdAmount: intelligenceDossier.statutory14Points.point4_emdModeAndValue || metadata.emdAmount,
+      preBidMeetingDate: intelligenceDossier.statutory14Points.point6_preBidMeeting || metadata.preBidMeetingDate
     },
     specificationDocument: {
       title: 'Technical Specifications & Homologation Schedule',

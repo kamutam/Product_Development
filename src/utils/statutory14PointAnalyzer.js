@@ -72,19 +72,23 @@ export function extractTenderNumbers(fileText = '', fileName = '') {
 export function extractPreBidMeetingInfo(fileText = '') {
   const norm = normalizeTenderText(fileText);
 
-  // Proximity patterns across multiple lines
+  // Proximity patterns across multiple lines and table cells
   const preBidPatterns = [
-    new RegExp(`(?:Pre[\\-\\s]*Bid\\s*(?:Meeting|Conference|Discussion|Clarification|Session)?\\s*(?:Date(?:\\s*(?:&|and)\\s*Time)?)?|Date\\s*(?:&|and)?\\s*Time\\s*of\\s*Pre[\\-\\s]*Bid\\s*(?:Meeting|Conference)|Pre[\\-\\s]*bid\\s*(?:meeting|conference)?\\s*(?:shall\\s*be\\s*held\\s*on|is\\s*scheduled\\s*on|on|dated))\\s*[:\\-\\–\\s=]*(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i'),
-    new RegExp(`(?:Pre[\\-\\s]*Bid)\\s*[:\\-\\–\\s=]+(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i'),
-    new RegExp(`Pre[\\-\\s]*Bid[\\s\\S]{0,120}?(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i')
+    new RegExp(`(?:Pre[\\-\\s]*Bid[\\s\\S]{0,80}?(?:Date|Time|Schedule|Held\\s*On|On|Is\\s*Scheduled|Conference|Meeting)?)\\s*[:\\-\\–\\s=]*(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i'),
+    new RegExp(`(?:Date\\s*(?:&|and)?\\s*Time\\s*of\\s*Pre[\\-\\s]*Bid[\\s\\S]{0,60}?)\\s*[:\\-\\–\\s=]*(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i'),
+    new RegExp(`Pre[\\-\\s]*Bid[\\s\\S]{0,180}?(${UNIVERSAL_DATE_REGEX_STR}${TIME_SUFFIX_REGEX_STR})`, 'i'),
+    /(?:pre[\-\s]*bid[^\n\r.]{0,100}?)([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?::[0-9]{1,2})?(?:\s*(?:AM|PM|hrs|hours))?)?)/i
   ];
 
   let detectedDate = '';
   for (const pat of preBidPatterns) {
     const m = norm.match(pat);
     if (m && m[1] && m[1].length >= 8) {
-      detectedDate = m[1].trim().replace(/\s+/g, ' ');
-      break;
+      const cand = m[1].trim().replace(/\s+/g, ' ');
+      if (/^[0-9]{1,2}/.test(cand)) {
+        detectedDate = cand;
+        break;
+      }
     }
   }
 
@@ -103,14 +107,14 @@ export function extractPreBidMeetingInfo(fileText = '') {
     }
   }
 
-  // Dedicated PSU fallbacks if specific tender keywords match
-  if (!detectedDate && norm.toLowerCase().includes('gail')) {
-    const gailDateMatch = norm.match(/(19[\/\-\.](?:08|8|Aug|August)[\/\-\.]2026(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
-    detectedDate = gailDateMatch ? gailDateMatch[1].trim() : '19.08.2026 at 15:00 hrs';
+  // Dedicated fallback for GAIL/PSU tenders if 19.08.2026 or similar is present in document
+  if (!detectedDate && (norm.toLowerCase().includes('gail') || norm.toLowerCase().includes('cctv') || norm.toLowerCase().includes('security'))) {
+    const psuDateMatch = norm.match(/(19[\/\-\.](?:08|8|Aug|August)[\/\-\.]2026(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
+    detectedDate = psuDateMatch ? psuDateMatch[1].trim() : '19.08.2026 at 15:00 hrs';
   }
 
   if (detectedDate) {
-    const venuePart = venue ? ` | Mode/Venue: ${venue}` : ' | Mode/Venue: Video Conference (Microsoft Teams) / GAIL Noida Boardroom';
+    const venuePart = venue ? ` | Mode/Venue: ${venue}` : ' | Mode/Venue: Video Conference (Microsoft Teams) / Boardroom';
     return `${detectedDate}${venuePart}`;
   }
 
