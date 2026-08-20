@@ -5,12 +5,16 @@
  */
 
 import { cleanTenderFileName } from '../../utils/pdfExtractor';
+import { extractComplete14StatutoryPoints } from '../../utils/statutory14PointAnalyzer';
 
 export async function runIngestionAgent({ apiKey, fileName, fileText, onProgress }) {
   if (onProgress) onProgress({ agent: 'IngestionAgent', status: 'running', message: 'Agent 1: Deep Scanning 14-point statutory tender structure...' });
 
   const rawCombined = (fileName + ' ' + fileText);
   const lowerText = fileText.toLowerCase();
+  
+  // Execute universal 14-point deep statutory analyzer
+  const stat14 = extractComplete14StatutoryPoints(fileText, fileName);
   
   // -------------------------------------------------------------
   // POINT 1 & 3: DOMAIN & PROCURING AUTHORITY (ORGANIZATION NAME)

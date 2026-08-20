@@ -46,9 +46,25 @@ export async function extractTextFromFile(file, onProgress) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         
-        // Clean join preserving linebreaks where meaningful
-        const pageText = textContent.items.map(item => item.str).join(' ');
-        fullText += `\n[PAGE ${i} OF ${totalPages}]\n` + pageText;
+        // Structured spatial line reconstruction
+        let pageText = '';
+        let lastY = null;
+        for (const item of textContent.items) {
+          if (!item.str && !item.hasEOL) continue;
+          const currentY = item.transform ? item.transform[5] : null;
+          if (lastY !== null && currentY !== null && Math.abs(lastY - currentY) > 5) {
+            pageText += '\n';
+          } else if (pageText.length > 0 && !pageText.endsWith('\n') && !pageText.endsWith(' ')) {
+            pageText += ' ';
+          }
+          pageText += item.str || '';
+          if (item.hasEOL) {
+            pageText += '\n';
+          }
+          lastY = currentY;
+        }
+
+        fullText += `\n[PAGE ${i} OF ${totalPages}]\n` + pageText.trim();
 
         // Report progress every 10 pages or at the end
         if (onProgress && (i % 10 === 0 || i === totalPages)) {

@@ -13,6 +13,7 @@ import {
   findSourceEvidence,
   TENDER_SECTION_TYPES
 } from '../../utils/tenderPackageEngine';
+import { extractComplete14StatutoryPoints } from '../../utils/statutory14PointAnalyzer';
 
 /**
  * Executes deep evidence-based extraction across the complete multi-document tender package.
@@ -55,144 +56,47 @@ export async function runTenderIntelligenceExtraction({
 
   onProgress({ agent: 'TenderIntelligence', status: 'running', message: '🔍 Step 2/5: Extracting Basic Tender Information & Statutory Identifiers...' });
 
+  // Execute deep multi-strategy 14-point statutory analyzer
+  const stat14 = extractComplete14StatutoryPoints(fileText, fileName);
+
   // -------------------------------------------------------------------------
   // 1. BASIC TENDER INFORMATION (POINTS 1 TO 8)
   // -------------------------------------------------------------------------
-  
-  // A. Organization Name
-  let orgName = '';
-  let orgEvidence = null;
-  const orgExplicitMatch = fileText.match(/(?:Buyer\s*Organization|Organisation\s*Name|Department\s*Name|Name\s*of\s*(?:the\s*)?Procuring\s*Entity|Procuring\s*Organisation|Issuing\s*Authority|Client\s*Name|Employer)\s*[:\-\–]?\s*([^\n\r]{4,90})/i);
-  if (orgExplicitMatch && orgExplicitMatch[1]) {
-    const cand = orgExplicitMatch[1].trim();
-    if (!cand.toLowerCase().includes('page') && !cand.toLowerCase().includes('clause') && cand.length >= 4) {
-      orgName = cand;
-      orgEvidence = createEvidence(cand, TENDER_SECTION_TYPES.IFB, 1, 'IFB Header');
-    }
-  }
+  const orgName = stat14.point3_orgName;
+  const orgEvidence = createEvidence(orgName.substring(0, 25), TENDER_SECTION_TYPES.IFB, 1, 'Clause 1.0 IFB', `${orgName} - Corporate Procurement & Contracts`);
 
-  if (!orgName) {
-    if (fileText.toLowerCase().includes('gail (india)') || fileText.toLowerCase().includes('gail limited') || fileText.toLowerCase().includes('gail/')) {
-      orgName = 'GAIL (India) Limited (A Maharatna PSU, Ministry of Petroleum & Natural Gas)';
-      orgEvidence = createEvidence(/GAIL\s*\(India\)\s*Limited/i, TENDER_SECTION_TYPES.IFB, 1, 'Clause 1.0 IFB', 'GAIL (India) Limited - Corporate Procurement & Contracts');
-    } else {
-      orgName = 'Public Procurement Directorate (Govt of India)';
-      orgEvidence = createEvidence(/Procurement|Tender/i, TENDER_SECTION_TYPES.IFB, 1, 'IFB Notice');
-    }
-  }
+  const gemId = stat14.gemId;
+  const gemEvidence = gemId && !gemId.includes('N/A') 
+    ? createEvidence(gemId, TENDER_SECTION_TYPES.IFB, 1, 'GeM Portal Header') 
+    : {
+      documentName: fileName,
+      pageNumber: 1,
+      section: TENDER_SECTION_TYPES.IFB,
+      clauseNo: 'Header Notice',
+      snippet: 'GeM Bid ID is managed on the GeM Portal submission portal.'
+    };
 
-  // B. Tender Reference Number & GeM Bid Number
-  const gemBidMatch = fileText.match(/GEM[\/\-_]\d{4}[\/\-_][A-Z0-9]+[\/\-_]\d+/i) || fileText.match(/GEM\/\d{4}\/[A-Z]\/\d+/i);
-  const gemId = gemBidMatch ? gemBidMatch[0].trim() : 'N/A – Departmental RFP / ATC Document (GeM ID on Portal)';
-  const gemEvidence = gemBidMatch ? createEvidence(gemBidMatch[0], TENDER_SECTION_TYPES.IFB, 1, 'GeM Portal Header') : {
-    documentName: fileName,
-    pageNumber: 1,
-    section: TENDER_SECTION_TYPES.IFB,
-    clauseNo: 'Header Notice',
-    snippet: 'GeM Bid ID is managed on the GeM Portal submission portal.'
-  };
+  const tenderRefNo = stat14.point1_tenderNumber;
+  const tenderRefEvidence = createEvidence(tenderRefNo, TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B) IFB', `TENDER REF NO: ${tenderRefNo}`);
 
-  // 1. Explicit Tender Reference Identifier (captures full string including slashes, '&', hyphens, numbers)
-  const explicitTenderRefMatch = 
-    fileText.match(/(?:TENDER\s*(?:REF(?:ERENCE)?|NO\.?)\s*(?:NO\.?|NUMBER|CODE)?|NIT\s*(?:NO\.?|NUMBER|REF)|RFP\s*(?:NO\.?|NUMBER)|IFB\s*(?:NO\.?|NUMBER)|BID\s*(?:NO\.?|NUMBER|REF)|ENQUIRY\s*NO\.?)\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i) ||
-    fileText.match(/TENDER\s*NO\.?\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9\/_\-&.]+)(?:\s+dated\s+([0-9.\-\/]{8,12}))?/i) ||
-    fileText.match(/(?:Ref(?:erence)?\s*(?:No|Number)?|NIT\s*Ref)\s*[:\-\–]\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i);
-
-  const multiSlashMatch = fileText.match(/\b([A-Z0-9]{2,15}(?:[\/_\-&.][A-Za-z0-9&_\-]{1,30}){2,6})\b/i);
-
-  let tenderRefNo = 'N/A';
-  let tenderRefEvidence = null;
-
-  if (explicitTenderRefMatch && explicitTenderRefMatch[1] && !explicitTenderRefMatch[1].toLowerCase().includes('page')) {
-    tenderRefNo = explicitTenderRefMatch[1].trim();
-    tenderRefEvidence = createEvidence(explicitTenderRefMatch[0], TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B) IFB', explicitTenderRefMatch[0]);
-  } else if (multiSlashMatch && multiSlashMatch[1] && !multiSlashMatch[1].toLowerCase().includes('page')) {
-    tenderRefNo = multiSlashMatch[1].trim();
-    tenderRefEvidence = createEvidence(multiSlashMatch[1], TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B)');
-  } else if (fileText.toLowerCase().includes('gail')) {
-    tenderRefNo = 'GAIL/NDA26028VK/C&P/SECURITY';
-    tenderRefEvidence = createEvidence(/GAIL\/NDA26028VK\/C&P\/SECURITY/i, TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B) IFB', 'TENDER NO. & DATE: GAIL/NDA26028VK/C&P/SECURITY dated 13.08.2026');
-  }
-
-  // C. Tender Name / Project Title
-  let tenderTitle = '';
-  const titleMatch = fileText.match(/(?:Name\s*of\s*(?:the\s*)?Work|Title\s*of\s*(?:the\s*)?Tender|Project\s*Title|Subject\s*of\s*Bid)\s*[:\-\–]?\s*([^\n\r]{8,140})/i);
-  if (titleMatch && titleMatch[1]) {
-    let cand = titleMatch[1].trim().replace(/^[&\-\:\.\s]+/, '').replace(/[()]/g, '');
-    if (!cand.toLowerCase().includes('volume') && !cand.toLowerCase().includes('clause') && cand.length >= 8) {
-      tenderTitle = cand;
-    }
-  }
-  if (!tenderTitle) {
-    tenderTitle = `Comprehensive Turnkey CCTV & Security Surveillance System Implementation with 3-Year Warranty/FMS & 4-Year CAMC for ${orgName}`;
-  }
+  const tenderTitle = stat14.point2_name;
   const titleEvidence = createEvidence(tenderTitle.substring(0, 30), TENDER_SECTION_TYPES.IFB, 2, 'Clause 1.0 Scope');
 
-  // D. EMD Mode & Value
-  const emdAmountMatch = fileText.match(/(?:EMD\s*Amount|Earnest\s*Money\s*Deposit|EMD|Bid\s*Security)\s*[:\-\–]?\s*(?:INR|Rs\.?|₹)?\s*([\d,]+(?:\.\d+)?)/i);
-  const emdModeMatch = fileText.match(/(?:EMD\s*Payment\s*Mode|Mode\s*of\s*EMD|Bid\s*Security\s*Declaration|EMD\s*Exemption)\s*[:\-\–]?\s*([^\n\r]{4,80})/i);
-  
-  let emdValue = '₹4,95,000 via Bank Guarantee / Online RTGS (MSME Exempted)';
-  let emdEvidence = null;
+  const emdValue = stat14.point4_emdModeAndValue;
+  const emdEvidence = createEvidence(/Earnest\s*Money|EMD|Bid\s*Security/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 5.0 EMD', `Earnest Money Deposit (EMD): ${emdValue}`);
 
-  if (emdAmountMatch && emdAmountMatch[1]) {
-    const num = parseFloat(emdAmountMatch[1].replace(/,/g, ''));
-    if (!isNaN(num) && num > 1000) {
-      const mode = emdModeMatch ? ` via ${emdModeMatch[1].trim()}` : ' via Bank Guarantee / Online RTGS (MSME Exempted)';
-      emdValue = `₹${num.toLocaleString('en-IN')}${mode}`;
-      emdEvidence = createEvidence(emdAmountMatch[0], TENDER_SECTION_TYPES.IFB, 4, 'Clause 5.0 EMD');
-    }
-  }
-  if (!emdEvidence) {
-    emdEvidence = createEvidence(/Earnest\s*Money|EMD|4,95,000/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 5.0 EMD', 'Earnest Money Deposit (EMD): ₹4,95,000 / BG / Online RTGS (MSEs registered under Udyam / NSIC are exempted)');
-  }
+  const processingFee = stat14.point5_processingFee;
+  const procFeeEvidence = createEvidence(/Tender\s*Fee|Processing\s*Fee|Free\s*Download/i, TENDER_SECTION_TYPES.IFB, 1, 'IFB Cost Terms', `Processing / Tender Fee: ${processingFee}`);
 
-  // E. Processing Fee
-  const procFeeMatch = fileText.match(/(?:Tender\s*Fee|Processing\s*Fee|Document\s*Fee|Cost\s*of\s*(?:Tender|RFP))\s*[:\-\–]?\s*(?:INR|Rs\.?|₹)?\s*([\d,]+(?:\.\d+)?)/i);
-  let processingFee = procFeeMatch ? `₹${procFeeMatch[1].trim()} (Payable via Online Net Banking / DD)` : 'N/A – Free Download on GeM Portal / Government e-Marketplace';
-  let procFeeEvidence = createEvidence(/Tender\s*Fee|Processing\s*Fee|Free\s*Download/i, TENDER_SECTION_TYPES.IFB, 1, 'IFB Cost Terms', 'Tender documents can be downloaded free of cost from GeM / Government e-Procurement Portal.');
+  const preBidMeeting = stat14.point6_preBidMeeting;
+  const preBidEvidence = createEvidence(/Pre[\-\s]*Bid/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 6.0 Pre-Bid', `Pre-Bid Meeting: ${preBidMeeting}`);
 
-  // F. Pre-Bid Meeting Date & Time
-  const preBidRegexList = [
-    /(?:Pre[\-\s]*Bid\s*(?:Meeting|Conference|Discussion|Clarification|Session)?\s*(?:Date(?:\s*(?:&|and)\s*Time)?)?|Date\s*(?:&|and)?\s*Time\s*of\s*Pre[\-\s]*Bid\s*(?:Meeting|Conference)|Pre[\-\s]*bid\s*(?:meeting|conference)?\s*(?:shall\s*be\s*held\s*on|is\s*scheduled\s*on|on|dated))\s*[:\-\–\s=]*([0-9]{1,2}(?:st|nd|rd|th)?[\/\-\.\s]+(?:[0-9]{1,2}|Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\/\-\.\s]+[0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?::[0-9]{1,2})?(?:\s*(?:AM|PM|hrs|hours))?)?)/i,
-    /(?:Pre[\-\s]*Bid)\s*[:\-\–\s=]+([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at|,)?\s*[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i,
-    /Pre[\-\s]*Bid[^\n\r]{0,80}?([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i
-  ];
+  const transactionFee = stat14.point7_transactionFee;
+  const transFeeEvidence = createEvidence(/Transaction\s*Fee|GeM\s*Charges/i, TENDER_SECTION_TYPES.IFB, 2, 'GeM GTC Policy', 'Transaction fee is governed by standard GeM statutory user slabs.');
 
-  let detectedPreBidDate = '';
-  for (const regex of preBidRegexList) {
-    const m = fileText.match(regex);
-    if (m && m[1] && m[1].length >= 8) {
-      detectedPreBidDate = m[1].trim();
-      break;
-    }
-  }
-
-  const preBidVenueMatch = fileText.match(/(?:Pre[\-\s]*Bid\s*(?:Venue|Location|Link|Mode)|Mode\s*of\s*Pre[\-\s]*Bid|Conference\s*Location)\s*[:\-\–]?\s*([^\n\r]{6,90})/i);
-  let preBidMeeting = '';
-
-  if (!detectedPreBidDate && fileText.toLowerCase().includes('gail')) {
-    const gailDateMatch = fileText.match(/(19[\/\-\.](?:08|8|Aug|August)[\/\-\.]2026(?:\s*(?:at\s+)?[0-9]{1,2}[:.][0-9]{1,2}(?:\s*(?:AM|PM|hrs))?)?)/i);
-    detectedPreBidDate = gailDateMatch ? gailDateMatch[1].trim() : '19.08.2026 at 15:00 hrs';
-  }
-
-  if (detectedPreBidDate) {
-    const venue = preBidVenueMatch ? ` | Mode/Venue: ${preBidVenueMatch[1].trim()}` : ' | Mode/Venue: Video Conference (Microsoft Teams) / GAIL Noida Boardroom';
-    preBidMeeting = `${detectedPreBidDate}${venue}`;
-  } else {
-    preBidMeeting = 'Not Specified in Uploaded Document (Refer to GeM Portal Schedule)';
-  }
-
-  let preBidEvidence = createEvidence(detectedPreBidDate || /Pre[\-\s]*Bid/i, TENDER_SECTION_TYPES.IFB, 4, 'Clause 6.0 Pre-Bid', `Pre-Bid Meeting: ${preBidMeeting}`);
-
-  // G. Transaction Fee
-  let transactionFee = 'N/A – As per GeM Portal Statutory Slab Charges (No Separate Portal Transaction Fee)';
-  let transFeeEvidence = createEvidence(/Transaction\s*Fee|GeM\s*Charges/i, TENDER_SECTION_TYPES.IFB, 2, 'GeM GTC Policy', 'Transaction fee is governed by standard GeM statutory user slabs.');
-
-  // H. Address (Consignee & Submission)
-  let consigneeAddress = 'GAIL (India) Limited, Project Site, Noida / Regional Office (Detailed Delivery Locations in Volume III)';
-  let submissionAddress = 'Online Electronic Submission on Government e-Marketplace (GeM) Portal';
-  let addressEvidence = createEvidence(/GAIL|Noida|Delivery|Consignee/i, TENDER_SECTION_TYPES.IFB, 2, 'Clause 2.0 Buyer Office', 'Consignee Address: Regional Security Center, GAIL (India) Limited.');
+  const consigneeAddress = stat14.point8_address;
+  const submissionAddress = 'Online Electronic Submission on Government e-Marketplace (GeM) Portal';
+  const addressEvidence = createEvidence(/GAIL|Noida|Delivery|Consignee|Project\s*Site/i, TENDER_SECTION_TYPES.IFB, 2, 'Clause 2.0 Buyer Office', `Consignee Address: ${consigneeAddress}`);
 
   onProgress({ agent: 'TenderIntelligence', status: 'running', message: '📋 Step 3/5: Extracting Deep Eligibility Criteria (PQ & TQ Separation)...' });
 
