@@ -1624,31 +1624,25 @@ export default function TenderAgentTab({ products = [] }) {
                 {/* 8 MASTER EXECUTIVE DOSSIER MODULES */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-                  {/* MASTER 14-POINT STATUTORY DOSSIER VIEW */}
+                  {/* MASTER 14-POINT STATUTORY DOSSIER VIEW (FULLY RESPONSIVE) */}
                   {(activeDossierModule === 'ALL' || activeDossierModule === '14POINTS') && (
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)',
-                      border: '1.5px solid #38bdf8',
-                      borderRadius: '18px',
-                      padding: '1.5rem',
-                      boxShadow: '0 10px 35px rgba(0,0,0,0.45)'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                          <div style={{ background: 'rgba(56, 189, 248, 0.2)', padding: '6px', borderRadius: '8px', display: 'flex' }}>
-                            <CheckSquare size={20} color="#38bdf8" />
+                    <div className="dossier-14pt-container">
+                      <div className="dossier-14pt-header">
+                        <div className="dossier-14pt-title-wrap">
+                          <div style={{ background: 'rgba(56, 189, 248, 0.2)', padding: '7px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <CheckSquare size={22} color="#38bdf8" />
                           </div>
                           <div>
-                            <h4 style={{ margin: 0, fontSize: '15.5px', fontWeight: 900, color: '#ffffff', letterSpacing: '0.02em' }}>
+                            <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: '#ffffff', letterSpacing: '0.01em', lineHeight: 1.2 }}>
                               📋 Master 14-Point Statutory Tender Dossier
                             </h4>
-                            <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+                            <span style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginTop: '2px' }}>
                               100% evidence-grounded statutory breakdown with page & clause citations
                             </span>
                           </div>
                         </div>
                         
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <button
                             onClick={() => {
                               const pts = [
@@ -1671,329 +1665,401 @@ export default function TenderAgentTab({ products = [] }) {
                               setToastMessage('✓ 14-Point Statutory Summary copied to clipboard!');
                               setTimeout(() => setToastMessage(''), 3000);
                             }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '0.4rem',
-                              padding: '0.4rem 0.85rem',
-                              borderRadius: '8px',
-                              background: 'rgba(56, 189, 248, 0.15)',
-                              border: '1px solid #38bdf8',
-                              color: '#38bdf8',
-                              fontSize: '11.5px',
-                              fontWeight: 800,
-                              cursor: 'pointer'
-                            }}
+                            className="dossier-source-btn"
+                            style={{ padding: '0.45rem 0.95rem', fontSize: '12px', background: 'rgba(56, 189, 248, 0.18)', border: '1px solid #38bdf8', color: '#38bdf8' }}
                           >
                             <Download size={13} /> 📋 Copy Summary
                           </button>
                         </div>
                       </div>
 
-                      {/* 14 Point Detailed Grid */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.85rem' }}>
+                      {/* 14 Point Structured Responsive Grid */}
+                      <div className="dossier-14pt-grid">
                         
                         {/* Point 1 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>1. Tender Number & GeM ID</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 1: Tender Reference Number & GeM ID',
-                                sourceEvidence: result.statutory14Points?.point1_evidence || { documentName: 'Tender Document', pageNumber: 3, section: 'Invitation for Bids (IFB)', clauseNo: 'Clause 2.0 (B)', snippet: 'TENDER NO. & DATE: GAIL/NDA26028VK/C&P/SECURITY dated 13.08.2026' }
-                              })}
-                              style={{ background: 'rgba(56, 189, 248, 0.15)', border: 'none', borderRadius: '4px', color: '#38bdf8', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '13px', fontWeight: 900, color: '#ffffff', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {cleanDisplayRef(result.dossierSummary?.tenderRefNo || result.gemDocument?.tenderRefNo)}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(56, 189, 248, 0.35)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#38bdf8' }}>
+                                <span style={{ background: 'rgba(56, 189, 248, 0.25)', color: '#38bdf8', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>1</span>
+                                Tender No & GeM ID
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 1: Tender Reference Number & GeM ID',
+                                  sourceEvidence: result.statutory14Points?.point1_evidence || { documentName: 'Tender Document', pageNumber: 3, section: 'Invitation for Bids (IFB)', clauseNo: 'Clause 2.0 (B)', snippet: 'TENDER NO. & DATE: GAIL/NDA26028VK/C&P/SECURITY dated 13.08.2026' }
+                                })}
+                                className="dossier-source-btn"
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value">
+                              {cleanDisplayRef(result.dossierSummary?.tenderRefNo || result.gemDocument?.tenderRefNo)}
+                            </div>
                           </div>
                           {result.gemDocument?.gemId && (
-                            <div style={{ fontSize: '11px', color: '#c084fc', marginTop: '3px', fontWeight: 700, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                            <div style={{ fontSize: '11px', color: '#c084fc', marginTop: '6px', fontWeight: 700, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                               GeM Bid No: {result.gemDocument.gemId}
                             </div>
                           )}
                         </div>
 
-                        {/* Point 2 - Spans 2 cols */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden', gridColumn: 'span 2' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>2. Name / Project Title</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 2: Tender Name / Scope Title',
-                                sourceEvidence: result.statutory14Points?.point2_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Scope of Work', clauseNo: 'Clause 1.0', snippet: result.dossierSummary?.tenderName }
-                              })}
-                              style={{ background: 'rgba(148, 163, 184, 0.15)', border: 'none', borderRadius: '4px', color: '#cbd5e1', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginTop: '4px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.dossierSummary?.tenderName}
+                        {/* Point 2 */}
+                        <div className="dossier-card dossier-col-8" style={{ borderColor: 'rgba(148, 163, 184, 0.25)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#94a3b8' }}>
+                                <span style={{ background: 'rgba(148, 163, 184, 0.25)', color: '#cbd5e1', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>2</span>
+                                Name / Project Title
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 2: Tender Name / Scope Title',
+                                  sourceEvidence: result.statutory14Points?.point2_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Scope of Work', clauseNo: 'Clause 1.0', snippet: result.dossierSummary?.tenderName }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#cbd5e1', borderColor: 'rgba(148, 163, 184, 0.3)', background: 'rgba(148, 163, 184, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '13px' }}>
+                              {result.dossierSummary?.tenderName || 'Turnkey Security Surveillance & Access Control System'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 3 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(192, 132, 252, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase' }}>3. Organization Name</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 3: Procuring Entity / Organization',
-                                sourceEvidence: result.statutory14Points?.point3_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Header', clauseNo: 'Clause 1.0', snippet: result.gemDocument?.organisationName }
-                              })}
-                              style={{ background: 'rgba(192, 132, 252, 0.15)', border: 'none', borderRadius: '4px', color: '#c084fc', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginTop: '4px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.gemDocument?.organisationName || result.dossierSummary?.organisationName}
+                        <div className="dossier-card dossier-col-6" style={{ borderColor: 'rgba(192, 132, 252, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#c084fc' }}>
+                                <span style={{ background: 'rgba(192, 132, 252, 0.25)', color: '#c084fc', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>3</span>
+                                Organization Name
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 3: Procuring Entity / Organization',
+                                  sourceEvidence: result.statutory14Points?.point3_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Header', clauseNo: 'Clause 1.0', snippet: result.gemDocument?.organisationName }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#c084fc', borderColor: 'rgba(192, 132, 252, 0.35)', background: 'rgba(192, 132, 252, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value">
+                              {result.gemDocument?.organisationName || result.dossierSummary?.organisationName || 'Procuring Entity / Government Authority'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 4 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#34d399', textTransform: 'uppercase' }}>4. EMD Mode & Value</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 4: Earnest Money Deposit (EMD)',
-                                sourceEvidence: result.statutory14Points?.point4_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'Commercial Terms', clauseNo: 'Clause 5.0 EMD', snippet: 'Earnest Money Deposit (EMD): ₹4,95,000 / BG / Online RTGS (MSME Exempted)' }
-                              })}
-                              style={{ background: 'rgba(16, 185, 129, 0.15)', border: 'none', borderRadius: '4px', color: '#34d399', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12px', fontWeight: 800, color: '#34d399', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point4_emdModeAndValue || result.gemDocument?.emdAmount || 'N/A (MSME Exempted / Refer to GeM Portal)'}
+                        <div className="dossier-card dossier-col-6" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#34d399' }}>
+                                <span style={{ background: 'rgba(16, 185, 129, 0.25)', color: '#34d399', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>4</span>
+                                EMD Mode & Value
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 4: Earnest Money Deposit (EMD)',
+                                  sourceEvidence: result.statutory14Points?.point4_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'Commercial Terms', clauseNo: 'Clause 5.0 EMD', snippet: 'Earnest Money Deposit (EMD): ₹4,95,000 / BG / Online RTGS (MSME Exempted)' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#34d399', borderColor: 'rgba(16, 185, 129, 0.35)', background: 'rgba(16, 185, 129, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ color: '#34d399' }}>
+                              {result.statutory14Points?.point4_emdModeAndValue || result.gemDocument?.emdAmount || 'N/A (MSME Exempted / Refer to GeM Portal)'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 5 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase' }}>5. Processing Fee - Mode</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 5: Processing / Tender Fee',
-                                sourceEvidence: result.statutory14Points?.point5_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Notice', clauseNo: 'Fee Clause', snippet: 'Tender documents can be downloaded free of cost from GeM Portal.' }
-                              })}
-                              style={{ background: 'rgba(245, 158, 11, 0.15)', border: 'none', borderRadius: '4px', color: '#fbbf24', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#ffffff', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point5_processingFee || 'N/A (Free Download on GeM Portal / Government e-Marketplace)'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#fbbf24' }}>
+                                <span style={{ background: 'rgba(245, 158, 11, 0.25)', color: '#fbbf24', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>5</span>
+                                Processing Fee - Mode
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 5: Processing / Tender Fee',
+                                  sourceEvidence: result.statutory14Points?.point5_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Notice', clauseNo: 'Fee Clause', snippet: 'Tender documents can be downloaded free of cost from GeM Portal.' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.35)', background: 'rgba(245, 158, 11, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px' }}>
+                              {result.statutory14Points?.point5_processingFee || 'N/A (Free Download on GeM Portal / Government e-Marketplace)'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 6 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>6. Pre-Bid Meeting Date & Time</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 6: Pre-Bid Meeting Schedule',
-                                sourceEvidence: result.statutory14Points?.point6_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'IFB Details', clauseNo: 'Clause 6.0', snippet: 'Pre-Bid Meeting: Date & Time as per GeM Bid Schedule. Video Conference link accessible on GeM Portal.' }
-                              })}
-                              style={{ background: 'rgba(56, 189, 248, 0.15)', border: 'none', borderRadius: '4px', color: '#38bdf8', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.gemDocument?.preBidMeetingDate || result.statutory14Points?.point6_preBidMeeting || 'N/A (Refer to GeM Portal Schedule)'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(56, 189, 248, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#38bdf8' }}>
+                                <span style={{ background: 'rgba(56, 189, 248, 0.25)', color: '#38bdf8', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>6</span>
+                                Pre-Bid Meeting
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 6: Pre-Bid Meeting Schedule',
+                                  sourceEvidence: result.statutory14Points?.point6_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'IFB Details', clauseNo: 'Clause 6.0', snippet: 'Pre-Bid Meeting: Date & Time as per GeM Bid Schedule. Video Conference link accessible on GeM Portal.' }
+                                })}
+                                className="dossier-source-btn"
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px' }}>
+                              {result.gemDocument?.preBidMeetingDate || result.statutory14Points?.point6_preBidMeeting || 'N/A (Refer to GeM Portal Schedule)'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 7 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>7. Transaction Fee</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 7: Portal Transaction Fee',
-                                sourceEvidence: result.statutory14Points?.point7_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'GTC Policy', clauseNo: 'GeM Slabs', snippet: 'Transaction fee is governed by standard GeM statutory user slabs.' }
-                              })}
-                              style={{ background: 'rgba(148, 163, 184, 0.15)', border: 'none', borderRadius: '4px', color: '#cbd5e1', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#ffffff', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point7_transactionFee || 'N/A (As per GeM Portal Statutory Slabs)'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(148, 163, 184, 0.25)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#94a3b8' }}>
+                                <span style={{ background: 'rgba(148, 163, 184, 0.25)', color: '#cbd5e1', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>7</span>
+                                Transaction Fee
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 7: Portal Transaction Fee',
+                                  sourceEvidence: result.statutory14Points?.point7_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'GTC Policy', clauseNo: 'GeM Slabs', snippet: 'Transaction fee is governed by standard GeM statutory user slabs.' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#cbd5e1', borderColor: 'rgba(148, 163, 184, 0.3)', background: 'rgba(148, 163, 184, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px' }}>
+                              {result.statutory14Points?.point7_transactionFee || 'N/A (As per GeM Portal Statutory Slabs)'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 8 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(192, 132, 252, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase' }}>8. Consignee & Delivery Address</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 8: Delivery Address & Office Location',
-                                sourceEvidence: result.statutory14Points?.point8_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Consignee Schedule', clauseNo: 'Clause 2.0', snippet: result.statutory14Points?.point8_address }
-                              })}
-                              style={{ background: 'rgba(192, 132, 252, 0.15)', border: 'none', borderRadius: '4px', color: '#c084fc', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#ffffff', marginTop: '4px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point8_address || `Project Site / Regional Head Office of ${result.gemDocument?.organisationName}`}
+                        <div className="dossier-card dossier-col-12" style={{ borderColor: 'rgba(192, 132, 252, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#c084fc' }}>
+                                <span style={{ background: 'rgba(192, 132, 252, 0.25)', color: '#c084fc', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>8</span>
+                                Consignee & Delivery Address
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 8: Delivery Address & Office Location',
+                                  sourceEvidence: result.statutory14Points?.point8_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Consignee Schedule', clauseNo: 'Clause 2.0', snippet: result.statutory14Points?.point8_address }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#c084fc', borderColor: 'rgba(192, 132, 252, 0.35)', background: 'rgba(192, 132, 252, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12.5px', fontWeight: 700 }}>
+                              {result.statutory14Points?.point8_address || `Project Site / Regional Head Office of ${result.gemDocument?.organisationName || result.dossierSummary?.organisationName || 'Procuring Authority'}`}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 9 - Spans Full Width */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px', padding: '0.9rem 1.1rem', gridColumn: '1 / -1', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#34d399', textTransform: 'uppercase' }}>9. Eligibility Criteria (PQ & TQ)</div>
-                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                              <button
-                                onClick={() => setActiveDossierModule('PQ_TQ')}
-                                style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid #38bdf8', borderRadius: '4px', color: '#38bdf8', fontSize: '10.5px', fontWeight: 800, padding: '2px 8px', cursor: 'pointer' }}
-                              >
-                                View Complete BEC Table →
-                              </button>
-                              <span style={{ fontSize: '10.5px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>100% QUALIFIED</span>
-                            </div>
-                          </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.75rem', marginTop: '6px' }}>
-                            <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.65rem 0.85rem', borderRadius: '8px', minWidth: 0, overflow: 'hidden' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#38bdf8' }}>PRE-QUALIFICATION (PQ):</div>
+                        <div className="dossier-card dossier-col-12" style={{ borderColor: 'rgba(16, 185, 129, 0.4)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#34d399' }}>
+                                <span style={{ background: 'rgba(16, 185, 129, 0.25)', color: '#34d399', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>9</span>
+                                Eligibility Criteria (PQ & TQ)
+                              </span>
+                              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                                 <button
-                                  onClick={() => setActiveEvidenceModal({
-                                    title: 'PQ Criteria: Turnover & Past Experience',
-                                    sourceEvidence: { documentName: 'Tender Document', pageNumber: 8, section: 'Bid Evaluation Criteria (BEC)', clauseNo: 'Clause 1.1 Financial & Technical', snippet: 'Average Annual Financial Turnover during last 3 years >= ₹126 Lakhs; Past execution: 1 work (₹126L) / 2 works (₹78.75L) / 3 works (₹63L).' }
-                                  })}
-                                  style={{ background: 'rgba(56, 189, 248, 0.15)', border: 'none', borderRadius: '4px', color: '#38bdf8', fontSize: '9.5px', fontWeight: 800, padding: '1px 5px', cursor: 'pointer' }}
+                                  onClick={() => setActiveDossierModule('PQ_TQ')}
+                                  style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid #38bdf8', borderRadius: '5px', color: '#38bdf8', fontSize: '10.5px', fontWeight: 800, padding: '3px 9px', cursor: 'pointer' }}
                                 >
-                                  🔍 Source
+                                  View Complete BEC Table →
                                 </button>
-                              </div>
-                              <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '3px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                                {result.statutory14Points?.point9_eligibilityPQ_TQ?.pqSummary || 'Turnover Requirement + 3/2/1 similar contract completions (40%/50%/80% ECV) + Class-I MII.'}
+                                <span style={{ fontSize: '10.5px', background: 'rgba(16, 185, 129, 0.25)', color: '#34d399', padding: '2px 8px', borderRadius: '5px', fontWeight: 800 }}>100% QUALIFIED</span>
                               </div>
                             </div>
-                            <div style={{ background: 'rgba(0,0,0,0.25)', padding: '0.65rem 0.85rem', borderRadius: '8px', minWidth: 0, overflow: 'hidden' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#c084fc' }}>TECHNICAL QUALIFICATION (TQ):</div>
-                                <button
-                                  onClick={() => setActiveEvidenceModal({
-                                    title: 'TQ Criteria: STQC TAC & OEM Authorization',
-                                    sourceEvidence: { documentName: 'Tender Document', pageNumber: 18, section: 'Technical Qualification', clauseNo: 'Clause 3.1 Cybersecurity & MAF', snippet: 'Mandatory STQC TAC Certificate for IP Cameras & VMS as per MeiTY Cybersecurity Mandate; Tender-Specific OEM Authorization (MAF).' }
-                                  })}
-                                  style={{ background: 'rgba(192, 132, 252, 0.15)', border: 'none', borderRadius: '4px', color: '#c084fc', fontSize: '9.5px', fontWeight: 800, padding: '1px 5px', cursor: 'pointer' }}
-                                >
-                                  🔍 Source
-                                </button>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.85rem', marginTop: '8px' }}>
+                              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.75rem 0.95rem', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8' }}>PRE-QUALIFICATION (PQ):</div>
+                                  <button
+                                    onClick={() => setActiveEvidenceModal({
+                                      title: 'PQ Criteria: Turnover & Past Experience',
+                                      sourceEvidence: { documentName: 'Tender Document', pageNumber: 8, section: 'Bid Evaluation Criteria (BEC)', clauseNo: 'Clause 1.1 Financial & Technical', snippet: 'Average Annual Financial Turnover during last 3 years >= ₹126 Lakhs; Past execution: 1 work (₹126L) / 2 works (₹78.75L) / 3 works (₹63L).' }
+                                    })}
+                                    className="dossier-source-btn"
+                                    style={{ fontSize: '9.5px', padding: '1px 6px' }}
+                                  >
+                                    🔍 Source
+                                  </button>
+                                </div>
+                                <div style={{ fontSize: '11.5px', color: '#e2e8f0', lineHeight: 1.45, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                                  {result.statutory14Points?.point9_eligibilityPQ_TQ?.pqSummary || 'Turnover Requirement + 3/2/1 similar contract completions (40%/50%/80% ECV) + Class-I MII.'}
+                                </div>
                               </div>
-                              <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '3px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                                {result.statutory14Points?.point9_eligibilityPQ_TQ?.tqSummary || 'STQC MeiTY TAC Certificate + OEM MAF Authorization + BIS CRS + ISO 9001/27001.'}
+                              
+                              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.75rem 0.95rem', borderRadius: '10px', border: '1px solid rgba(192, 132, 252, 0.2)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#c084fc' }}>TECHNICAL QUALIFICATION (TQ):</div>
+                                  <button
+                                    onClick={() => setActiveEvidenceModal({
+                                      title: 'TQ Criteria: STQC TAC & OEM Authorization',
+                                      sourceEvidence: { documentName: 'Tender Document', pageNumber: 18, section: 'Technical Qualification', clauseNo: 'Clause 3.1 Cybersecurity & MAF', snippet: 'Mandatory STQC TAC Certificate for IP Cameras & VMS as per MeiTY Cybersecurity Mandate; Tender-Specific OEM Authorization (MAF).' }
+                                    })}
+                                    className="dossier-source-btn"
+                                    style={{ fontSize: '9.5px', padding: '1px 6px', color: '#c084fc', borderColor: 'rgba(192, 132, 252, 0.3)', background: 'rgba(192, 132, 252, 0.15)' }}
+                                  >
+                                    🔍 Source
+                                  </button>
+                                </div>
+                                <div style={{ fontSize: '11.5px', color: '#e2e8f0', lineHeight: 1.45, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                                  {result.statutory14Points?.point9_eligibilityPQ_TQ?.tqSummary || 'STQC MeiTY TAC Certificate + OEM MAF Authorization + BIS CRS + ISO 9001/27001.'}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
                         {/* Point 10 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>10. Warranty Terms</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 10: Warranty & CAMC Support',
-                                sourceEvidence: { documentName: 'Tender Document', pageNumber: 42, section: 'SLA & Maintenance', clauseNo: 'Clause 8.0', snippet: 'The contractor shall provide 3 years comprehensive on-site warranty followed by 4 years CAMC for all supplied CCTV equipment.' }
-                              })}
-                              style={{ background: 'rgba(56, 189, 248, 0.15)', border: 'none', borderRadius: '4px', color: '#38bdf8', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point10_warranty || '36 Months Comprehensive On-site OEM Warranty & AMC'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(56, 189, 248, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#38bdf8' }}>
+                                <span style={{ background: 'rgba(56, 189, 248, 0.25)', color: '#38bdf8', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>10</span>
+                                Warranty Terms
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 10: Warranty & CAMC Support',
+                                  sourceEvidence: { documentName: 'Tender Document', pageNumber: 42, section: 'SLA & Maintenance', clauseNo: 'Clause 8.0', snippet: 'The contractor shall provide 3 years comprehensive on-site warranty followed by 4 years CAMC for all supplied CCTV equipment.' }
+                                })}
+                                className="dossier-source-btn"
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value">
+                              {result.statutory14Points?.point10_warranty || '36 Months Comprehensive On-site OEM Warranty & AMC'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 11 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase' }}>11. Payment Terms</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 11: Terms of Payment & Milestones',
-                                sourceEvidence: { documentName: 'Tender Document', pageNumber: 68, section: 'Commercial Terms', clauseNo: 'Clause 12.0', snippet: 'Payment of undisputed bills shall be processed within 15 days from date of receipt of bill duly certified by Engineer-in-Charge. 60% Supply, 20% Install, 20% SAT.' }
-                              })}
-                              style={{ background: 'rgba(245, 158, 11, 0.15)', border: 'none', borderRadius: '4px', color: '#fbbf24', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#ffffff', marginTop: '4px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point11_paymentTerms || '60% on Supply & Site Delivery, 20% on Installation & Testing, 20% on Final SAT Signoff. PBG: 3% - 5%.'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#fbbf24' }}>
+                                <span style={{ background: 'rgba(245, 158, 11, 0.25)', color: '#fbbf24', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>11</span>
+                                Payment Terms
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 11: Terms of Payment & Milestones',
+                                  sourceEvidence: { documentName: 'Tender Document', pageNumber: 68, section: 'Commercial Terms', clauseNo: 'Clause 12.0', snippet: 'Payment of undisputed bills shall be processed within 15 days from date of receipt of bill duly certified by Engineer-in-Charge. 60% Supply, 20% Install, 20% SAT.' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.35)', background: 'rgba(245, 158, 11, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px', fontWeight: 700 }}>
+                              {result.statutory14Points?.point11_paymentTerms || '60% on Supply & Site Delivery, 20% on Installation & Testing, 20% on Final SAT Signoff. PBG: 3% - 5%.'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 12 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#34d399', textTransform: 'uppercase' }}>12. Work Completion Time</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 12: Work Completion & Execution Schedule',
-                                sourceEvidence: { documentName: 'Tender Document', pageNumber: 35, section: 'Time Schedule', clauseNo: 'Clause 7.0', snippet: 'Total time for completion of SITC work shall be 90 days from date of LoA. Overall contract duration shall be 7 years including warranty and CAMC.' }
-                              })}
-                              style={{ background: 'rgba(16, 185, 129, 0.15)', border: 'none', borderRadius: '4px', color: '#34d399', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12px', fontWeight: 800, color: '#34d399', marginTop: '4px', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point12_workCompletionTime || '90 Calendar Days from Letter of Award (LoA)'}
+                        <div className="dossier-card dossier-col-4" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#34d399' }}>
+                                <span style={{ background: 'rgba(16, 185, 129, 0.25)', color: '#34d399', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>12</span>
+                                Work Completion Time
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 12: Work Completion & Execution Schedule',
+                                  sourceEvidence: { documentName: 'Tender Document', pageNumber: 35, section: 'Time Schedule', clauseNo: 'Clause 7.0', snippet: 'Total time for completion of SITC work shall be 90 days from date of LoA. Overall contract duration shall be 7 years including warranty and CAMC.' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#34d399', borderColor: 'rgba(16, 185, 129, 0.35)', background: 'rgba(16, 185, 129, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ color: '#34d399' }}>
+                              {result.statutory14Points?.point12_workCompletionTime || '90 Calendar Days from Letter of Award (LoA)'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 13 */}
-                        <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '12px', padding: '0.9rem 1.1rem', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#f87171', textTransform: 'uppercase' }}>13. SLA Terms & Penalty</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 13: Service Level Agreement & Penalties',
-                                sourceEvidence: { documentName: 'Tender Document', pageNumber: 52, section: 'SLA Schedule', clauseNo: 'Clause 9.0', snippet: 'The contractor must maintain 99.5% uptime. Failure to resolve defects within 4 hours shall attract penalty of ₹500/day/camera.' }
-                              })}
-                              style={{ background: 'rgba(239, 68, 68, 0.15)', border: 'none', borderRadius: '4px', color: '#f87171', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#ffffff', marginTop: '4px', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point13_slaTerms || '99.5% Uptime Availability; Max 4-Hour MTTR; Liquidated Damages @ 0.5% per week up to 10% max.'}
+                        <div className="dossier-card dossier-col-6" style={{ borderColor: 'rgba(239, 68, 68, 0.35)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#f87171' }}>
+                                <span style={{ background: 'rgba(239, 68, 68, 0.25)', color: '#f87171', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>13</span>
+                                SLA Terms & Penalty
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 13: Service Level Agreement & Penalties',
+                                  sourceEvidence: { documentName: 'Tender Document', pageNumber: 52, section: 'SLA Schedule', clauseNo: 'Clause 9.0', snippet: 'The contractor must maintain 99.5% uptime. Failure to resolve defects within 4 hours shall attract penalty of ₹500/day/camera.' }
+                                })}
+                                className="dossier-source-btn"
+                                style={{ color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.35)', background: 'rgba(239, 68, 68, 0.15)' }}
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px', fontWeight: 700 }}>
+                              {result.statutory14Points?.point13_slaTerms || '99.5% Uptime Availability; Max 4-Hour MTTR; Liquidated Damages @ 0.5% per week up to 10% max.'}
+                            </div>
                           </div>
                         </div>
 
                         {/* Point 14 - Spans Full Width */}
-                        <div style={{ background: 'rgba(56, 189, 248, 0.04)', border: '1px solid rgba(56, 189, 248, 0.35)', borderRadius: '12px', padding: '1rem 1.15rem', gridColumn: '1 / -1', minWidth: 0, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>14. Scope of Work (SOW) Executive Summary</div>
-                            <button
-                              onClick={() => setActiveEvidenceModal({
-                                title: 'Point 14: Comprehensive Scope of Work (SOW)',
-                                sourceEvidence: { documentName: 'Tender Document', pageNumber: 26, section: 'Scope of Work', clauseNo: 'Clause 6.0', snippet: 'Turnkey Scope of Work includes Supply, Installation, Testing, Commissioning, 3 Years Warranty/FMS and 4 Years CAMC of Security Surveillance System.' }
-                              })}
-                              style={{ background: 'rgba(56, 189, 248, 0.15)', border: 'none', borderRadius: '4px', color: '#38bdf8', fontSize: '10px', fontWeight: 800, padding: '2px 6px', cursor: 'pointer' }}
-                            >
-                              🔍 View Source
-                            </button>
-                          </div>
-                          <div style={{ fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginTop: '4px', lineHeight: 1.5, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {result.statutory14Points?.point14_scopeOfWork || result.dossierSummary?.tenderName || 'Comprehensive Turnkey SITC of Security Surveillance Infrastructure and 36 Months Maintenance.'}
+                        <div className="dossier-card dossier-col-6" style={{ borderColor: 'rgba(56, 189, 248, 0.4)' }}>
+                          <div>
+                            <div className="dossier-card-header">
+                              <span className="dossier-card-title" style={{ color: '#38bdf8' }}>
+                                <span style={{ background: 'rgba(56, 189, 248, 0.25)', color: '#38bdf8', borderRadius: '4px', padding: '1px 6px', fontSize: '10.5px' }}>14</span>
+                                Scope of Work (SOW) Summary
+                              </span>
+                              <button
+                                onClick={() => setActiveEvidenceModal({
+                                  title: 'Point 14: Comprehensive Scope of Work (SOW)',
+                                  sourceEvidence: { documentName: 'Tender Document', pageNumber: 26, section: 'Scope of Work', clauseNo: 'Clause 6.0', snippet: 'Turnkey Scope of Work includes Supply, Installation, Testing, Commissioning, 3 Years Warranty/FMS and 4 Years CAMC of Security Surveillance System.' }
+                                })}
+                                className="dossier-source-btn"
+                              >
+                                🔍 View Source
+                              </button>
+                            </div>
+                            <div className="dossier-card-value" style={{ fontSize: '12px', fontWeight: 600, color: '#e2e8f0' }}>
+                              {result.statutory14Points?.point14_scopeOfWork || result.dossierSummary?.tenderName || 'Comprehensive Turnkey SITC of Security Surveillance Infrastructure and 36 Months Maintenance.'}
+                            </div>
                           </div>
                         </div>
 
