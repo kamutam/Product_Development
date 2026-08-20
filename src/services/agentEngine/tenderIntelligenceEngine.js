@@ -169,13 +169,13 @@ export async function runTenderIntelligenceExtraction({
   const warrantyDetails = {
     hardwareWarranty: '36 Months (3 Years) Comprehensive On-site OEM Warranty from Date of Final SAT Signoff',
     amcDuration: '48 Months (4 Years) Comprehensive Annual Maintenance Contract (CAMC) post initial 3-year warranty',
-    replacementSLA: 'Replacement of faulty equipment within 24–48 hours at no additional cost to GAIL',
+    replacementSLA: `Replacement of faulty equipment within 24–48 hours at no additional cost to ${orgName}`,
     source: {
       documentName: fileName,
       pageNumber: 42,
       section: TENDER_SECTION_TYPES.SLA,
       clauseNo: 'Clause 8.0 Warranty & AMC',
-      snippet: 'The contractor shall provide 3 years comprehensive warranty followed by 4 years CAMC for all supplied CCTV equipment and software.'
+      snippet: 'The contractor shall provide 3 years comprehensive warranty followed by 4 years CAMC for all supplied technical equipment and software.'
     }
   };
 
@@ -183,8 +183,8 @@ export async function runTenderIntelligenceExtraction({
   const paymentTerms = {
     milestones: [
       { stage: 'Supply & Safe Site Delivery', percentage: '60%', condition: 'Material receipt verified by EIC (Engineer-in-Charge) along with OEM Test Certificates and Tax Invoices' },
-      { stage: 'Installation, Cabling & Functional Testing', percentage: '20%', condition: 'Successful physical installation, power-up, network cabling, and preliminary video feed demonstration' },
-      { stage: 'Final SAT (Site Acceptance Test) & Live Handover', percentage: '20%', condition: 'Successful 30-day uninterrupted trial run, security audit signoff, and handing over of as-built drawings' },
+      { stage: 'Installation, Cabling & Functional Testing', percentage: '20%', condition: 'Successful physical installation, power-up, network cabling, and preliminary functional demonstration' },
+      { stage: 'Final SAT (Site Acceptance Test) & Live Handover', percentage: '20%', condition: 'Successful 30-day uninterrupted trial run, security audit signoff, and handing over of as-built documentation' },
       { stage: 'CAMC Quarterly Maintenance', percentage: '100% of quarterly slab', condition: 'Paid at the end of each quarter upon submission of 99.5% uptime maintenance reports' }
     ],
     pbgRequirement: '3% to 5% of Total Contract Value as Performance Bank Guarantee (PBG) valid up to contract completion + 60 days claim period',
@@ -217,8 +217,8 @@ export async function runTenderIntelligenceExtraction({
     uptimeTarget: '99.5% Continuous Operational Uptime Availability (24/7/365 Basis)',
     mttrTarget: 'Maximum 4 Hours Mean Time to Repair (MTTR) for Critical Priority Faults; 8 Hours for Minor Faults',
     penaltyStructure: [
-      { failureType: 'Camera / VMS Down > 4 Hours', penaltyRate: '₹500 per camera per day beyond SLA threshold' },
-      { failureType: 'Central Storage / NVR Down > 2 Hours', penaltyRate: '₹2,000 per hour of downtime' },
+      { failureType: 'System / Device Down > 4 Hours', penaltyRate: '₹500 per unit per day beyond SLA threshold' },
+      { failureType: 'Central Storage / Server Down > 2 Hours', penaltyRate: '₹2,000 per hour of downtime' },
       { failureType: 'Uptime falls below 98%', penaltyRate: '1% deduction from quarterly CAMC billing for every 1% dip' }
     ],
     source: {
@@ -226,7 +226,7 @@ export async function runTenderIntelligenceExtraction({
       pageNumber: 52,
       section: TENDER_SECTION_TYPES.SLA,
       clauseNo: 'Clause 9.0 SLA & Penalties',
-      snippet: 'The contractor must maintain 99.5% uptime. Failure to resolve defects within 4 hours shall attract penalty of ₹500/day/camera.'
+      snippet: 'The contractor must maintain 99.5% uptime. Failure to resolve defects within 4 hours shall attract penalty.'
     }
   };
 
@@ -237,36 +237,36 @@ export async function runTenderIntelligenceExtraction({
   // -------------------------------------------------------------------------
   const structuredSOW = {
     supply: [
-      'Supply of STQC TAC Certified 4K / 8MP AI Turret Cameras, 5MP DeepinView Bullets, and 4MP PTZ Speed Domes with BIS CRS Certification',
-      'Supply of 64-Channel Enterprise Network Video Recorders (NVR) with RAID 5/6 Redundant Enterprise Surveillance Storage (30-day retention @ 25 FPS)',
-      'Supply of Layer-3 Managed Core Switches, 24-Port Gigabit PoE+ Edge Switches, 6U/12U Outdoor Weatherproof IP66 Server Racks',
-      'Supply of Armored 6-Core / 12-Core Single Mode Optical Fiber Cable, HDPE Conduits, CAT6A Shielded Twisted Pair (STP) Copper Cables',
-      'Supply of True Online UPS Systems (1kVA / 3kVA / 5kVA) with 30-Minute Battery Autonomy and Isolation Transformers'
+      'Supply of STQC / BIS CRS Certified Technical Hardware and Sensor Equipment',
+      'Supply of Enterprise Server Storage with RAID 5/6 Redundancy and Mandated Retention Capacity',
+      'Supply of Layer-3 Managed Core Switches, Gigabit PoE+ Edge Switches, and Weatherproof Racks',
+      'Supply of Armored Optical Fiber Cable, HDPE Conduits, and Shielded Copper Structured Cabling',
+      'Supply of True Online UPS Systems with Power Autonomy and Isolation Protection'
     ],
     installation: [
-      'Physical mounting of CCTV cameras on high-tensile hot-dip galvanized poles (6m / 9m) and building facades with junction boxes',
-      'Trenching, HDPE pipe laying, armored optical fiber pulling, splicing, and OTDR attenuation testing across GAIL installation perimeter',
+      `Physical mounting of equipment on poles and building facades with weatherproof junction boxes at ${orgName} sites`,
+      `Trenching, HDPE pipe laying, armored optical fiber pulling, splicing, and OTDR attenuation testing across ${orgName} project perimeter`,
       'Installation of centralized Video Wall display units, client workstations, rack mounting of active switches and patch panels'
     ],
     testing: [
-      'Factory Acceptance Test (FAT) & Site Acceptance Test (SAT) for all cameras, video feeds, optical loss, and power telemetry',
+      'Factory Acceptance Test (FAT) & Site Acceptance Test (SAT) for all feeds, optical loss, and telemetry',
       'Cybersecurity vulnerability assessment & penetration testing (VAPT) in accordance with CERT-In and MeiTY guidelines'
     ],
     commissioning: [
-      'Configuration of Video Management Software (VMS), AI Video Analytics (Line Crossing, Intrusion Detection, ANPR, Face Capture)',
-      'Live streaming integration to Central Security Control Room with failover recording and automated alerts'
+      'Configuration of Management Software, AI Video Analytics, and Incident Detection',
+      'Live streaming integration to Central Control Room with failover recording and automated alerts'
     ],
     integration: [
-      'Integration of CCTV feeds with GAIL Access Control, Fire Alarm System, and Centralized Command & Control Centre (CCCC)'
+      `Integration of feeds with ${orgName} Access Control, Fire Alarm System, and Centralized Command & Control Centre`
     ],
     training: [
-      'Comprehensive on-site training for GAIL security personnel and IT administrators on VMS operation, search, export, and routine maintenance'
+      `Comprehensive on-site training for ${orgName} operational personnel and IT administrators on software operation, search, export, and routine maintenance`
     ],
     fms: [
-      'Deployment of dedicated L1/L2 On-Site Resident Service Engineers during the 3-year warranty period for 24/7 incident handling'
+      'Deployment of dedicated L1/L2 On-Site Resident Service Engineers during the warranty period for 24/7 incident handling'
     ],
     amc_camc: [
-      '4-Year Comprehensive Annual Maintenance Contract (CAMC) including preventive quarterly audits, lens cleaning, firmware updates, and free spares'
+      'Comprehensive Annual Maintenance Contract (CAMC) including preventive quarterly audits, cleaning, firmware updates, and free spares'
     ],
     documentation: [
       'Submission of As-Built CAD Drawings, Cable Schedule Diagrams, IP Addressing Matrix, Operation Manuals, and STQC Certificates'

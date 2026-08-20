@@ -1687,7 +1687,7 @@ export default function TenderAgentTab({ products = [] }) {
                               <button
                                 onClick={() => setActiveEvidenceModal({
                                   title: 'Point 1: Tender Reference Number & GeM ID',
-                                  sourceEvidence: result.statutory14Points?.point1_evidence || { documentName: 'Tender Document', pageNumber: 3, section: 'Invitation for Bids (IFB)', clauseNo: 'Clause 2.0 (B)', snippet: 'TENDER NO. & DATE: GAIL/NDA26028VK/C&P/SECURITY dated 13.08.2026' }
+                                  sourceEvidence: result.statutory14Points?.point1_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'Invitation for Bids (IFB)', clauseNo: 'Clause 2.0 (B)', snippet: result.dossierSummary?.tenderRefNo ? `TENDER REF NO: ${result.dossierSummary.tenderRefNo}` : 'Tender Reference Number extracted from uploaded document.' }
                                 })}
                                 className="dossier-source-btn"
                               >
@@ -1716,7 +1716,7 @@ export default function TenderAgentTab({ products = [] }) {
                               <button
                                 onClick={() => setActiveEvidenceModal({
                                   title: 'Point 2: Tender Name / Scope Title',
-                                  sourceEvidence: result.statutory14Points?.point2_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Scope of Work', clauseNo: 'Clause 1.0', snippet: result.dossierSummary?.tenderName }
+                                  sourceEvidence: result.statutory14Points?.point2_evidence || { documentName: 'Tender Document', pageNumber: 2, section: 'Scope of Work', clauseNo: 'Clause 1.0', snippet: result.dossierSummary?.tenderName || 'Tender Scope Title extracted from uploaded document.' }
                                 })}
                                 className="dossier-source-btn"
                                 style={{ color: '#cbd5e1', borderColor: 'rgba(148, 163, 184, 0.3)', background: 'rgba(148, 163, 184, 0.15)' }}
@@ -1725,7 +1725,7 @@ export default function TenderAgentTab({ products = [] }) {
                               </button>
                             </div>
                             <div className="dossier-card-value" style={{ fontSize: '13px' }}>
-                              {result.dossierSummary?.tenderName || 'Turnkey Security Surveillance & Access Control System'}
+                              {result.dossierSummary?.tenderName || 'Turnkey Security Surveillance & Technical Systems Implementation'}
                             </div>
                           </div>
                         </div>
@@ -1741,7 +1741,7 @@ export default function TenderAgentTab({ products = [] }) {
                               <button
                                 onClick={() => setActiveEvidenceModal({
                                   title: 'Point 3: Procuring Entity / Organization',
-                                  sourceEvidence: result.statutory14Points?.point3_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Header', clauseNo: 'Clause 1.0', snippet: result.gemDocument?.organisationName }
+                                  sourceEvidence: result.statutory14Points?.point3_evidence || { documentName: 'Tender Document', pageNumber: 1, section: 'IFB Header', clauseNo: 'Clause 1.0', snippet: result.gemDocument?.organisationName || 'Procuring Authority extracted from uploaded document.' }
                                 })}
                                 className="dossier-source-btn"
                                 style={{ color: '#c084fc', borderColor: 'rgba(192, 132, 252, 0.35)', background: 'rgba(192, 132, 252, 0.15)' }}
@@ -1766,7 +1766,7 @@ export default function TenderAgentTab({ products = [] }) {
                               <button
                                 onClick={() => setActiveEvidenceModal({
                                   title: 'Point 4: Earnest Money Deposit (EMD)',
-                                  sourceEvidence: result.statutory14Points?.point4_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'Commercial Terms', clauseNo: 'Clause 5.0 EMD', snippet: 'Earnest Money Deposit (EMD): ₹4,95,000 / BG / Online RTGS (MSME Exempted)' }
+                                  sourceEvidence: result.statutory14Points?.point4_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'Commercial Terms', clauseNo: 'Clause 5.0 EMD', snippet: result.statutory14Points?.point4_emdModeAndValue ? `Earnest Money Deposit: ${result.statutory14Points.point4_emdModeAndValue}` : 'EMD terms as specified in uploaded document.' }
                                 })}
                                 className="dossier-source-btn"
                                 style={{ color: '#34d399', borderColor: 'rgba(16, 185, 129, 0.35)', background: 'rgba(16, 185, 129, 0.15)' }}
@@ -1816,7 +1816,7 @@ export default function TenderAgentTab({ products = [] }) {
                               <button
                                 onClick={() => setActiveEvidenceModal({
                                   title: 'Point 6: Pre-Bid Meeting Schedule',
-                                  sourceEvidence: result.statutory14Points?.point6_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'IFB Details', clauseNo: 'Clause 6.0', snippet: 'Pre-Bid Meeting: Date & Time as per GeM Bid Schedule. Video Conference link accessible on GeM Portal.' }
+                                  sourceEvidence: result.statutory14Points?.point6_evidence || { documentName: 'Tender Document', pageNumber: 4, section: 'IFB Details', clauseNo: 'Clause 6.0', snippet: result.statutory14Points?.point6_preBidMeeting ? `Pre-Bid Meeting: ${result.statutory14Points.point6_preBidMeeting}` : 'Pre-Bid Meeting schedule extracted from uploaded document.' }
                                 })}
                                 className="dossier-source-btn"
                               >

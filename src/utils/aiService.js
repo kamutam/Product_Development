@@ -811,13 +811,34 @@ Respond ONLY with valid JSON. No markdown ticks outside JSON.`;
 
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
-  const cleanedJson = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const parsed = JSON.parse(cleanedJson);
   parsed.bom = parsed.boqDocument?.items || [];
+
+  // Synthesize 14-Point Statutory Dossier from LLM + deterministic extractors
+  const stat14 = extractComplete14StatutoryPoints(fileText, fileName);
+  parsed.statutory14Points = {
+    point1_tenderNumber: (parsed.dossierSummary?.tenderRefNo && !parsed.dossierSummary?.tenderRefNo.startsWith('Not Specified')) ? parsed.dossierSummary.tenderRefNo : stat14.point1_tenderNumber,
+    point1_gemBidNo: parsed.gemDocument?.gemId || stat14.gemId,
+    point2_tenderName: parsed.dossierSummary?.tenderName || stat14.point2_name,
+    point3_orgName: parsed.dossierSummary?.organisationName || stat14.point3_orgName,
+    point4_emdModeAndValue: parsed.gemDocument?.emdAmount || stat14.point4_emdModeAndValue,
+    point5_processingFee: stat14.point5_processingFee,
+    point6_preBidMeeting: (parsed.gemDocument?.preBidMeetingDate && !parsed.gemDocument?.preBidMeetingDate.startsWith('Not Specified') && !parsed.gemDocument?.preBidMeetingDate.startsWith('N/A')) ? parsed.gemDocument.preBidMeetingDate : stat14.point6_preBidMeeting,
+    point7_transactionFee: stat14.point7_transactionFee,
+    point8_address: stat14.point8_address,
+    point9_eligibilityPQ_TQ: stat14.point9_eligibility,
+    point10_warranty: parsed.atcDocument?.sow?.warrantySLA || stat14.point10_warranty,
+    point11_paymentTerms: stat14.point11_paymentTerms,
+    point12_workCompletionTime: parsed.atcDocument?.sow?.executionPeriod || stat14.point12_workCompletionTime,
+    point13_slaTerms: stat14.point13_slaTerms,
+    point14_scopeOfWork: parsed.atcDocument?.sow?.projectSummary || stat14.point14_scopeOfWork
+  };
+
   return parsed;
 }
 
 import { runMultiAgentPipeline } from '../services/agentEngine/orchestrator';
+import { extractComplete14StatutoryPoints } from './statutory14PointAnalyzer';
 
 /**
  * Agentic AI parsing a complex Government Tender PDF.
