@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   CheckCircle2, XCircle, AlertTriangle, ShieldAlert, FileText, ArrowRight, Camera, Sun, Fingerprint, Plane, Code, Cpu, Plus, DollarSign, Layers, Search, X, ExternalLink, ShieldCheck, Building2, Globe, Award, Mail, Sparkles, Clock, Check, Send, Columns3, RefreshCw
 } from 'lucide-react';
@@ -28,9 +29,10 @@ const WORKFLOW_STEPS = [
 
 export default function Dashboard({ 
   projects = [], products = [], categories = [], oems = [], requirements = [], emailHistory = [],
-  activeProjectId, setActiveTab, setSelectedProjectId, onSelectProductForAudit,
+  activeProjectId, setSelectedProjectId, onSelectProductForAudit,
   evaluatorStatusFilter, setEvaluatorStatusFilter, onOpenGlobalSearch
 }) {
+  const navigate = useNavigate();
   const [showValuationModal, setShowValuationModal] = useState(false);
   const [valuationSearch, setValuationSearch] = useState('');
   const [showProjectBreakdown, setShowProjectBreakdown] = useState(false);
@@ -76,7 +78,7 @@ export default function Dashboard({
     if (setEvaluatorStatusFilter) {
       setEvaluatorStatusFilter(statusVal);
     }
-    setActiveTab('evaluator');
+    navigate('/evaluator');
   };
 
   // Filter products for valuation modal
@@ -93,8 +95,8 @@ export default function Dashboard({
       
       {/* SECTION 1: PRODUCT DEVELOPMENT OVERVIEW & ACTIVE PROJECT BANNER */}
       <div className="card" style={{ 
-        background: '#ffffff',
-        border: '1px solid #cbd5e1',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-color)',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
         display: 'flex',
         alignItems: 'center',
@@ -113,8 +115,8 @@ export default function Dashboard({
           </div>
 
           <h2 
-            style={{ fontSize: '1.35rem', marginTop: '0.15rem', color: '#0f172a', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
-            onClick={() => setActiveTab('evaluator')}
+            style={{ fontSize: '1.35rem', marginTop: '0.15rem', color: 'var(--text-heading)', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
+            onClick={() => navigate('/evaluator')}
             title="Click to view full product spec evaluation details for this project"
           >
             <GovtEmblemLogo type={activeProject?.client || activeProject?.name} size={26} />
@@ -122,8 +124,8 @@ export default function Dashboard({
             <ArrowRight size={18} color="#0284c7" />
           </h2>
 
-          <p style={{ color: '#475569', fontSize: '0.88rem', marginTop: '0.25rem' }}>
-            PO / Tender ID: <strong style={{ color: '#0f172a' }}>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong style={{ color: '#0f172a' }}>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional" style={{ background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' }}>{activeCategory?.name}</span>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.25rem' }}>
+            PO / Tender ID: <strong style={{ color: 'var(--text-heading)' }}>{activeProject?.poNumber || activeProject?.code || 'N/A'}</strong> &bull; Client: <strong style={{ color: 'var(--text-heading)' }}>{activeProject?.client}</strong> &bull; Category: <span className="badge badge-conditional" style={{ background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' }}>{activeCategory?.name}</span>
           </p>
         </div>
 
@@ -139,9 +141,9 @@ export default function Dashboard({
                 justifyContent: 'space-between',
                 fontSize: '12px',
                 fontWeight: 800,
-                background: '#ffffff',
-                color: '#0f172a',
-                borderColor: '#cbd5e1',
+                background: 'var(--bg-card)',
+                color: 'var(--text-heading)',
+                borderColor: 'var(--border-color)',
                 padding: '0.45rem 0.65rem'
               }}
               onClick={() => setShowProjectDropdown(!showProjectDropdown)}
@@ -161,8 +163,8 @@ export default function Dashboard({
                   top: 'calc(100% + 4px)',
                   right: 0,
                   width: '300px',
-                  background: '#ffffff',
-                  border: '1px solid #cbd5e1',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '8px',
                   boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                   zIndex: 999999,
@@ -184,9 +186,9 @@ export default function Dashboard({
                       fontSize: '11.5px',
                       fontWeight: 700,
                       borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      background: '#f8fafc',
-                      color: '#0f172a',
+                      border: '1px solid var(--border-color)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-heading)',
                       outline: 'none'
                     }}
                   />
@@ -206,7 +208,7 @@ export default function Dashboard({
                             fontSize: '11.5px',
                             fontWeight: isSelected ? 800 : 600,
                             background: isSelected ? '#e0f2fe' : 'transparent',
-                            color: isSelected ? '#0369a1' : '#0f172a',
+                            color: isSelected ? '#0369a1' : '#ffffff',
                             cursor: 'pointer'
                           }}
                           onClick={() => {
@@ -216,7 +218,7 @@ export default function Dashboard({
                           }}
                         >
                           <div>📁 {p.name}</div>
-                          <div style={{ fontSize: '10px', color: '#64748b' }}>Client: {p.client}</div>
+                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Client: {p.client}</div>
                         </div>
                       );
                     })}
@@ -229,7 +231,7 @@ export default function Dashboard({
             <button className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#ffffff', fontWeight: 800, border: 'none', padding: '0.45rem 0.85rem' }} onClick={() => setShowValuationModal(true)}>
               💰 Spec Valuation ({currentCategoryProducts.length})
             </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('evaluator')}>
+            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/evaluator')}>
               Run Inspection <ArrowRight size={15} color="#0284c7" />
             </button>
           </div>
@@ -244,31 +246,31 @@ export default function Dashboard({
         
         <div className="grid-cols-4" style={{ gap: '0.85rem' }}>
           {/* Card 1: OEM Partners */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('oem-directory')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/oem-directory')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 800 }}>OEM Partners</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800 }}>OEM Partners</span>
               <Building2 color="#0284c7" size={18} />
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#0284c7' }}>
               {oemsCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>Verified Global Vendors</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Verified Global Vendors</div>
           </div>
 
           {/* Card 2: Products */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('products')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/products')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 800 }}>Product Models</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800 }}>Product Models</span>
               <Layers color="#4f46e5" size={18} />
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#4f46e5' }}>
               {productsCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>Catalog Specifications</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Catalog Specifications</div>
           </div>
 
           {/* Card 3: STQC Certified Models */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('certifications-vault')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/certifications-vault')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 800 }}>STQC Certified</span>
               <ShieldCheck color="#059669" size={18} />
@@ -276,11 +278,11 @@ export default function Dashboard({
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#059669' }}>
               {stqcModelsCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>MeiTY Lab Approved</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>MeiTY Lab Approved</div>
           </div>
 
           {/* Card 4: ARAI Compliant Products */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('certifications-vault')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/certifications-vault')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.8rem', color: '#0369a1', fontWeight: 800 }}>ARAI AIS-140</span>
               <Award color="#0284c7" size={18} />
@@ -288,23 +290,23 @@ export default function Dashboard({
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#0284c7' }}>
               {araiModelsCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>Automotive Homologated</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Automotive Homologated</div>
           </div>
 
           {/* Card 5: Product Categories */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('category-builder')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/category-builder')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 800 }}>Product Domains</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800 }}>Product Domains</span>
               <Cpu color="#7c3aed" size={18} />
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#7c3aed' }}>
               {categoriesCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>Pre-built Rule Categories</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Pre-built Rule Categories</div>
           </div>
 
           {/* Card 6: Active Requirements */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('requirements')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/requirements')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.8rem', color: '#b45309', fontWeight: 800 }}>Active Requirements</span>
               <FileText color="#d97706" size={18} />
@@ -312,23 +314,23 @@ export default function Dashboard({
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#d97706' }}>
               {activeReqsCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>In Sourcing Pipeline</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>In Sourcing Pipeline</div>
           </div>
 
           {/* Card 7: Countries Covered */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('oem-directory')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => navigate('/oem-directory')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', color: '#475569', fontWeight: 800 }}>Countries Covered</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800 }}>Countries Covered</span>
               <Globe color="#2563eb" size={18} />
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#2563eb' }}>
               {countriesCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>Global OEM Sourcing</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Global OEM Sourcing</div>
           </div>
 
           {/* Card 8: Pending OEM Responses */}
-          <div className="card" style={{ cursor: 'pointer', background: '#ffffff', border: '1px solid #cbd5e1' }} onClick={() => setActiveTab('email-history')}>
+          <div className="card" style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }} onClick={() => setActiveTab('email-history')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.8rem', color: '#c2410c', fontWeight: 800 }}>Pending OEM Dispatches</span>
               <Mail color="#ea580c" size={18} />
@@ -336,13 +338,13 @@ export default function Dashboard({
             <div style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '0.4rem', color: '#ea580c' }}>
               {pendingResponsesCount}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.15rem' }}>B2B OEM Inquiries</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>B2B OEM Inquiries</div>
           </div>
         </div>
       </div>
 
       {/* SECTION 3: QUICK ACTIONS BAR */}
-      <div className="card" style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '0.85rem 1.15rem' }}>
+      <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', padding: '0.85rem 1.15rem' }}>
         <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.65rem' }}>
           ⚡ Quick Actions & Enterprise Operations
         </div>
@@ -370,13 +372,13 @@ export default function Dashboard({
       </div>
 
       {/* SECTION 4: PRODUCT DEVELOPMENT WORKFLOW (8-STEP PIPELINE) */}
-      <div className="card" style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '1rem 1.15rem' }}>
+      <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', padding: '1rem 1.15rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
           <div>
             <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               PRODUCT DEVELOPMENT LIFECYCLE
             </div>
-            <h3 style={{ fontSize: '1.15rem', color: '#0f172a', fontWeight: 800, margin: '0.1rem 0 0 0' }}>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--text-heading)', fontWeight: 800, margin: '0.1rem 0 0 0' }}>
               Enterprise Sourcing & Compliance Workflow Pipeline
             </h3>
           </div>
@@ -392,8 +394,8 @@ export default function Dashboard({
               onClick={() => setActiveTab(step.tab)}
               style={{
                 padding: '0.65rem 0.5rem',
-                background: '#f8fafc',
-                border: '1px solid #cbd5e1',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '8px',
                 textAlign: 'center',
                 cursor: 'pointer',
@@ -403,39 +405,39 @@ export default function Dashboard({
             >
               <div style={{ fontSize: '1.3rem', marginBottom: '0.2rem' }}>{step.icon}</div>
               <div style={{ fontSize: '10px', color: '#0284c7', fontWeight: 800 }}>STEP {step.id}</div>
-              <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#0f172a', marginTop: '0.1rem' }}>{step.title}</div>
-              <div style={{ fontSize: '9.5px', color: '#64748b', marginTop: '0.15rem', lineHeight: 1.2 }}>{step.desc}</div>
+              <div style={{ fontSize: '11.5px', fontWeight: 800, color: 'var(--text-heading)', marginTop: '0.1rem' }}>{step.title}</div>
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '0.15rem', lineHeight: 1.2 }}>{step.desc}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* SECTION 5: RECENT ACTIVITY TIMELINE FEED */}
-      <div className="card" style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '1rem 1.15rem' }}>
+      <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', padding: '1rem 1.15rem' }}>
         <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.65rem' }}>
           📜 Recent Enterprise Activity Log
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '12px' }}>
-          <div style={{ padding: '0.5rem 0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <strong style={{ color: '#0f172a' }}>Auto-Synced Google Sheet Master Catalog:</strong> <span style={{ color: '#0284c7' }}>11 CCTV & IoT models verified for STQC / ARAI compliance</span>
+              <strong style={{ color: 'var(--text-heading)' }}>Auto-Synced Google Sheet Master Catalog:</strong> <span style={{ color: '#0284c7' }}>11 CCTV & IoT models verified for STQC / ARAI compliance</span>
             </div>
-            <span style={{ fontSize: '10.5px', color: '#64748b' }}>Just now</span>
+            <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Just now</span>
           </div>
 
-          <div style={{ padding: '0.5rem 0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <strong style={{ color: '#0f172a' }}>Tender Spec Inspection:</strong> <span style={{ color: '#059669' }}>AP-CRDA Smart Pole Project compliance rate verified at 100%</span>
+              <strong style={{ color: 'var(--text-heading)' }}>Tender Spec Inspection:</strong> <span style={{ color: '#059669' }}>AP-CRDA Smart Pole Project compliance rate verified at 100%</span>
             </div>
-            <span style={{ fontSize: '10.5px', color: '#64748b' }}>Today</span>
+            <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Today</span>
           </div>
 
-          <div style={{ padding: '0.5rem 0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '0.5rem 0.75rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <strong style={{ color: '#0f172a' }}>OEM Partner Verification:</strong> <span style={{ color: '#7c3aed' }}>18 Global OEM Manufacturers registered across 7 countries</span>
+              <strong style={{ color: 'var(--text-heading)' }}>OEM Partner Verification:</strong> <span style={{ color: '#7c3aed' }}>18 Global OEM Manufacturers registered across 7 countries</span>
             </div>
-            <span style={{ fontSize: '10.5px', color: '#64748b' }}>Today</span>
+            <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Today</span>
           </div>
         </div>
       </div>

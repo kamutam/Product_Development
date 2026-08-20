@@ -1,0 +1,5 @@
+- `[/]` Install charting library (`recharts`)
+- `[ ]` Overhaul `index.css` for a sleek dark mode enterprise design
+- `[ ]` Create `AnalyticsDashboard.jsx` with visually stunning charts
+- `[ ]` Update `Sidebar.jsx` and `App.jsx` to integrate the new Dashboard as the default view
+- `[ ]` Ensure tables and existing components look pristine under the new theme

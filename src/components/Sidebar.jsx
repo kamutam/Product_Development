@@ -1,52 +1,38 @@
 import React, { useState } from 'react';
 import { 
-  LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, ShieldCheck, Award, Video, LogOut, UserCheck, SearchCheck, Building2, Sparkles, FileText, Mail, Search
+  LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, ShieldCheck, Award, Video, LogOut, UserCheck, SearchCheck, Building2, Sparkles, FileText, Mail, Search, Bell, LineChart, Calculator, Bot, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BrihaspathiLogo from './BrihaspathiLogo';
 
 export default function Sidebar({ 
-  activeTab, setActiveTab, projects, selectedProjectId, setSelectedProjectId, user, onLogout, 
+  projects, selectedProjectId, setSelectedProjectId, user, onLogout, 
   requirementsCount = 0, emailCount = 0, onOpenGlobalSearch
 }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = location.pathname.split('/')[1] || 'analytics';
+
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
   const [projectSearchQuery, setProjectSearchQuery] = useState('');
-  const activeProject = projects.find(p => p.id === selectedProjectId);
+  const activeProject = projects.find(p => p.id === selectedProjectId) || projects[0];
 
   return (
     <aside className="sidebar">
       {/* Pinned Sticky Header */}
       <div className="sidebar-header-sticky">
-        <div className="sidebar-brand" onClick={() => setActiveTab('dashboard')}>
-          <BrihaspathiLogo height={44} showTagline={false} darkText={false} />
+        <div className="sidebar-brand" onClick={() => navigate('/analytics')}>
+          <BrihaspathiLogo height={42} showTagline={false} darkText={false} />
         </div>
       </div>
 
       {/* Scrollable Inner Body */}
       <div className="sidebar-body-scrollable">
-        {/* Global Search Quick Launch Button */}
-        {onOpenGlobalSearch && (
-          <button 
-            className="btn btn-secondary btn-sm"
-            style={{ 
-              width: '100%', 
-              marginBottom: '0.85rem', 
-              justifyContent: 'flex-start', 
-              fontSize: '11.5px', 
-              fontWeight: 700, 
-              background: 'rgba(255,255,255,0.06)', 
-              color: '#38bdf8', 
-              borderColor: 'rgba(56, 189, 248, 0.3)' 
-            }}
-            onClick={onOpenGlobalSearch}
-          >
-            <Search size={14} /> Quick Search (Ctrl+K)...
-          </button>
-        )}
 
         {/* Active Project Quick Switcher Box */}
         <div className="sidebar-project-box" style={{ position: 'relative' }}>
-          <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <ShieldCheck size={14} color="#38bdf8" /> Active Project:
+          <div style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <ShieldCheck size={14} color="#38bdf8" /> Active Project
           </div>
 
           <button
@@ -54,21 +40,21 @@ export default function Sidebar({
             className="btn btn-secondary btn-sm"
             style={{
               width: '100%',
-              justify: 'space-between',
-              fontSize: '11.5px',
-              fontWeight: 800,
-              background: '#1e293b',
+              justifyContent: 'space-between',
+              fontSize: '12px',
+              fontWeight: 700,
+              background: 'rgba(15, 23, 42, 0.8)',
               color: '#ffffff',
-              borderColor: 'rgba(255, 255, 255, 0.15)',
-              padding: '0.45rem 0.5rem'
+              borderColor: 'rgba(148, 163, 184, 0.25)',
+              padding: '0.5rem 0.65rem'
             }}
             onClick={() => setShowProjectDropdown(!showProjectDropdown)}
           >
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px' }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>
               📁 {activeProject?.name || 'Select Project'}
             </span>
-            <span style={{ fontSize: '10px', marginLeft: '4px', color: '#38bdf8' }}>
-              {showProjectDropdown ? '▲' : '▼'}
+            <span style={{ color: '#38bdf8', display: 'flex', alignItems: 'center' }}>
+              {showProjectDropdown ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </span>
           </button>
 
@@ -76,19 +62,20 @@ export default function Sidebar({
             <div
               style={{
                 position: 'absolute',
-                top: 'calc(100% + 4px)',
+                top: 'calc(100% + 6px)',
                 left: 0,
                 width: '100%',
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '8px',
-                boxShadow: '0 20px 45px rgba(0,0,0,0.5)',
+                background: 'rgba(15, 23, 42, 0.96)',
+                backdropFilter: 'blur(28px)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                borderRadius: '10px',
+                boxShadow: '0 20px 45px rgba(0, 0, 0, 0.85)',
                 zIndex: 999999,
-                padding: '0.45rem',
+                padding: '0.5rem',
                 animation: 'fadeInUp 0.15s ease-out'
               }}
             >
-              <div style={{ position: 'relative', marginBottom: '0.4rem' }}>
+              <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
                 <Search size={13} style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#38bdf8' }} />
                 <input
                   type="text"
@@ -98,34 +85,35 @@ export default function Sidebar({
                   autoFocus
                   style={{
                     width: '100%',
-                    padding: '0.35rem 0.5rem 0.35rem 1.75rem',
-                    fontSize: '11px',
-                    fontWeight: 700,
+                    padding: '0.4rem 0.5rem 0.4rem 1.85rem',
+                    fontSize: '11.5px',
+                    fontWeight: 600,
                     borderRadius: '6px',
-                    border: '1px solid #334155',
-                    background: '#1e293b',
+                    border: '1px solid rgba(148, 163, 184, 0.25)',
+                    background: 'rgba(0, 0, 0, 0.6)',
                     color: '#ffffff',
                     outline: 'none'
                   }}
                 />
               </div>
 
-              <div style={{ maxHeight: '140px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px', scrollbarWidth: 'thin' }}>
+              <div style={{ maxHeight: '160px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '3px', scrollbarWidth: 'thin' }}>
                 {projects
-                  .filter(p => p.name.toLowerCase().includes(projectSearchQuery.toLowerCase()) || p.client.toLowerCase().includes(projectSearchQuery.toLowerCase()))
+                  .filter(p => p.name.toLowerCase().includes(projectSearchQuery.toLowerCase()) || (p.client && p.client.toLowerCase().includes(projectSearchQuery.toLowerCase())))
                   .map(p => {
-                    const isSelected = p.id === selectedProjectId;
+                    const isSelected = p.id === (activeProject?.id);
                     return (
                       <div
                         key={p.id}
                         style={{
-                          padding: '0.4rem 0.5rem',
-                          borderRadius: '5px',
-                          fontSize: '11px',
+                          padding: '0.45rem 0.6rem',
+                          borderRadius: '6px',
+                          fontSize: '11.5px',
                           fontWeight: isSelected ? 800 : 600,
                           background: isSelected ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                          color: isSelected ? '#38bdf8' : '#ffffff',
-                          cursor: 'pointer'
+                          color: isSelected ? '#38bdf8' : '#e2e8f0',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
                         }}
                         onClick={() => {
                           setSelectedProjectId(p.id);
@@ -133,8 +121,8 @@ export default function Sidebar({
                           setProjectSearchQuery('');
                         }}
                       >
-                        <div>📁 {p.name}</div>
-                        <div style={{ fontSize: '9.5px', color: '#94a3b8' }}>Client: {p.client}</div>
+                        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📁 {p.name}</div>
+                        <div style={{ fontSize: '10px', color: '#94a3b8' }}>Client: {p.client || 'Enterprise'}</div>
                       </div>
                     );
                   })}
@@ -143,15 +131,15 @@ export default function Sidebar({
           )}
 
           {activeProject && (
-            <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '0.4rem', lineHeight: 1.35 }}>
-              PO/Tender: <strong style={{ color: '#ffffff' }}>{activeProject.poNumber || activeProject.code || 'N/A'}</strong>
-              <div style={{ marginTop: '0.3rem' }}>
+            <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '0.45rem', lineHeight: 1.35 }}>
+              PO/Tender: <strong style={{ color: '#ffffff' }}>{activeProject.poNumber || activeProject.code || 'PO-2026-ACTIVE'}</strong>
+              <div style={{ marginTop: '0.35rem' }}>
                 {activeProject.status === 'COMPLETED' ? (
-                  <span className="badge badge-accept" style={{ fontSize: '10px' }}>
-                    CLOSED AS COMPLETE
+                  <span className="badge badge-accept" style={{ fontSize: '9.5px', padding: '0.15rem 0.5rem' }}>
+                    COMPLETED
                   </span>
                 ) : (
-                  <span className="badge badge-conditional" style={{ fontSize: '10px', background: 'rgba(217, 119, 6, 0.35)', color: '#fef08a', border: '1px solid rgba(245, 158, 11, 0.6)', fontWeight: 800 }}>
+                  <span className="badge badge-conditional" style={{ fontSize: '9.5px', padding: '0.15rem 0.5rem' }}>
                     IN PROGRESS
                   </span>
                 )}
@@ -162,127 +150,162 @@ export default function Sidebar({
 
         {/* Left Vertical Navigation Links */}
         <nav className="sidebar-nav">
-          <div className="sidebar-section-label">MAIN NAVIGATION</div>
+          <div className="sidebar-section-label">INTELLIGENCE & AI</div>
 
-          {/* 1. Dashboard */}
           <button
-            className={`sidebar-link ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            className={`sidebar-link ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => navigate('/analytics')}
           >
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
+            <LineChart size={18} color={activeTab === 'analytics' ? '#ffffff' : '#38bdf8'} />
+            <span>Analytics Dashboard</span>
           </button>
 
-          {/* 2. Requirements Pipeline */}
           <button
-            className={`sidebar-link ${activeTab === 'requirements' ? 'active' : ''}`}
-            onClick={() => setActiveTab('requirements')}
+            className={`sidebar-link ${activeTab === 'solutions-showcase' ? 'active' : ''}`}
+            onClick={() => navigate('/solutions-showcase')}
           >
-            <FileText size={18} color={activeTab === 'requirements' ? '#ffffff' : '#fbbf24'} />
-            <span style={{ flex: 1 }}>Requirements Pipeline</span>
-            {requirementsCount > 0 && (
-              <span className="badge badge-conditional" style={{ fontSize: '9.5px', padding: '0.05rem 0.35rem', borderRadius: '10px' }}>
-                {requirementsCount}
-              </span>
-            )}
+            <Sparkles size={18} color={activeTab === 'solutions-showcase' ? '#ffffff' : '#a78bfa'} />
+            <span>Solutions Showcase</span>
           </button>
 
-          {/* 3. Product Catalog */}
+          <button
+            className={`sidebar-link ${activeTab === 'tender-agent' ? 'active' : ''}`}
+            onClick={() => navigate('/tender-agent')}
+          >
+            <Bot size={18} color={activeTab === 'tender-agent' ? '#ffffff' : '#00f2fe'} />
+            <span>Tender Scope & Specs</span>
+          </button>
+
+          <div className="sidebar-section-label">CATALOG & PROCUREMENT</div>
+
+          <button
+            className={`sidebar-link ${activeTab === 'bom' ? 'active' : ''}`}
+            onClick={() => navigate('/bom')}
+          >
+            <Calculator size={18} color={activeTab === 'bom' ? '#ffffff' : '#38bdf8'} />
+            <span>BOM Estimator</span>
+          </button>
+
           <button
             className={`sidebar-link ${activeTab === 'products' ? 'active' : ''}`}
-            onClick={() => setActiveTab('products')}
+            onClick={() => navigate('/products')}
           >
             <Layers size={18} color={activeTab === 'products' ? '#ffffff' : '#38bdf8'} />
-            <span>Product Catalog</span>
+            <span style={{ flex: 1 }}>Product Catalog</span>
           </button>
 
-          {/* 4. OEM Companies (NPD Directory) */}
+          <button
+            className={`sidebar-link ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => navigate('/dashboard')}
+          >
+            <LayoutDashboard size={18} color={activeTab === 'dashboard' ? '#ffffff' : '#94a3b8'} />
+            <span>Product Master DB</span>
+          </button>
+
           <button
             className={`sidebar-link ${activeTab === 'oem-directory' ? 'active' : ''}`}
-            onClick={() => setActiveTab('oem-directory')}
+            onClick={() => navigate('/oem-directory')}
           >
             <Building2 size={18} color={activeTab === 'oem-directory' ? '#ffffff' : '#818cf8'} />
             <span>OEM Partners Directory</span>
           </button>
 
-          {/* 5. Compliance Evaluator */}
+          <button
+            className={`sidebar-link ${activeTab === 'notifications' ? 'active' : ''}`}
+            onClick={() => navigate('/notifications')}
+          >
+            <Bell size={18} color={activeTab === 'notifications' ? '#ffffff' : '#f59e0b'} />
+            <span style={{ flex: 1 }}>OEM Notifications</span>
+            <span className="badge badge-conditional" style={{ fontSize: '9px', padding: '0.1rem 0.4rem', borderRadius: '10px' }}>
+              LIVE
+            </span>
+          </button>
+
+          <button
+            className={`sidebar-link ${activeTab === 'requirements' ? 'active' : ''}`}
+            onClick={() => navigate('/requirements')}
+          >
+            <FileText size={18} color={activeTab === 'requirements' ? '#ffffff' : '#fbbf24'} />
+            <span style={{ flex: 1 }}>Requirements Pipeline</span>
+            {requirementsCount > 0 && (
+              <span className="badge badge-conditional" style={{ fontSize: '9px', padding: '0.1rem 0.4rem', borderRadius: '10px' }}>
+                {requirementsCount}
+              </span>
+            )}
+          </button>
+
+          <div className="sidebar-section-label">COMPLIANCE & SPECS</div>
+
           <button
             className={`sidebar-link ${activeTab === 'evaluator' ? 'active' : ''}`}
-            onClick={() => setActiveTab('evaluator')}
+            onClick={() => navigate('/evaluator')}
           >
             <CheckSquare size={18} color={activeTab === 'evaluator' ? '#ffffff' : '#34d399'} />
             <span>Compliance Evaluator</span>
           </button>
 
-          {/* 6. Certifications Vault */}
           <button
             className={`sidebar-link ${activeTab === 'certifications-vault' ? 'active' : ''}`}
-            onClick={() => setActiveTab('certifications-vault')}
+            onClick={() => navigate('/certifications-vault')}
           >
             <Award size={18} color={activeTab === 'certifications-vault' ? '#ffffff' : '#fde047'} />
-            <span>Certifications Vault (STQC/ARAI)</span>
+            <span>Certifications Vault</span>
           </button>
 
-          {/* 7. Compare Matrix */}
           <button
             className={`sidebar-link ${activeTab === 'comparison' ? 'active' : ''}`}
-            onClick={() => setActiveTab('comparison')}
+            onClick={() => navigate('/comparison')}
           >
-            <Columns3 size={18} />
+            <Columns3 size={18} color={activeTab === 'comparison' ? '#ffffff' : '#94a3b8'} />
             <span>Compare Matrix</span>
           </button>
 
-          {/* 8. OEM Email History */}
           <button
             className={`sidebar-link ${activeTab === 'email-history' ? 'active' : ''}`}
-            onClick={() => setActiveTab('email-history')}
+            onClick={() => navigate('/email-history')}
           >
             <Mail size={18} color={activeTab === 'email-history' ? '#ffffff' : '#f472b6'} />
             <span style={{ flex: 1 }}>OEM Email History</span>
             {emailCount > 0 && (
-              <span className="badge badge-accept" style={{ fontSize: '9.5px', padding: '0.05rem 0.35rem', borderRadius: '10px' }}>
+              <span className="badge badge-accept" style={{ fontSize: '9px', padding: '0.1rem 0.4rem', borderRadius: '10px' }}>
                 {emailCount}
               </span>
             )}
           </button>
 
-          {/* BOTTOM ITEMS: Projects, Meeting Room & Inspection Summary */}
-          <div className="sidebar-section-label" style={{ marginTop: '1.1rem' }}>PROJECTS & AUDIT TRAIL</div>
+          <div className="sidebar-section-label">PROJECTS & AUDIT</div>
 
-          {/* 9. Projects & Specs */}
           <button
             className={`sidebar-link ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => setActiveTab('projects')}
+            onClick={() => navigate('/projects')}
           >
             <FolderGit2 size={18} color={activeTab === 'projects' ? '#ffffff' : '#f472b6'} />
             <span>Projects & Specs</span>
           </button>
 
-          {/* 10. Meeting Room & Updates */}
           <button
             className={`sidebar-link ${activeTab === 'meeting-room' ? 'active' : ''}`}
-            onClick={() => setActiveTab('meeting-room')}
+            onClick={() => navigate('/meeting-room')}
           >
             <Video size={18} color={activeTab === 'meeting-room' ? '#ffffff' : '#818cf8'} />
             <span>Meeting Room & Updates</span>
           </button>
 
-          {/* 11. Inspection Summary */}
           <button
             className={`sidebar-link ${activeTab === 'inspection-summary' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inspection-summary')}
+            onClick={() => navigate('/inspection-summary')}
           >
             <SearchCheck size={18} color={activeTab === 'inspection-summary' ? '#ffffff' : '#34d399'} />
             <span>Inspection Summary</span>
           </button>
 
-          <div className="sidebar-section-label" style={{ marginTop: '1.1rem' }}>CONFIGURATION</div>
+          <div className="sidebar-section-label">CONFIGURATION</div>
 
           <button
             className={`sidebar-link ${activeTab === 'category-builder' ? 'active' : ''}`}
-            onClick={() => setActiveTab('category-builder')}
+            onClick={() => navigate('/category-builder')}
           >
-            <PlusCircle size={18} />
+            <PlusCircle size={18} color={activeTab === 'category-builder' ? '#ffffff' : '#94a3b8'} />
             <span>Add Custom Category</span>
           </button>
         </nav>
@@ -291,16 +314,16 @@ export default function Sidebar({
         <div className="sidebar-footer">
           {user && (
             <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: 'rgba(30, 41, 59, 0.7)',
               padding: '0.6rem 0.75rem',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(148, 163, 184, 0.2)',
               marginBottom: '0.75rem'
             }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <UserCheck size={13} color="#34d399" /> {user.name || 'Brihaspathi Lead'}
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <UserCheck size={14} color="#34d399" /> {user.name || 'Brihaspathi Lead'}
               </div>
-              <div style={{ fontSize: '10.5px', color: '#38bdf8', marginTop: '0.1rem', fontWeight: 600 }}>
+              <div style={{ fontSize: '10.5px', color: '#38bdf8', marginTop: '0.15rem', fontWeight: 600 }}>
                 Role: {user.role || 'Product Development Team Lead'}
               </div>
             </div>
@@ -308,14 +331,14 @@ export default function Sidebar({
 
           <button
             className="btn btn-secondary btn-sm"
-            style={{ width: '100%', fontSize: '11.5px', color: '#fb7185', borderColor: 'rgba(244, 63, 94, 0.3)', background: 'rgba(244, 63, 94, 0.1)' }}
+            style={{ width: '100%', fontSize: '11.5px', color: '#fb7185', borderColor: 'rgba(244, 63, 94, 0.35)', background: 'rgba(244, 63, 94, 0.12)' }}
             onClick={onLogout}
           >
             <LogOut size={13} /> Sign Out Portal
           </button>
 
-          <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.65rem', textAlign: 'center', fontWeight: 600 }}>
-            Brihaspathi ProcureSpec AI &bull; v2.5
+          <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '0.65rem', textAlign: 'center', fontWeight: 600 }}>
+            Brihaspathi ProcureSpec AI &bull; v3.0 NextGen
           </div>
         </div>
       </div>

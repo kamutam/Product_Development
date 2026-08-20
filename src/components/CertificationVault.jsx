@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Award, Download, ExternalLink, Plus, Search, Filter, ShieldCheck, FileText, ShoppingCart, Trash2, Camera, Layers, CheckCircle2, Sliders } from 'lucide-react';
+import { Award, Download, ExternalLink, Plus, Search, Filter, ShieldCheck, FileText, ShoppingCart, Trash2, Camera, Layers, CheckCircle2, Sliders, ScanSearch, Loader2, Upload } from 'lucide-react';
+import { simulateOCRScan } from '../utils/aiService';
 
 // Master Individual STQC Certified Models Directory parsed from Official STQC Certificate PDFs & Annexure-A
 const INDIVIDUAL_STQC_MODELS = [
@@ -419,6 +420,9 @@ export default function CertificationVault() {
   const [activeCertFileFilter, setActiveCertFileFilter] = useState('ALL');
 
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showOCRModal, setShowOCRModal] = useState(false);
+  const [isOCRScanning, setIsOCRScanning] = useState(false);
+  const [ocrResult, setOcrResult] = useState(null);
 
   const [newItem, setNewItem] = useState({
     name: '',
@@ -433,6 +437,33 @@ export default function CertificationVault() {
     datasheetLink: '',
     storeLink: ''
   });
+
+  const handleSimulateOCR = async () => {
+    setIsOCRScanning(true);
+    setOcrResult(null);
+    try {
+      const result = await simulateOCRScan({ name: 'ARAI_Sample_Cert.pdf' });
+      setOcrResult(result.extractedData);
+      
+      // Auto-fill some fields in the Add Modal based on OCR
+      setNewItem(prev => ({
+        ...prev,
+        certName: result.extractedData.certificateNumber,
+        brandMake: result.extractedData.issuingAuthority.includes('ARAI') ? 'ARAI Certified Vendor' : 'STQC Certified Vendor',
+        certType: result.extractedData.issuingAuthority.includes('ARAI') ? 'ARAI' : 'STQC'
+      }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsOCRScanning(false);
+    }
+  };
+
+  const openAddFromOCR = () => {
+    setShowOCRModal(false);
+    setShowAddModal(true);
+    setOcrResult(null);
+  };
 
   const handleSaveItem = (e) => {
     e.preventDefault();
@@ -489,9 +520,18 @@ export default function CertificationVault() {
           </p>
         </div>
 
-        <button className="btn btn-primary btn-sm" onClick={() => setShowAddModal(true)}>
-          <Plus size={15} /> Add Individual Certified Model Link
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button 
+            className="btn btn-secondary btn-sm" 
+            onClick={() => setShowOCRModal(true)}
+            style={{ borderColor: 'rgba(139, 92, 246, 0.4)', color: '#a78bfa' }}
+          >
+            <ScanSearch size={15} /> AI Document OCR
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={() => setShowAddModal(true)}>
+            <Plus size={15} /> Add Individual Certified Model Link
+          </button>
+        </div>
       </div>
 
       {/* Certification Type Navigation Tabs (STQC, ARAI, CMMI) */}
@@ -682,7 +722,6 @@ export default function CertificationVault() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
                           <span className="badge badge-accept" style={{ 
                             background: 'rgba(56, 189, 248, 0.15)', 
-                            borderColor: 'rgba(56, 189, 248, 0.35)', 
                             borderColor: 'rgba(56, 189, 248, 0.35)', 
                             fontSize: '10.5px', 
                             padding: '0.2rem 0.55rem', 
@@ -924,6 +963,68 @@ export default function CertificationVault() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* AI OCR Scanner Modal */}
+      {showOCRModal && (
+        <div className="modal-overlay" onClick={() => setShowOCRModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <ScanSearch size={24} color="#8b5cf6" />
+              <h3 style={{ fontSize: '1.25rem', margin: 0 }}>AI Certificate Scanner</h3>
+            </div>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              Upload an STQC or ARAI PDF. The AI Computer Vision model will extract validity and metadata.
+            </p>
+
+            {!ocrResult ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '2rem', border: '2px dashed rgba(139, 92, 246, 0.3)', borderRadius: '12px', background: 'rgba(15, 23, 42, 0.5)' }}>
+                <Upload size={32} color="#64748b" />
+                <button 
+                  className="btn btn-primary" 
+                  onClick={handleSimulateOCR}
+                  disabled={isOCRScanning}
+                  style={{ background: '#8b5cf6' }}
+                >
+                  {isOCRScanning ? <Loader2 size={16} className="animate-spin" /> : <ScanSearch size={16} />}
+                  {isOCRScanning ? 'Scanning Document...' : 'Simulate Upload & Scan'}
+                </button>
+              </div>
+            ) : (
+              <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '1rem', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981', fontWeight: 800, marginBottom: '1rem' }}>
+                  <CheckCircle2 size={18} /> Extraction Successful
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Cert Number:</span>
+                    <span style={{ fontWeight: 700 }}>{ocrResult.certificateNumber}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Authority:</span>
+                    <span style={{ fontWeight: 700 }}>{ocrResult.issuingAuthority}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Valid Until:</span>
+                    <span style={{ fontWeight: 700, color: '#38bdf8' }}>{ocrResult.validUntil}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Confidence:</span>
+                    <span style={{ fontWeight: 700, color: '#10b981' }}>{ocrResult.confidenceScore}</span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                  <button className="btn btn-secondary" onClick={() => setShowOCRModal(false)} style={{ flex: 1 }}>Close</button>
+                  <button className="btn btn-primary" onClick={openAddFromOCR} style={{ flex: 1, background: '#10b981' }}>
+                    Auto-Fill Model Entry
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

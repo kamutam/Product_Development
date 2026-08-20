@@ -24,7 +24,7 @@ export default function GovtEmblemLogo({ type, size = 28, style = {} }) {
         }}
       >
         <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="46" fill="#0f172a" stroke="#eab308" strokeWidth="4"/>
+          <circle cx="50" cy="50" r="46" fill="#ffffff" stroke="#eab308" strokeWidth="4"/>
           <path d="M50 12 L56 30 L75 30 L60 42 L66 60 L50 48 L34 60 L40 42 L25 30 L44 30 Z" fill="#eab308"/>
           <circle cx="50" cy="50" r="18" fill="#10b981"/>
           <text x="50" y="55" fontSize="14" fontWeight="900" fill="#ffffff" textAnchor="middle">AP</text>
@@ -89,7 +89,7 @@ export default function GovtEmblemLogo({ type, size = 28, style = {} }) {
           <rect x="18" y="25" width="64" height="24" rx="4" fill="#38bdf8"/>
           <circle cx="30" cy="70" r="10" fill="#f97316"/>
           <circle cx="70" cy="70" r="10" fill="#f97316"/>
-          <text x="50" y="42" fontSize="11" fontWeight="900" fill="#0f172a" textAnchor="middle">MSRTC</text>
+          <text x="50" y="42" fontSize="11" fontWeight="900" fill="#ffffff" textAnchor="middle">MSRTC</text>
         </svg>
         <span>🚌 MSRTC GOVT</span>
       </div>

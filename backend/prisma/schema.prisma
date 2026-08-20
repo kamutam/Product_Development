@@ -1,0 +1,771 @@
+// ==============================================================================
+// PRISMA SCHEMA: PRODUCT INTELLIGENCE & OEM PRODUCT DEVELOPMENT PLATFORM
+// ==============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------------------------------
+
+enum RoleType {
+  ADMIN
+  PRODUCT_MANAGER
+  RESEARCHER
+  ANALYST
+  SALES
+  VENDOR_MANAGER
+  USER
+}
+
+enum ProductStatus {
+  IDEA
+  RESEARCHING
+  PROTOTYPING
+  IN_DEVELOPMENT
+  HOMOLOGATING
+  CERTIFIED
+  ACTIVE
+  DEPRECATED
+}
+
+enum PriorityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TenderStatus {
+  DRAFT
+  INGESTED
+  EVALUATED
+  HOMOLOGATED
+  BID_PREPARED
+  SUBMITTED
+  WON
+  LOST
+  ARCHIVED
+}
+
+enum ComplianceStatus {
+  QUALIFIED
+  DEVIATED
+  REJECTED
+  PENDING_AUDIT
+}
+
+enum ReportType {
+  PRODUCT_REPORT
+  MARKET_REPORT
+  COMPETITOR_REPORT
+  VENDOR_REPORT
+  TENDER_REPORT
+  FEASIBILITY_REPORT
+  MANAGEMENT_REPORT
+}
+
+enum NotificationType {
+  TENDER_DEADLINE
+  PRODUCT_MILESTONE
+  RESEARCH_UPDATE
+  VENDOR_RESPONSE
+  AI_ANALYSIS_COMPLETED
+  REPORT_READY
+  SYSTEM_ALERT
+}
+
+// ------------------------------------------------------------------------------
+// 1. AUTHENTICATION, USERS & RBAC
+// ------------------------------------------------------------------------------
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  passwordHash      String
+  fullName          String
+  avatarUrl         String?
+  role              RoleType           @default(USER)
+  department        String?            @default("Product Engineering")
+  isActive          Boolean            @default(true)
+  emailVerified     Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relationships
+  refreshTokens     RefreshToken[]
+  sessions          Session[]
+  userRoles         UserRole[]
+  organizationMembers OrganizationMember[]
+  createdProducts   Product[]          @relation("ProductCreator")
+  createdTenders    Tender[]           @relation("TenderCreator")
+  aiConversations   AIConversation[]
+  reports           Report[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        RoleType     @unique
+  description String?
+  userRoles   UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  action      String           // e.g. "create:product", "delete:tender"
+  description String?
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress    String?
+  userAgent    String?
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@map("sessions")
+}
+
+// ------------------------------------------------------------------------------
+// 2. ORGANIZATIONS
+// ------------------------------------------------------------------------------
+
+model Organization {
+  id          String               @id @default(uuid())
+  name        String
+  domain      String?
+  logoUrl     String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  members     OrganizationMember[]
+  products    Product[]
+  tenders     Tender[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid())
+  organizationId String
+  userId         String
+  role           RoleType     @default(USER)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime     @default(now())
+
+  @@unique([organizationId, userId])
+  @@map("organization_members")
+}
+
+// ------------------------------------------------------------------------------
+// 3. PRODUCT MANAGEMENT & ROADMAPS
+// ------------------------------------------------------------------------------
+
+model ProductCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  icon        String?
+  fields      Json?     @default("[]") // Category builder custom spec schema
+  createdAt   DateTime  @default(now())
+  products    Product[]
+
+  @@map("product_categories")
+}
+
+model Product {
+  id              String             @id @default(uuid())
+  name            String
+  sku             String?            @unique
+  categoryId      String?
+  category        ProductCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  vendorName      String?
+  vendorId        String?
+  vendor          Vendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  organizationId  String?
+  organization    Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  creatorId       String?
+  creator         User?              @relation("ProductCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  
+  description     String?
+  price           Decimal            @default(0.0)
+  targetCost      Decimal?
+  status          ProductStatus      @default(ACTIVE)
+  
+  // Technical Specifications & Homologation
+  specs           Json               @default("{}") // e.g. { resolution: "4MP", stqcLab: true }
+  certifications  Json               @default("[\"STQC TAC\", \"MeiTY\", \"CE\", \"FCC\", \"RoHS\"]")
+  stqcPdfUrl      String?
+  datasheetUrl    String?
+  
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  // Related Entities
+  features        ProductFeature[]
+  requirements    ProductRequirement[]
+  versions        ProductVersion[]
+  documents       ProductDocument[]
+  competitorComps CompetitorProduct[]
+
+  @@map("products")
+}
+
+model ProductIdea {
+  id             String        @id @default(uuid())
+  title          String
+  description    String
+  marketCategory String?
+  targetPrice    Decimal?
+  estimatedScore Float?        @default(0.0)
+  feasibility    String?
+  priority       PriorityLevel @default(MEDIUM)
+  status         String        @default("PROPOSED")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("product_ideas")
+}
+
+model ProductFeature {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isMandatory Boolean  @default(true)
+  specValue   String?
+  createdAt   DateTime @default(now())
+
+  @@map("product_features")
+}
+
+model ProductRequirement {
+  id                     String        @id @default(uuid())
+  productId              String?
+  product                Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  title                  String
+  category               String?
+  solution               String?
+  techSpecs              String?
+  quantity               String?
+  location               String?
+  project                String?
+  priority               PriorityLevel @default(HIGH)
+  requiredCertifications String?
+  timeline               String?
+  status                 String        @default("Researching")
+  createdDate            String?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@map("product_requirements")
+}
+
+model ProductVersion {
+  id            String    @id @default(uuid())
+  productId     String
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  versionNumber String    // e.g. "v1.2.0"
+  changelog     String?
+  releaseDate   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@map("product_versions")
+}
+
+model ProductRoadmap {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  milestones  ProductMilestone[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@map("product_roadmaps")
+}
+
+model ProductMilestone {
+  id          String         @id @default(uuid())
+  roadmapId   String
+  roadmap     ProductRoadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  dueDate     DateTime?
+  isCompleted Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+
+  @@map("product_milestones")
+}
+
+model ProductDocument {
+  id          String    @id @default(uuid())
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  documentId  String?
+  document    Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  title       String
+  fileUrl     String
+  docType     String    @default("DATASHEET") // DATASHEET | STQC_CERT | TEST_REPORT
+  createdAt   DateTime  @default(now())
+
+  @@map("product_documents")
+}
+
+// ------------------------------------------------------------------------------
+// 4. MARKET & COMPETITOR INTELLIGENCE
+// ------------------------------------------------------------------------------
+
+model Market {
+  id             String              @id @default(uuid())
+  name           String              @unique
+  region         String              @default("India / Global")
+  tamValue       Decimal?            // Total Addressable Market
+  cagrPercentage Float?
+  createdAt      DateTime            @default(now())
+  trends         MarketTrend[]
+  opportunities  MarketOpportunity[]
+  researchItems  MarketResearch[]
+
+  @@map("markets")
+}
+
+model MarketResearch {
+  id          String   @id @default(uuid())
+  marketId    String?
+  market      Market?  @relation(fields: [marketId], references: [id], onDelete: SetNull)
+  title       String
+  summary     String
+  insights    Json     @default("[]")
+  sourceUrl   String?
+  createdAt   DateTime @default(now())
+
+  @@map("market_research")
+}
+
+model MarketTrend {
+  id          String   @id @default(uuid())
+  marketId    String?
+  market      Market?  @relation(fields: [marketId], references: [id], onDelete: SetNull)
+  trendName   String
+  impactLevel String   @default("HIGH")
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@map("market_trends")
+}
+
+model MarketOpportunity {
+  id                String   @id @default(uuid())
+  marketId          String?
+  market            Market?  @relation(fields: [marketId], references: [id], onDelete: SetNull)
+  opportunityTitle  String
+  potentialRevenue  Decimal?
+  actionPlan        String?
+  createdAt         DateTime @default(now())
+
+  @@map("market_opportunities")
+}
+
+model Competitor {
+  id             String              @id @default(uuid())
+  name           String              @unique
+  headquarters   String?
+  marketShare    Float?
+  strengths      String?
+  weaknesses     String?
+  pricingTier    String?             @default("ENTERPRISE")
+  websiteUrl     String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  products       CompetitorProduct[]
+  analyses       CompetitorAnalysis[]
+
+  @@map("competitors")
+}
+
+model CompetitorProduct {
+  id           String      @id @default(uuid())
+  competitorId String
+  competitor   Competitor  @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product?    @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName  String
+  sku          String?
+  price        Decimal?
+  specs        Json        @default("{}")
+  features     Json        @default("[]")
+  advantages   String?
+  gaps         String?
+  createdAt    DateTime    @default(now())
+
+  @@map("competitor_products")
+}
+
+model CompetitorAnalysis {
+  id           String     @id @default(uuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  swotMatrix   Json       @default("{}") // { strengths: [], weaknesses: [], opportunities: [], threats: [] }
+  aiInsights   String?
+  createdAt    DateTime   @default(now())
+
+  @@map("competitor_analyses")
+}
+
+// ------------------------------------------------------------------------------
+// 5. VENDOR & OEM DIRECTORY
+// ------------------------------------------------------------------------------
+
+model Vendor {
+  id           String             @id @default(uuid())
+  name         String             @unique
+  oemCategory  String?            @default("CCTV / Surveillance")
+  country      String?            @default("India")
+  website      String?
+  rating       Float?             @default(4.5)
+  tier         String?            @default("TIER_1")
+  isActive     Boolean            @default(true)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  
+  products     Product[]
+  contacts     VendorContact[]
+  evaluations  VendorEvaluation[]
+  emails       EmailHistory[]
+
+  @@map("vendors")
+}
+
+model VendorContact {
+  id          String   @id @default(uuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String?
+  designation String?  @default("Government Sales Lead")
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("vendor_contacts")
+}
+
+model VendorEvaluation {
+  id                 String   @id @default(uuid())
+  vendorId           String
+  vendor             Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  qualityScore       Float    @default(90.0)
+  deliveryScore      Float    @default(85.0)
+  commercialScore    Float    @default(88.0)
+  overallCompliance  Float    @default(92.0)
+  remarks            String?
+  evaluatedAt        DateTime @default(now())
+
+  @@map("vendor_evaluations")
+}
+
+model EmailHistory {
+  id               String   @id @default(uuid())
+  vendorId         String?
+  vendor           Vendor?  @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  oemName          String
+  oemEmail         String
+  requirementTitle String
+  subject          String
+  body             String
+  status           String   @default("Sent")
+  date             String?
+  createdAt        DateTime @default(now())
+
+  @@map("email_history")
+}
+
+// ------------------------------------------------------------------------------
+// 6. TENDER INTELLIGENCE & HOMOLOGATION
+// ------------------------------------------------------------------------------
+
+model Tender {
+  id               String              @id @default(uuid())
+  tenderRefNo      String              @unique
+  gemBidId         String?             @unique
+  title            String
+  organisationName String
+  department       String?
+  tenderDomain     String?             @default("surveillance")
+  estimatedValue   Decimal?            @default(0.0)
+  emdAmount        Decimal?            @default(0.0)
+  emdMode          String?             @default("BG / Online RTGS / MSME Exempted")
+  processingFee    String?             @default("Free Download on GeM")
+  preBidMeeting    DateTime?
+  submissionDeadline DateTime?
+  status           TenderStatus        @default(INGESTED)
+  organizationId   String?
+  organization     Organization?       @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  creatorId        String?
+  creator          User?               @relation("TenderCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  
+  // 14 Statutory Evidence Grounded Fields
+  statutoryDossier Json?               @default("{}")
+  conflictsData    Json?               @default("[]")
+  pageMap          Json?               @default("[]")
+  totalPages       Int?                @default(1)
+  
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  documents        TenderDocument[]
+  analyses         TenderAnalysis[]
+
+  @@map("tenders")
+}
+
+model TenderDocument {
+  id         String    @id @default(uuid())
+  tenderId   String
+  tender     Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  docType    String    @default("ATC_SPEC") // GEM_NOTICE | ATC_SPEC | BOQ_EXCEL | CORRIGENDUM
+  fileName   String
+  fileUrl    String
+  pageCount  Int       @default(1)
+  createdAt  DateTime  @default(now())
+
+  @@map("tender_documents")
+}
+
+model TenderAnalysis {
+  id                 String           @id @default(uuid())
+  tenderId           String
+  tender             Tender           @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  complianceScore    Float            @default(100.0)
+  status             ComplianceStatus @default(QUALIFIED)
+  pqStatus           String           @default("QUALIFIED")
+  tqStatus           String           @default("QUALIFIED")
+  deviationsForm4    Json             @default("[]")
+  boqArchitecture    Json             @default("[]")
+  analyzedAt         DateTime         @default(now())
+
+  @@map("tender_analyses")
+}
+
+// ------------------------------------------------------------------------------
+// 7. GENERIC DOCUMENT PROCESSING & RAG FOUNDATION
+// ------------------------------------------------------------------------------
+
+model Document {
+  id              String            @id @default(uuid())
+  title           String
+  fileName        String
+  fileUrl         String
+  fileSize        Int?
+  mimeType        String
+  docType         String            @default("GENERAL") // PDF | DOCX | XLSX | CSV | TXT | IMAGE
+  pageCount       Int               @default(1)
+  isProcessed     Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  chunks          DocumentChunk[]
+  productDocuments ProductDocument[]
+  tenderDocuments TenderDocument[]
+
+  @@map("documents")
+}
+
+model DocumentChunk {
+  id          String              @id @default(uuid())
+  documentId  String
+  document    Document            @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  chunkIndex  Int
+  pageNumber  Int?                @default(1)
+  section     String?             @default("General")
+  content     String
+  tokenCount  Int?
+  createdAt   DateTime            @default(now())
+  embeddings  DocumentEmbedding[]
+
+  @@map("document_chunks")
+}
+
+model DocumentEmbedding {
+  id        String        @id @default(uuid())
+  chunkId   String
+  chunk     DocumentChunk @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+  model     String        @default("text-embedding-004")
+  vector    String?       // Stored vector string or pgvector native mapping
+  createdAt DateTime      @default(now())
+
+  @@map("document_embeddings")
+}
+
+// ------------------------------------------------------------------------------
+// 8. AI CONVERSATIONS, AGENT EXECUTIONS & INSIGHTS
+// ------------------------------------------------------------------------------
+
+model AIConversation {
+  id        String      @id @default(uuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  title     String      @default("Product Intelligence Session")
+  context   Json?       @default("{}")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  messages  AIMessage[]
+
+  @@map("ai_conversations")
+}
+
+model AIMessage {
+  id             String         @id @default(uuid())
+  conversationId String
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String         // "user" | "assistant" | "system"
+  content        String
+  citations      Json?          @default("[]")
+  createdAt      DateTime       @default(now())
+
+  @@map("ai_messages")
+}
+
+model AITask {
+  id          String   @id @default(uuid())
+  agentType   String   // ProductAgent | TenderAgent | MarketAgent | VendorAgent | DocAgent
+  status      String   @default("QUEUED") // QUEUED | PROCESSING | COMPLETED | FAILED
+  inputParams Json     @default("{}")
+  outputData  Json?
+  error       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("ai_tasks")
+}
+
+// ------------------------------------------------------------------------------
+// 9. ANALYTICS, REPORTS & NOTIFICATIONS
+// ------------------------------------------------------------------------------
+
+model AnalyticsSnapshot {
+  id               String   @id @default(uuid())
+  timestamp        DateTime @default(now())
+  totalProducts    Int      @default(0)
+  activeProjects   Int      @default(0)
+  totalTenders     Int      @default(0)
+  totalVendors     Int      @default(0)
+  bomSpendTotal    Decimal  @default(0.0)
+  homologationRate Float    @default(98.5)
+  pipelineGrowth   Float    @default(14.8)
+  metricsPayload   Json     @default("{}")
+
+  @@map("analytics_snapshots")
+}
+
+model Report {
+  id          String     @id @default(uuid())
+  title       String
+  reportType  ReportType @default(PRODUCT_REPORT)
+  format      String     @default("PDF") // PDF | JSON | CSV
+  fileUrl     String?
+  authorId    String?
+  author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  content     Json?      @default("{}")
+  createdAt   DateTime   @default(now())
+
+  @@map("reports")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(SYSTEM_ALERT)
+  isRead    Boolean          @default(false)
+  linkUrl   String?
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+// ------------------------------------------------------------------------------
+// 10. AUDIT TRAIL & SYSTEM SETTINGS
+// ------------------------------------------------------------------------------
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  action     String   // e.g. "USER_LOGIN", "PRODUCT_CREATE", "TENDER_ANALYZE"
+  resource   String   // "Product", "Tender", "Vendor"
+  resourceId String?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ipAddress  String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("system_settings")
+}

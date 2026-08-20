@@ -45,7 +45,7 @@ export default function EmailHistoryPage({ emailHistory = [], setEmailHistory })
       case 'Follow-up Required':
         return <span className="badge badge-conditional"><Clock size={12} /> FOLLOW-UP REQUIRED</span>;
       case 'Closed':
-        return <span className="badge" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #cbd5e1' }}>CLOSED</span>;
+        return <span className="badge" style={{ background: 'var(--bg-card-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-color)' }}>CLOSED</span>;
       default:
         return <span className="badge badge-conditional"><Clock size={12} /> DRAFT / GENERATED</span>;
     }
@@ -89,7 +89,7 @@ export default function EmailHistoryPage({ emailHistory = [], setEmailHistory })
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>Status Filter:</span>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Status Filter:</span>
           <select 
             className="form-select"
             style={{ width: '190px', padding: '0.4rem 0.65rem', fontSize: '12px' }}
@@ -130,18 +130,18 @@ export default function EmailHistoryPage({ emailHistory = [], setEmailHistory })
               ) : (
                 filteredHistory.map((item) => (
                   <tr key={item.id}>
-                    <td style={{ fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>
+                    <td style={{ fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                       <Calendar size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
                       {item.date}
                     </td>
-                    <td style={{ fontWeight: 800, color: '#0f172a' }}>
+                    <td style={{ fontWeight: 800, color: 'var(--text-heading)' }}>
                       <Building2 size={13} style={{ verticalAlign: 'middle', marginRight: '4px', color: '#0284c7' }} />
                       {item.oemName}
                     </td>
                     <td style={{ fontWeight: 700, color: '#0284c7' }}>
                       {item.requirementTitle || 'Product Requirement Inquiry'}
                     </td>
-                    <td style={{ color: '#475569', fontSize: '11.5px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <td style={{ color: 'var(--text-muted)', fontSize: '11.5px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.subject}
                     </td>
                     <td>
@@ -208,19 +208,19 @@ export default function EmailHistoryPage({ emailHistory = [], setEmailHistory })
               </button>
             </div>
 
-            <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Subject:</div>
-              <div style={{ fontSize: '13px', fontWeight: 800, color: '#0f172a', marginTop: '0.2rem' }}>{selectedEmail.subject}</div>
+            <div style={{ background: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Subject:</div>
+              <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-heading)', marginTop: '0.2rem' }}>{selectedEmail.subject}</div>
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '0.35rem' }}>Email Message Body:</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '0.35rem' }}>Email Message Body:</div>
               <textarea 
                 className="form-textarea"
                 rows="14"
                 readOnly
                 value={selectedEmail.body}
-                style={{ fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.5, background: '#ffffff', color: '#0f172a' }}
+                style={{ fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.5, background: 'var(--bg-card)', color: 'var(--text-heading)' }}
               />
             </div>
 

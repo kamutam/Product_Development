@@ -1,20 +1,22 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, CheckSquare, FolderGit2, Layers, Columns3, PlusCircle, RefreshCw } from 'lucide-react';
 import BrihaspathiLogo from './BrihaspathiLogo';
 
 export default function Navbar({ 
-  activeTab, setActiveTab, projects, selectedProjectId, setSelectedProjectId, syncStatus, onSyncGoogleSheet 
+  activeTab, projects, selectedProjectId, setSelectedProjectId, syncStatus, onSyncGoogleSheet 
 }) {
+  const navigate = useNavigate();
   return (
     <header className="navbar">
-      <div onClick={() => setActiveTab('dashboard')}>
+      <div onClick={() => navigate('/dashboard')}>
         <BrihaspathiLogo height={40} showTagline={true} />
       </div>
 
       <nav className="nav-links">
         <button
           className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-          onClick={() => setActiveTab('dashboard')}
+          onClick={() => navigate('/dashboard')}
         >
           <LayoutDashboard size={17} />
           Dashboard
@@ -22,7 +24,7 @@ export default function Navbar({
 
         <button
           className={`nav-btn ${activeTab === 'evaluator' ? 'active' : ''}`}
-          onClick={() => setActiveTab('evaluator')}
+          onClick={() => navigate('/evaluator')}
         >
           <CheckSquare size={17} />
           Compliance Evaluator
@@ -30,7 +32,7 @@ export default function Navbar({
 
         <button
           className={`nav-btn ${activeTab === 'projects' ? 'active' : ''}`}
-          onClick={() => setActiveTab('projects')}
+          onClick={() => navigate('/projects')}
         >
           <FolderGit2 size={17} />
           Projects & Specs
@@ -38,7 +40,7 @@ export default function Navbar({
 
         <button
           className={`nav-btn ${activeTab === 'products' ? 'active' : ''}`}
-          onClick={() => setActiveTab('products')}
+          onClick={() => navigate('/products')}
         >
           <Layers size={17} />
           Products Catalog
@@ -46,7 +48,7 @@ export default function Navbar({
 
         <button
           className={`nav-btn ${activeTab === 'comparison' ? 'active' : ''}`}
-          onClick={() => setActiveTab('comparison')}
+          onClick={() => navigate('/comparison')}
         >
           <Columns3 size={17} />
           Compare Matrix
@@ -54,7 +56,7 @@ export default function Navbar({
 
         <button
           className={`nav-btn ${activeTab === 'category-builder' ? 'active' : ''}`}
-          onClick={() => setActiveTab('category-builder')}
+          onClick={() => navigate('/category-builder')}
         >
           <PlusCircle size={17} />
           Add Category

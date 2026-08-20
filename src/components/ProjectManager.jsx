@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Sliders, CheckCircle2, Clock, Wand2, ShieldCheck, Check, Sparkles, AlertTriangle, Layers, Calendar, ShoppingCart, Wrench } from 'lucide-react';
 import { extractProjectReqsFromDescription } from '../utils/parser';
 import GovtEmblemLogo from './GovtEmblemLogo';
 
 export default function ProjectManager({ 
-  projects, setProjects, categories, activeProjectId, setSelectedProjectId, setActiveTab 
+  projects, setProjects, categories, products = [], activeProjectId, setSelectedProjectId 
 }) {
+  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [extractStatus, setExtractStatus] = useState('');
 
@@ -206,8 +208,8 @@ export default function ProjectManager({
 
               {/* PURCHASING & IMPLEMENTATION DEADLINE TIMELINE STRIP */}
               <div style={{ 
-                background: '#f8fafc', 
-                border: '1px solid #cbd5e1', borderRadius: 'var(--radius-md)', 
+                background: 'var(--bg-card)', 
+                border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', 
                 padding: '0.75rem 0.9rem', marginBottom: '1rem' 
               }}>
                 <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -239,8 +241,8 @@ export default function ProjectManager({
 
               {/* Target Specs Summary formatted in neat Serial Number (S.No) list */}
               <div style={{ 
-                background: '#ffffff', padding: '0.75rem 0.9rem', 
-                borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1', marginBottom: '1rem'
+                background: 'var(--bg-card)', padding: '0.75rem 0.9rem', 
+                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1rem'
               }}>
                 <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Sliders size={13} /> REQUIRED PROJECT SPECIFICATIONS (S.NO WISE):
@@ -261,10 +263,10 @@ export default function ProjectManager({
 
                       return (
                         <tr key={field.key} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                          <td style={{ padding: '0.45rem 0.4rem', color: '#64748b', fontWeight: 700 }}>
+                          <td style={{ padding: '0.45rem 0.4rem', color: 'var(--text-muted)', fontWeight: 700 }}>
                             {idx + 1}.
                           </td>
-                          <td style={{ padding: '0.45rem 0.4rem', color: '#0f172a', fontWeight: 700 }}>
+                          <td style={{ padding: '0.45rem 0.4rem', color: 'var(--text-heading)', fontWeight: 700 }}>
                             {field.label}
                           </td>
                           <td style={{ padding: '0.45rem 0.4rem', textAlign: 'right', fontWeight: 800, color: '#0284c7' }}>
@@ -276,6 +278,67 @@ export default function ProjectManager({
                   </tbody>
                 </table>
               </div>
+
+              {/* Project Material & Cost Summary */}
+              {project.savedBom && project.savedBom.length > 0 && (
+                <div style={{ 
+                  background: 'var(--bg-card)', padding: '0.75rem 0.9rem', 
+                  borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1rem'
+                }}>
+                  <div style={{ fontSize: '11px', color: '#059669', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <ShoppingCart size={13} /> FINALIZED PROJECT BOM & MATERIAL COST:
+                  </div>
+
+                  {/* Budget Progress Bar */}
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, marginBottom: '0.2rem' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Material Budget Utilization</span>
+                      <span style={{ color: project.estimatedMaterialCost > (project.budget || 5000000) ? '#ef4444' : '#059669' }}>
+                        ₹{(project.estimatedMaterialCost || 0).toLocaleString('en-IN')} / ₹{(project.budget || 5000000).toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                    <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ 
+                        height: '100%', 
+                        width: `${Math.min(((project.estimatedMaterialCost || 0) / (project.budget || 5000000)) * 100, 100)}%`, 
+                        background: project.estimatedMaterialCost > (project.budget || 5000000) ? '#ef4444' : '#10b981' 
+                      }}></div>
+                    </div>
+                  </div>
+
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #059669', color: '#059669', fontSize: '11px', textTransform: 'uppercase' }}>
+                        <th style={{ textAlign: 'left', padding: '0.4rem', fontWeight: 800 }}>Product Item</th>
+                        <th style={{ textAlign: 'center', padding: '0.4rem', fontWeight: 800 }}>Qty</th>
+                        <th style={{ textAlign: 'right', padding: '0.4rem', fontWeight: 800 }}>Unit Rate</th>
+                        <th style={{ textAlign: 'right', padding: '0.4rem', fontWeight: 800 }}>Total Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {project.savedBom.map((item, idx) => {
+                        const prod = products.find(p => p.id === item.productId);
+                        return (
+                          <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                            <td style={{ padding: '0.45rem 0.4rem', color: 'var(--text-heading)', fontWeight: 700 }}>
+                              {prod ? prod.name : 'Unknown Product'}
+                            </td>
+                            <td style={{ padding: '0.45rem 0.4rem', textAlign: 'center', fontWeight: 800, color: '#334155' }}>
+                              {item.quantity}
+                            </td>
+                            <td style={{ padding: '0.45rem 0.4rem', textAlign: 'right', fontWeight: 700, color: 'var(--text-muted)' }}>
+                              ₹{item.unitCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ padding: '0.45rem 0.4rem', textAlign: 'right', fontWeight: 800, color: '#059669' }}>
+                              ₹{(item.quantity * item.unitCost).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
               {/* Action Toolbar */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -314,7 +377,7 @@ export default function ProjectManager({
                     className="btn btn-primary btn-sm"
                     onClick={() => {
                       setSelectedProjectId(project.id);
-                      setActiveTab('evaluator');
+                      navigate('/evaluator');
                     }}
                   >
                     Inspect Specs &rarr;
@@ -452,8 +515,8 @@ export default function ProjectManager({
 
               {/* Dynamic Target Threshold Inputs */}
               <div style={{ 
-                marginTop: '0.85rem', padding: '0.85rem', background: '#f8fafc', 
-                borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' 
+                marginTop: '0.85rem', padding: '0.85rem', background: 'var(--bg-card)', 
+                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' 
               }}>
                 <h4 style={{ fontSize: '12px', color: '#0284c7', fontWeight: 800, marginBottom: '0.65rem' }}>
                   Set Target Specification Requirements

@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { NPD_MASTER_OEM_COMPANIES } from '../data/fullDatabase';
 import SendRequirementModal from './SendRequirementModal';
+import { getSupplierAnalytics } from '../utils/procurementService';
 
 // Brand company logo badge generator for OEM Directory
 const getCompanyLogoBadge = (company) => {
@@ -137,13 +138,20 @@ const getCompanyLogoBadge = (company) => {
 
 export const INITIAL_OEM_COMPANIES = NPD_MASTER_OEM_COMPANIES;
 
-export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) {
+export default function OEMCompanyDirectory({ categories = [], onRecordEmail, procurementData = [] }) {
   const [companies, setCompanies] = useState(INITIAL_OEM_COMPANIES || []);
   const [selectedDomain, setSelectedDomain] = useState('ALL');
   const [selectedCountry, setSelectedCountry] = useState('ALL');
   const [selectedStateCity, setSelectedStateCity] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' vs 'table'
+  
+  const supplierAnalyticsMap = React.useMemo(() => {
+    const analytics = getSupplierAnalytics(procurementData);
+    const map = new Map();
+    analytics.forEach(a => map.set(a.name.toLowerCase().trim(), a));
+    return map;
+  }, [procurementData]);
   
   // Custom Capped Searchable Dropdowns (Capped at 4 visible items max)
   const [showSolutionDropdown, setShowSolutionDropdown] = useState(false);
@@ -196,15 +204,15 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
           <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>
             Brihaspathi Technologies &bull; OEM Intelligence Platform
           </div>
-          <h2 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 800 }}>OEM Partners & Manufacturing Directory</h2>
-          <p style={{ fontSize: '12.5px', color: '#475569', marginTop: '0.15rem' }}>
+          <h2 style={{ fontSize: '1.25rem', color: 'var(--text-heading)', fontWeight: 800 }}>OEM Partners & Manufacturing Directory</h2>
+          <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
             Verified OEM suppliers with 1-click B2B requirement dispatches, direct contact execution, and datasheet access.
           </p>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           {/* GRID VS TABLE VIEW SWITCHER TOGGLE */}
-          <div style={{ display: 'flex', gap: '0.35rem', background: '#f1f5f9', padding: '0.2rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+          <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--bg-card-hover)', padding: '0.2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
             <button 
               className={`btn ${viewMode === 'grid' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
               style={{ fontSize: '11.5px', padding: '0.3rem 0.65rem', fontWeight: 800 }}
@@ -248,9 +256,9 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                   justify: 'space-between',
                   fontSize: '12px',
                   fontWeight: 800,
-                  background: '#ffffff',
-                  color: '#0f172a',
-                  borderColor: '#cbd5e1',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-heading)',
+                  borderColor: 'var(--border-color)',
                   padding: '0.4rem 0.65rem'
                 }}
                 onClick={() => {
@@ -276,8 +284,8 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                     top: 'calc(100% + 4px)',
                     left: 0,
                     width: '260px',
-                    background: '#ffffff',
-                    border: '1px solid #cbd5e1',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
                     boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                     zIndex: 999999,
@@ -299,16 +307,16 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: 700,
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
-                        background: '#f8fafc',
-                        color: '#0f172a',
+                        border: '1px solid var(--border-color)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-heading)',
                         outline: 'none'
                       }}
                     />
                     {solutionSearchQuery && (
                       <X
                         size={12}
-                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }}
+                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-muted)' }}
                         onClick={() => setSolutionSearchQuery('')}
                       />
                     )}
@@ -322,7 +330,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: selectedDomain === 'ALL' ? 800 : 600,
                         background: selectedDomain === 'ALL' ? '#e0f2fe' : 'transparent',
-                        color: selectedDomain === 'ALL' ? '#0369a1' : '#0f172a',
+                        color: selectedDomain === 'ALL' ? '#0369a1' : '#ffffff',
                         cursor: 'pointer',
                         display: 'flex',
                         justify: 'space-between',
@@ -335,7 +343,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                       }}
                     >
                       <span>All Solutions & Categories</span>
-                      <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({companies.length})</span>
+                      <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 800 }}>({companies.length})</span>
                     </div>
 
                     {domains
@@ -352,7 +360,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                               fontSize: '11.5px',
                               fontWeight: isSelected ? 800 : 600,
                               background: isSelected ? '#e0f2fe' : 'transparent',
-                              color: isSelected ? '#0369a1' : '#0f172a',
+                              color: isSelected ? '#0369a1' : '#ffffff',
                               cursor: 'pointer',
                               display: 'flex',
                               justify: 'space-between',
@@ -388,9 +396,9 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                   justify: 'space-between',
                   fontSize: '12px',
                   fontWeight: 800,
-                  background: '#ffffff',
-                  color: '#0f172a',
-                  borderColor: '#cbd5e1',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-heading)',
+                  borderColor: 'var(--border-color)',
                   padding: '0.4rem 0.65rem'
                 }}
                 onClick={() => {
@@ -416,8 +424,8 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                     top: 'calc(100% + 4px)',
                     left: 0,
                     width: '230px',
-                    background: '#ffffff',
-                    border: '1px solid #cbd5e1',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
                     boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                     zIndex: 999999,
@@ -439,16 +447,16 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: 700,
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
-                        background: '#f8fafc',
-                        color: '#0f172a',
+                        border: '1px solid var(--border-color)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-heading)',
                         outline: 'none'
                       }}
                     />
                     {countrySearchQuery && (
                       <X
                         size={12}
-                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }}
+                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-muted)' }}
                         onClick={() => setCountrySearchQuery('')}
                       />
                     )}
@@ -462,7 +470,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: selectedCountry === 'ALL' ? 800 : 600,
                         background: selectedCountry === 'ALL' ? '#e0f2fe' : 'transparent',
-                        color: selectedCountry === 'ALL' ? '#0369a1' : '#0f172a',
+                        color: selectedCountry === 'ALL' ? '#0369a1' : '#ffffff',
                         cursor: 'pointer',
                         display: 'flex',
                         justify: 'space-between',
@@ -476,7 +484,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                       }}
                     >
                       <span>All Countries</span>
-                      <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({countries.length})</span>
+                      <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 800 }}>({countries.length})</span>
                     </div>
 
                     {countries
@@ -493,7 +501,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                               fontSize: '11.5px',
                               fontWeight: isSelected ? 800 : 600,
                               background: isSelected ? '#e0f2fe' : 'transparent',
-                              color: isSelected ? '#0369a1' : '#0f172a',
+                              color: isSelected ? '#0369a1' : '#ffffff',
                               cursor: 'pointer',
                               display: 'flex',
                               justify: 'space-between',
@@ -530,9 +538,9 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                   justify: 'space-between',
                   fontSize: '12px',
                   fontWeight: 800,
-                  background: '#ffffff',
-                  color: '#0f172a',
-                  borderColor: '#cbd5e1',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-heading)',
+                  borderColor: 'var(--border-color)',
                   padding: '0.4rem 0.65rem'
                 }}
                 onClick={() => {
@@ -558,8 +566,8 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                     top: 'calc(100% + 4px)',
                     left: 0,
                     width: '240px',
-                    background: '#ffffff',
-                    border: '1px solid #cbd5e1',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
                     boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                     zIndex: 999999,
@@ -581,16 +589,16 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: 700,
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
-                        background: '#f8fafc',
-                        color: '#0f172a',
+                        border: '1px solid var(--border-color)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-heading)',
                         outline: 'none'
                       }}
                     />
                     {stateCitySearchQuery && (
                       <X
                         size={12}
-                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#64748b' }}
+                        style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-muted)' }}
                         onClick={() => setStateCitySearchQuery('')}
                       />
                     )}
@@ -604,7 +612,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         fontSize: '11.5px',
                         fontWeight: selectedStateCity === 'ALL' ? 800 : 600,
                         background: selectedStateCity === 'ALL' ? '#dcfce7' : 'transparent',
-                        color: selectedStateCity === 'ALL' ? '#15803d' : '#0f172a',
+                        color: selectedStateCity === 'ALL' ? '#15803d' : '#ffffff',
                         cursor: 'pointer',
                         display: 'flex',
                         justify: 'space-between',
@@ -617,7 +625,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                       }}
                     >
                       <span>All States & Cities</span>
-                      <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 800 }}>({stateCityList.length})</span>
+                      <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 800 }}>({stateCityList.length})</span>
                     </div>
 
                     {stateCityList
@@ -633,7 +641,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                               fontSize: '11.5px',
                               fontWeight: isSelected ? 800 : 600,
                               background: isSelected ? '#dcfce7' : 'transparent',
-                              color: isSelected ? '#15803d' : '#0f172a',
+                              color: isSelected ? '#15803d' : '#ffffff',
                               cursor: 'pointer'
                             }}
                             onClick={() => {
@@ -653,12 +661,12 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '200px' }}>
-            <Search size={14} style={{ position: 'absolute', left: '10px', color: '#64748b' }} />
+            <Search size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-muted)' }} />
             <input 
               type="text" 
               className="form-input"
               placeholder="Search company, product..."
-              style={{ paddingLeft: '2.1rem', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: '#cbd5e1', background: '#ffffff', color: '#0f172a' }}
+              style={{ paddingLeft: '2.1rem', padding: '0.35rem 0.65rem', fontSize: '12px', borderColor: 'var(--border-color)', background: 'var(--bg-card)', color: 'var(--text-heading)' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -668,7 +676,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
         {/* ACTIVE FILTER CHIPS & CLEAR BUTTON */}
         {hasActiveFilters && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid #e2e8f0' }}>
-            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Active Filters:</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Active Filters:</span>
             
             {selectedDomain !== 'ALL' && (
               <span className="badge badge-accept" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd', fontSize: '11px' }}>
@@ -709,7 +717,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
       {viewMode === 'grid' ? (
         <div className="grid-cols-2">
           {filteredCompanies.length === 0 ? (
-            <div className="card" style={{ gridColumn: 'span 2', textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+            <div className="card" style={{ gridColumn: 'span 2', textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
               <Building2 size={36} color="#cbd5e1" style={{ marginBottom: '0.5rem' }} />
               <p style={{ margin: 0, fontWeight: 700 }}>No OEM companies match the selected filters.</p>
               <button className="btn btn-secondary btn-sm" style={{ marginTop: '0.85rem' }} onClick={clearFilters}>
@@ -732,13 +740,13 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           S.NO {idx + 1} &bull; OEM MANUFACTURER
                         </div>
-                        <h3 style={{ fontSize: '1.25rem', marginTop: '0.15rem', color: '#0f172a', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', marginTop: '0.15rem', color: 'var(--text-heading)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                           {getCompanyLogoBadge(comp)} {comp.name}
                         </h3>
                       </div>
 
                       <div style={{ textAlign: 'right' }}>
-                        <span className="badge badge-accept" style={{ fontSize: '11px', background: '#f1f5f9', borderColor: '#cbd5e1', color: '#0f172a', fontWeight: 700 }}>
+                        <span className="badge badge-accept" style={{ fontSize: '11px', background: 'var(--bg-card-hover)', borderColor: 'var(--border-color)', color: 'var(--text-heading)', fontWeight: 700 }}>
                           {comp.flag || '🌐'} {comp.country}
                         </span>
                       </div>
@@ -761,20 +769,49 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                     {/* Products Provided */}
                     {comp.products && (
                       <div style={{ 
-                        background: '#f8fafc', padding: '0.65rem 0.8rem', 
-                        borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1', marginBottom: '0.65rem' 
+                        background: 'var(--bg-card)', padding: '0.65rem 0.8rem', 
+                        borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '0.65rem' 
                       }}>
-                        <div style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                           PRODUCTS & SOLUTIONS PROVIDED:
                         </div>
                         <div style={{ fontWeight: 800, fontSize: '12.5px', color: '#0284c7', marginTop: '0.2rem' }}>
                           {comp.products}
                         </div>
                         {comp.domain && (
-                          <div style={{ fontSize: '11px', color: '#475569', marginTop: '0.25rem' }}>
-                            Domain: <strong style={{ color: '#0f172a' }}>{comp.domain}</strong>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                            Domain: <strong style={{ color: 'var(--text-heading)' }}>{comp.domain}</strong>
                           </div>
                         )}
+                      </div>
+                    )}
+
+                    {/* Procurement Analytics */}
+                    {supplierAnalyticsMap.has(comp.name.toLowerCase().trim()) && (
+                      <div style={{
+                        background: 'linear-gradient(to right, rgba(16, 185, 129, 0.05), rgba(52, 211, 153, 0.05))',
+                        border: '1px solid rgba(16, 185, 129, 0.2)',
+                        padding: '0.65rem 0.8rem',
+                        borderRadius: 'var(--radius-md)',
+                        marginBottom: '0.65rem'
+                      }}>
+                        <div style={{ fontSize: '10.5px', color: '#047857', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <FileSpreadsheet size={13} /> PROCUREMENT HISTORY
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                          <div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Total Orders:</div>
+                            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-heading)' }}>
+                              {supplierAnalyticsMap.get(comp.name.toLowerCase().trim()).totalOrders} Orders
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Total Spend:</div>
+                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#059669' }}>
+                              ₹{supplierAnalyticsMap.get(comp.name.toLowerCase().trim()).totalSpend.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -783,7 +820,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                       {comp.agreementStatus && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                           <FileCheck size={14} color="#059669" />
-                          <span style={{ color: '#475569' }}>Agreement Status:</span>
+                          <span style={{ color: 'var(--text-muted)' }}>Agreement Status:</span>
                           <span className="badge badge-accept" style={{ fontSize: '10px', padding: '0.1rem 0.4rem', background: '#dcfce7', color: '#166534', border: '1px solid #86efac' }}>
                             {comp.agreementStatus}
                           </span>
@@ -793,8 +830,8 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                       {(contactPersonVal || comp.contactDetails) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                           <Phone size={14} color="#d97706" />
-                          <span style={{ color: '#475569' }}>Contact Person:</span>
-                          <strong style={{ color: '#0f172a' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Contact Person:</span>
+                          <strong style={{ color: 'var(--text-heading)' }}>
                             {contactPersonVal || ''} {comp.contactDetails ? `(${comp.contactDetails})` : ''}
                           </strong>
                         </div>
@@ -820,7 +857,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
 
                     <button 
                       className="btn btn-secondary btn-sm"
-                      style={{ fontSize: '11px', padding: '0.35rem 0.65rem', color: '#0f172a', fontWeight: 700 }}
+                      style={{ fontSize: '11px', padding: '0.35rem 0.65rem', color: 'var(--text-heading)', fontWeight: 700 }}
                       onClick={() => setActiveContactModal(comp)}
                     >
                       ⚡ Execute Contact Action
@@ -832,7 +869,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn btn-secondary btn-sm"
-                        style={{ fontSize: '11px', padding: '0.3rem 0.6rem', color: '#0284c7', background: '#ffffff', border: '1px solid #cbd5e1', fontWeight: 700 }}
+                        style={{ fontSize: '11px', padding: '0.3rem 0.6rem', color: '#0284c7', background: 'var(--bg-card)', border: '1px solid var(--border-color)', fontWeight: 700 }}
                       >
                         <ExternalLink size={12} /> OEM Site
                       </a>
@@ -849,21 +886,22 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
           <div className="table-container">
             <table className="spec-table">
               <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                  <th style={{ width: '45px', color: '#0f172a', fontWeight: 800 }}>S.No</th>
-                  <th style={{ width: '220px', color: '#0f172a', fontWeight: 800 }}>OEM Manufacturer</th>
-                  <th style={{ width: '150px', color: '#0f172a', fontWeight: 800 }}>Country & Location</th>
-                  <th style={{ width: '160px', color: '#0f172a', fontWeight: 800 }}>Domain / Solution</th>
-                  <th style={{ width: '240px', color: '#0f172a', fontWeight: 800 }}>Products Provided</th>
-                  <th style={{ width: '130px', color: '#0f172a', fontWeight: 800 }}>Agreement</th>
-                  <th style={{ width: '180px', color: '#0f172a', fontWeight: 800 }}>Contact Person</th>
-                  <th style={{ width: '220px', color: '#0f172a', fontWeight: 800 }}>Actions</th>
+                <tr style={{ background: 'var(--bg-card-hover)', borderBottom: '2px solid #cbd5e1' }}>
+                  <th style={{ width: '45px', color: 'var(--text-heading)', fontWeight: 800 }}>S.No</th>
+                  <th style={{ width: '220px', color: 'var(--text-heading)', fontWeight: 800 }}>OEM Manufacturer</th>
+                  <th style={{ width: '150px', color: 'var(--text-heading)', fontWeight: 800 }}>Country & Location</th>
+                  <th style={{ width: '160px', color: 'var(--text-heading)', fontWeight: 800 }}>Domain / Solution</th>
+                  <th style={{ width: '240px', color: 'var(--text-heading)', fontWeight: 800 }}>Products Provided</th>
+                  <th style={{ width: '130px', color: 'var(--text-heading)', fontWeight: 800 }}>Agreement</th>
+                  <th style={{ width: '120px', color: 'var(--text-heading)', fontWeight: 800 }}>Procurement</th>
+                  <th style={{ width: '180px', color: 'var(--text-heading)', fontWeight: 800 }}>Contact Person</th>
+                  <th style={{ width: '220px', color: 'var(--text-heading)', fontWeight: 800 }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredCompanies.length === 0 ? (
                   <tr>
-                    <td colSpan="8" style={{ textAlign: 'center', color: '#64748b', padding: '2.5rem' }}>
+                    <td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2.5rem' }}>
                       No OEM companies found matching active filters.
                     </td>
                   </tr>
@@ -875,15 +913,15 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
 
                     return (
                       <tr key={comp.id}>
-                        <td style={{ fontWeight: 800, color: '#64748b' }}>{idx + 1}.</td>
+                        <td style={{ fontWeight: 800, color: 'var(--text-muted)' }}>{idx + 1}.</td>
                         <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 800, color: '#0f172a', fontSize: '13px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 800, color: 'var(--text-heading)', fontSize: '13px' }}>
                             {getCompanyLogoBadge(comp)}
                             <span>{comp.name}</span>
                           </div>
                         </td>
                         <td>
-                          <span className="badge badge-accept" style={{ fontSize: '11px', background: '#f1f5f9', borderColor: '#cbd5e1', color: '#0f172a', fontWeight: 700 }}>
+                          <span className="badge badge-accept" style={{ fontSize: '11px', background: 'var(--bg-card-hover)', borderColor: 'var(--border-color)', color: 'var(--text-heading)', fontWeight: 700 }}>
                             {comp.flag || '🌐'} {comp.country} {cityVal ? `(${cityVal})` : ''}
                           </span>
                         </td>
@@ -899,10 +937,24 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                               {comp.agreementStatus}
                             </span>
                           ) : (
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>N/A</span>
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>N/A</span>
                           )}
                         </td>
-                        <td style={{ fontSize: '11.5px', color: '#0f172a', fontWeight: 700 }}>
+                        <td>
+                          {supplierAnalyticsMap.has(comp.name.toLowerCase().trim()) ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                                {supplierAnalyticsMap.get(comp.name.toLowerCase().trim()).totalOrders} Orders
+                              </span>
+                              <span style={{ fontSize: '11.5px', fontWeight: 800, color: '#059669' }}>
+                                ₹{supplierAnalyticsMap.get(comp.name.toLowerCase().trim()).totalSpend.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              </span>
+                            </div>
+                          ) : (
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>No History</span>
+                          )}
+                        </td>
+                        <td style={{ fontSize: '11.5px', color: 'var(--text-heading)', fontWeight: 700 }}>
                           {contactPersonVal || 'Sales Dept'} {comp.contactDetails ? `(${comp.contactDetails})` : ''}
                         </td>
                         <td>
@@ -916,7 +968,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                             </button>
                             <button 
                               className="btn btn-secondary btn-sm"
-                              style={{ fontSize: '10.5px', padding: '0.25rem 0.5rem', color: '#0f172a', fontWeight: 700 }}
+                              style={{ fontSize: '10.5px', padding: '0.25rem 0.5rem', color: 'var(--text-heading)', fontWeight: 700 }}
                               onClick={() => setActiveContactModal(comp)}
                             >
                               ⚡ Contact
@@ -963,7 +1015,7 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
                 {getCompanyLogoBadge(activeContactModal)}
                 <div>
                   <div style={{ fontSize: '10px', color: '#0284c7', fontWeight: 800 }}>OEM CONTACT EXECUTION</div>
-                  <h3 style={{ fontSize: '1.15rem', color: '#0f172a', margin: 0 }}>{activeContactModal.name}</h3>
+                  <h3 style={{ fontSize: '1.15rem', color: 'var(--text-heading)', margin: 0 }}>{activeContactModal.name}</h3>
                 </div>
               </div>
               <button className="btn btn-secondary btn-sm" onClick={() => setActiveContactModal(null)}>
@@ -972,15 +1024,15 @@ export default function OEMCompanyDirectory({ categories = [], onRecordEmail }) 
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Domain / Solutions:</div>
+              <div style={{ background: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Domain / Solutions:</div>
                 <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#0284c7', marginTop: '0.15rem' }}>{activeContactModal.domain}</div>
-                <div style={{ fontSize: '11.5px', color: '#475569', marginTop: '0.15rem' }}>Products: {activeContactModal.products}</div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Products: {activeContactModal.products}</div>
               </div>
 
-              <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Contact Information:</div>
-                <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#0f172a', marginTop: '0.15rem' }}>
+              <div style={{ background: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Contact Information:</div>
+                <div style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-heading)', marginTop: '0.15rem' }}>
                   {activeContactModal.contactPerson || 'Sales & Support Division'}
                 </div>
                 {activeContactModal.contactDetails && (

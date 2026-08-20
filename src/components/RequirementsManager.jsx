@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Plus, Search, Filter, Trash2, Edit3, Send, CheckCircle2, Clock, AlertTriangle, Building2, Layers, Calendar, MapPin, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import SendRequirementModal from './SendRequirementModal';
 
 export default function RequirementsManager({ 
-  requirements = [], setRequirements, categories = [], oems = [], products = [], setActiveTab, onRecordEmail 
+  requirements = [], setRequirements, categories = [], oems = [], products = [], onRecordEmail 
 }) {
+  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
@@ -92,7 +94,7 @@ export default function RequirementsManager({
       case 'Medium':
         return <span className="badge badge-conditional">MEDIUM PRIORITY</span>;
       default:
-        return <span className="badge" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #cbd5e1' }}>LOW PRIORITY</span>;
+        return <span className="badge" style={{ background: 'var(--bg-card-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-color)' }}>LOW PRIORITY</span>;
     }
   };
 
@@ -133,7 +135,7 @@ export default function RequirementsManager({
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>Priority:</span>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Priority:</span>
             <select 
               className="form-select"
               style={{ width: '130px', padding: '0.4rem 0.5rem', fontSize: '12px' }}
@@ -149,7 +151,7 @@ export default function RequirementsManager({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>Status:</span>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Status:</span>
             <select 
               className="form-select"
               style={{ width: '160px', padding: '0.4rem 0.5rem', fontSize: '12px' }}
@@ -170,92 +172,101 @@ export default function RequirementsManager({
       </div>
 
       {/* Requirements Cards Grid */}
-      <div className="grid-cols-2">
-        {filteredRequirements.map(req => (
-          <div key={req.id} className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              {/* Card Top Strip */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.65rem' }}>
-                <div>
-                  <span style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase' }}>
-                    REQ ID: {req.id} &bull; {req.category}
-                  </span>
-                  <h3 style={{ fontSize: '1.1rem', marginTop: '0.15rem', color: '#0f172a', fontWeight: 800 }}>{req.title}</h3>
-                </div>
-                {getPriorityBadge(req.priority)}
-              </div>
-
-              {/* Specs & Project Context */}
-              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.65rem 0.85rem', marginBottom: '0.85rem', fontSize: '12px' }}>
-                <div style={{ color: '#475569', marginBottom: '0.35rem' }}>
-                  Product Required: <strong style={{ color: '#0284c7' }}>{req.solution}</strong> &bull; Qty: <strong style={{ color: '#059669' }}>{req.quantity}</strong>
-                </div>
-                {req.techSpecs && (
-                  <div style={{ color: '#0f172a', fontWeight: 600, fontSize: '11.5px', lineHeight: 1.4 }}>
-                    Specs: {req.techSpecs}
+      {filteredRequirements.length > 0 ? (
+        <div className="grid-cols-2">
+          {filteredRequirements.map(req => (
+            <div key={req.id} className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                {/* Card Top Strip */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.65rem' }}>
+                  <div>
+                    <span style={{ fontSize: '10.5px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase' }}>
+                      REQ ID: {req.id} &bull; {req.category}
+                    </span>
+                    <h3 style={{ fontSize: '1.1rem', marginTop: '0.15rem', color: 'var(--text-heading)', fontWeight: 800 }}>{req.title}</h3>
                   </div>
-                )}
+                  {getPriorityBadge(req.priority)}
+                </div>
+
+                {/* Specs & Project Context */}
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.65rem 0.85rem', marginBottom: '0.85rem', fontSize: '12px' }}>
+                  <div style={{ color: 'var(--text-muted)', marginBottom: '0.35rem' }}>
+                    Product Required: <strong style={{ color: '#0284c7' }}>{req.solution}</strong> &bull; Qty: <strong style={{ color: '#059669' }}>{req.quantity}</strong>
+                  </div>
+                  {req.techSpecs && (
+                    <div style={{ color: 'var(--text-heading)', fontWeight: 600, fontSize: '11.5px', lineHeight: 1.4 }}>
+                      Specs: {req.techSpecs}
+                    </div>
+                  )}
+                </div>
+
+                {/* Metadata Badges */}
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.85rem', fontSize: '11px' }}>
+                  <span className="badge badge-accept" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }}>
+                    📍 {req.location || 'Site Location'}
+                  </span>
+                  <span className="badge badge-conditional" style={{ fontSize: '10px' }}>
+                    ⏳ Timeline: {req.timeline || '30 Days'}
+                  </span>
+                  <span className="badge badge-accept" style={{ fontSize: '10px' }}>
+                    🛡️ {req.requiredCertifications || 'Compliance'}
+                  </span>
+                </div>
               </div>
 
-              {/* Metadata Badges */}
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.85rem', fontSize: '11px' }}>
-                <span className="badge badge-accept" style={{ background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' }}>
-                  📍 {req.location || 'Site Location'}
-                </span>
-                <span className="badge badge-conditional" style={{ fontSize: '10px' }}>
-                  ⏳ Timeline: {req.timeline || '30 Days'}
-                </span>
-                <span className="badge badge-accept" style={{ fontSize: '10px' }}>
-                  🛡️ {req.requiredCertifications || 'Compliance'}
-                </span>
+              {/* Bottom Actions Bar */}
+              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Status:</span>
+                  <select 
+                    className="form-select"
+                    style={{ width: '150px', padding: '0.25rem 0.45rem', fontSize: '11px', fontWeight: 800 }}
+                    value={req.status || 'Researching'}
+                    onChange={(e) => handleStatusChange(req.id, e.target.value)}
+                  >
+                    <option value="Draft">Draft</option>
+                    <option value="Researching">Researching</option>
+                    <option value="OEM Contacted">OEM Contacted</option>
+                    <option value="Quotation Received">Quotation Received</option>
+                    <option value="Under Evaluation">Under Evaluation</option>
+                    <option value="Shortlisted">Shortlisted</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                  <button 
+                    className="btn btn-secondary btn-sm"
+                    style={{ fontSize: '11px', color: '#0284c7' }}
+                    onClick={() => {
+                      const matchedOEM = oems[0];
+                      setSelectedReqForOEM(req);
+                      setSelectedOEMForReq(matchedOEM);
+                    }}
+                    title="Send this Requirement to OEM Partner"
+                  >
+                    <Send size={12} /> Contact OEM
+                  </button>
+
+                  <button 
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteRequirement(req.id)}
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
               </div>
             </div>
-
-            {/* Bottom Actions Bar */}
-            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Status:</span>
-                <select 
-                  className="form-select"
-                  style={{ width: '150px', padding: '0.25rem 0.45rem', fontSize: '11px', fontWeight: 800 }}
-                  value={req.status || 'Researching'}
-                  onChange={(e) => handleStatusChange(req.id, e.target.value)}
-                >
-                  <option value="Draft">Draft</option>
-                  <option value="Researching">Researching</option>
-                  <option value="OEM Contacted">OEM Contacted</option>
-                  <option value="Quotation Received">Quotation Received</option>
-                  <option value="Under Evaluation">Under Evaluation</option>
-                  <option value="Shortlisted">Shortlisted</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
-                <button 
-                  className="btn btn-secondary btn-sm"
-                  style={{ fontSize: '11px', color: '#0284c7' }}
-                  onClick={() => {
-                    const matchedOEM = oems[0];
-                    setSelectedReqForOEM(req);
-                    setSelectedOEMForReq(matchedOEM);
-                  }}
-                  title="Send this Requirement to OEM Partner"
-                >
-                  <Send size={12} /> Contact OEM
-                </button>
-
-                <button 
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDeleteRequirement(req.id)}
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-muted)' }}>No requirements found. Start by adding a new requirement for your projects.</p>
+          <button className="btn btn-primary" style={{ marginTop: '1rem' }} onClick={() => navigate('/projects')}>
+            Go to Projects & Specs
+          </button>
+        </div>
+      )}
 
       {/* CREATE REQUIREMENT MODAL */}
       {showAddModal && (

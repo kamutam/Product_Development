@@ -14,7 +14,7 @@ export const CATEGORIES = [
       { key: 'wdr', label: 'Wide Dynamic Range (dB)', type: 'number', unit: 'dB', ruleType: 'min', defaultReq: 120 },
       { key: 'powerSource', label: 'Power Input', type: 'select', options: ['PoE (802.3af)', 'PoE+ (802.3at)', '12V DC', 'Solar Powered'], ruleType: 'exact', defaultReq: 'PoE (802.3af)' },
       { key: 'onvifSupport', label: 'ONVIF Profile S/G/T', type: 'boolean', ruleType: 'boolean', defaultReq: true },
-      { key: 'maxPrice', label: 'Max Unit Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 400 }
+      { key: 'maxPrice', label: 'Max Unit Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 400 }
     ]
   },
   {
@@ -30,7 +30,7 @@ export const CATEGORIES = [
       { key: 'voltageRange', label: 'Operating Voltage Range', type: 'select', options: ['9V - 36V Wide DC (Transit)', '12V DC Only', '24V DC Only'], ruleType: 'exact', defaultReq: '9V - 36V Wide DC (Transit)' },
       { key: 'ipRating', label: 'Enclosure Protection', type: 'select', options: ['IP54', 'IP65', 'IP67', 'IP68'], ruleType: 'enumOrder', defaultReq: 'IP67' },
       { key: 'gps4gSupport', label: 'Built-in GPS + 4G LTE Live Stream', type: 'boolean', ruleType: 'boolean', defaultReq: true },
-      { key: 'maxPrice', label: 'Max Unit Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 550 }
+      { key: 'maxPrice', label: 'Max Unit Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 550 }
     ]
   },
   {
@@ -45,7 +45,7 @@ export const CATEGORIES = [
       { key: 'verificationSpeed', label: 'Verification Speed (sec)', type: 'number', unit: 'sec', ruleType: 'max', defaultReq: 0.5 },
       { key: 'interfaceType', label: 'Communication Interface', type: 'select', options: ['TCP/IP + Wi-Fi', 'TCP/IP Only', 'RS485 + Wiegand'], ruleType: 'exact', defaultReq: 'TCP/IP + Wi-Fi' },
       { key: 'ipRating', label: 'Weather Protection', type: 'select', options: ['IP54', 'IP65', 'IP66'], ruleType: 'enumOrder', defaultReq: 'IP65' },
-      { key: 'maxPrice', label: 'Max Unit Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 600 }
+      { key: 'maxPrice', label: 'Max Unit Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 600 }
     ]
   },
   {
@@ -59,7 +59,7 @@ export const CATEGORIES = [
       { key: 'cellType', label: 'Cell Technology', type: 'select', options: ['Bifacial N-Type', 'Monocrystalline PERC', 'TOPCon', 'Polycrystalline'], ruleType: 'exact', defaultReq: 'Bifacial N-Type' },
       { key: 'warrantyYears', label: 'Performance Warranty (Years)', type: 'number', unit: 'Years', ruleType: 'min', defaultReq: 25 },
       { key: 'bisApproved', label: 'BIS Govt Certified', type: 'boolean', ruleType: 'boolean', defaultReq: true },
-      { key: 'maxPrice', label: 'Max Panel Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 180 }
+      { key: 'maxPrice', label: 'Max Panel Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 180 }
     ]
   },
   {
@@ -72,7 +72,7 @@ export const CATEGORIES = [
       { key: 'batteryLife', label: 'Operating Battery Runtime (Hours)', type: 'number', unit: 'Hours', ruleType: 'min', defaultReq: 4 },
       { key: 'navigationType', label: 'SLAM Navigation System', type: 'select', options: ['LiDAR + 3D Vision SLAM', 'Laser SLAM Only', 'Visual Marker SLAM'], ruleType: 'exact', defaultReq: 'LiDAR + 3D Vision SLAM' },
       { key: 'autoRecharge', label: 'Auto Docking & Self Recharge', type: 'boolean', ruleType: 'boolean', defaultReq: true },
-      { key: 'maxPrice', label: 'Max Unit Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 15000 }
+      { key: 'maxPrice', label: 'Max Unit Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 15000 }
     ]
   },
   {
@@ -85,7 +85,7 @@ export const CATEGORIES = [
       { key: 'payloadCapacity', label: 'Payload Capacity (kg)', type: 'number', unit: 'kg', ruleType: 'min', defaultReq: 1.5 },
       { key: 'cameraType', label: 'Sensor Payload', type: 'select', options: ['Dual Thermal + 4K RGB', '4K RGB 60fps', 'LiDAR Sensor Module'], ruleType: 'exact', defaultReq: 'Dual Thermal + 4K RGB' },
       { key: 'windResistance', label: 'Max Wind Resistance (m/s)', type: 'number', unit: 'm/s', ruleType: 'min', defaultReq: 12 },
-      { key: 'maxPrice', label: 'Max Unit Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 4500 }
+      { key: 'maxPrice', label: 'Max Unit Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 4500 }
     ]
   },
   {
@@ -100,7 +100,7 @@ export const CATEGORIES = [
       { key: 'airSensors', label: 'AQI Monitored Gases (CO, CO2, PM2.5, PM10)', type: 'boolean', ruleType: 'boolean', defaultReq: true },
       { key: 'evChargerPower', label: 'EV Charger Min Power (kW)', type: 'number', unit: 'kW', ruleType: 'min', defaultReq: 7.2 },
       { key: 'icccIntegration', label: 'Centralized AI-ICCC Platform Support', type: 'boolean', ruleType: 'boolean', defaultReq: true },
-      { key: 'maxPrice', label: 'Max Component Cost ($)', type: 'number', unit: '$', ruleType: 'max', defaultReq: 2500 }
+      { key: 'maxPrice', label: 'Max Component Cost (₹)', type: 'number', unit: '₹', ruleType: 'max', defaultReq: 2500 }
     ]
   }
 ];
@@ -126,6 +126,19 @@ export const INITIAL_PROJECTS = [
       icccIntegration: true,
       maxPrice: 2500
     },
+    savedBom: [
+      { productId: 'prod-smartpole-structure-1', quantity: 200, unitCost: 18500 },
+      { productId: 'prod-smartpole-ptz-1', quantity: 200, unitCost: 14200 },
+      { productId: 'prod-smartpole-boxcam-1', quantity: 200, unitCost: 12500 },
+      { productId: 'prod-smartpole-aqi-1', quantity: 200, unitCost: 8900 },
+      { productId: 'prod-smartpole-wifi-1', quantity: 200, unitCost: 7400 },
+      { productId: 'prod-smartpole-evcharger-1', quantity: 200, unitCost: 24000 },
+      { productId: 'prod-smartpole-display-1', quantity: 200, unitCost: 16500 },
+      { productId: 'prod-smartpole-sos-1', quantity: 200, unitCost: 4800 },
+      { productId: 'prod-smartpole-luminaire-1', quantity: 400, unitCost: 3200 },
+      { productId: 'prod-smartpole-gateway-1', quantity: 200, unitCost: 9600 },
+      { productId: 'prod-smartpole-software-1', quantity: 1, unitCost: 450000 }
+    ],
     itemsQuantity: [
       { sNo: 1, feature: 'Smart Pole Structure', spec: 'Hot-dip galvanised iron, glossy finish, min. 6 m height, 4 mm wall thickness, ~100 kg; weatherproof/anti-corrosion; segregated compartments for power, communication, controllers, outdoor cabinets, cable management; complete civil foundation works.', qty: '200 poles', category: 'Structure' },
       { sNo: 2, feature: 'AI-CCTV Cameras', spec: '4MP AI PTZ camera, 60 m IR night vision, 30x optical zoom, PoE, ANPR, cloud video storage; real-time analytics; object detection; configurable urban-governance use cases (encroachment, waste vehicles, traffic, illegal parking, wrong-way); outdoor IP-rated.', qty: '200 cameras', category: 'CCTV' },
@@ -161,6 +174,12 @@ export const INITIAL_PROJECTS = [
       onvifSupport: true,
       maxPrice: 380
     },
+    savedBom: [
+      { productId: 'prod-bano-1', quantity: 150, unitCost: 8500 },
+      { productId: 'prod-bano-2', quantity: 150, unitCost: 9200 },
+      { productId: 'prod-bano-4', quantity: 100, unitCost: 7800 },
+      { productId: 'prod-cpplus-stqc-1', quantity: 80, unitCost: 11400 }
+    ],
     createdDate: '2026-08-05'
   },
   {
@@ -183,6 +202,12 @@ export const INITIAL_PROJECTS = [
       gps4gSupport: true,
       maxPrice: 500
     },
+    savedBom: [
+      { productId: 'prod-streamax-1', quantity: 500, unitCost: 18500 },
+      { productId: 'prod-bano-5', quantity: 1500, unitCost: 4200 },
+      { productId: 'prod-bano-6', quantity: 500, unitCost: 6500 },
+      { productId: 'prod-bio-1', quantity: 200, unitCost: 12800 }
+    ],
     createdDate: '2026-08-01'
   },
   {
@@ -202,6 +227,9 @@ export const INITIAL_PROJECTS = [
       warrantyYears: 25,
       maxPrice: 0.25
     },
+    savedBom: [
+      { productId: 'prod-solar-1', quantity: 1820, unitCost: 7600 }
+    ],
     createdDate: '2026-08-03'
   }
 ];
@@ -1479,5 +1507,96 @@ export const INITIAL_PRODUCTS = [
     },
     notes: 'Centralised AI-ICCC dashboard for unified monitoring, control, analytics & management of all smart-pole subsystems; device health, fault diagnostics, alarms, maintenance, GIS visualisation; cloud + on-premise; open APIs; licensing, configuration, integration, training, support. Qty: 1 System Suite (200 Smart Poles License).',
     link: 'https://brihaspathi.com'
+  },
+
+  // --- NETWORK VIDEO RECORDERS (NVR) & STORAGE SERVERS ---
+  {
+    id: 'prod-nvr-32ch',
+    name: 'Banovision BA-NVR32-4S 32-Channel 4K AI Video Recorder (4 SATA)',
+    sku: 'BA-NVR32-4S',
+    vendor: 'Brihaspathi Technologies (Banovision)',
+    brandMake: 'Banovision',
+    categoryId: 'cctv',
+    testingStatus: 'STQC Certified & Tested',
+    araiCertified: false,
+    stqcCertified: true,
+    stqcCertNo: 'STQC/IOTSCS/NVR/3204',
+    isNewLaunch: true,
+    availability: 'In Stock (Ready for Dispatch)',
+    oemContactName: 'Brihaspathi Enterprise R&D',
+    oemEmail: 'venu.m@brihaspathi.com',
+    oemPhone: '+91 40 2340 5566',
+    price: 26500,
+    specs: {
+      stqcCertified: true,
+      channels: 32,
+      sataBays: 4,
+      maxResolution: '4K (3840x2160)',
+      onvifSupport: true,
+      alarmIO: '8 In / 2 Out',
+      maxPrice: 26500
+    },
+    notes: '32-Channel 4K H.265+ NVR, 4 SATA HDDs (up to 16TB/bay = 64TB Total), 256Mbps incoming bandwidth, ONVIF Profile S/G/T compliant, dual Gigabit LAN.',
+    link: 'https://brihaspathi.com'
+  },
+  {
+    id: 'prod-nvr-64ch',
+    name: 'CP Plus CP-UNR-464T8-V2 64-Channel 8-SATA AI Enterprise NVR',
+    sku: 'CP-UNR-464T8-V2',
+    vendor: 'Aditya Infotech (CP Plus)',
+    brandMake: 'CP Plus',
+    categoryId: 'cctv',
+    testingStatus: 'STQC Certified / RDSO Railway Approved',
+    araiCertified: false,
+    stqcCertified: true,
+    stqcCertNo: 'STQC/IOTSCS/CP/6408',
+    isNewLaunch: true,
+    availability: 'In Stock',
+    oemContactName: 'M/s Aditya Infotech (CP Plus Team)',
+    oemEmail: 'sales.india@cpplusworld.com',
+    oemPhone: '+91 120 4555666',
+    price: 48000,
+    specs: {
+      stqcCertified: true,
+      channels: 64,
+      sataBays: 8,
+      maxResolution: '12MP / 4K',
+      onvifSupport: true,
+      alarmIO: '16 In / 4 Out',
+      maxPrice: 48000
+    },
+    notes: '64-Channel 4K AI Enterprise NVR, 8 SATA interfaces + 1 eSATA, RAID 0/1/5/10 support, 384Mbps incoming bandwidth, redundant power supply.',
+    link: 'https://cpplusworld.com'
+  },
+
+  // --- INDUSTRIAL NETWORK SWITCHES ---
+  {
+    id: 'prod-switch-l3-24p',
+    name: 'D-Link DGS-3130-24PS 24-Port Gigabit L3 Managed PoE+ Switch',
+    sku: 'DGS-3130-24PS',
+    vendor: 'D-Link India / Brihaspathi Network Hub',
+    brandMake: 'D-Link',
+    categoryId: 'smart-pole',
+    testingStatus: 'MeiTY Certified / Enterprise Tested',
+    araiCertified: false,
+    stqcCertified: true,
+    stqcCertNo: 'STQC/NW/DLINK/3130',
+    isNewLaunch: true,
+    availability: 'In Stock (Warehouse)',
+    oemContactName: 'Network Infrastructure Lead',
+    oemEmail: 'enterprise.support@dlink.co.in',
+    oemPhone: '+91 22 2829 0000',
+    price: 19800,
+    specs: {
+      stqcCertified: true,
+      ports: 24,
+      poeBudget: '370W PoE+',
+      uplinks: '2x 10G SFP+ Ports',
+      switchingCapacity: '128 Gbps',
+      routing: 'L3 Static / OSPF / RIP',
+      maxPrice: 19800
+    },
+    notes: '24-Port 10/100/1000Base-T PoE+ (802.3at, 30W/port, 370W total budget), 2x 10G SFP+ uplinks, 6KV surge protection, full L3 managed enterprise features.',
+    link: 'https://dlink.co.in'
   }
 ];

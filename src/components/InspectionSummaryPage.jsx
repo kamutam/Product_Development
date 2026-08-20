@@ -61,12 +61,12 @@ export default function InspectionSummaryPage({
               className="btn btn-secondary btn-sm"
               style={{
                 width: '100%',
-                justify: 'space-between',
+                justifyContent: 'space-between',
                 fontSize: '12px',
                 fontWeight: 800,
-                background: '#ffffff',
-                color: '#0f172a',
-                borderColor: '#cbd5e1',
+                background: 'var(--bg-card)',
+                color: 'var(--text-heading)',
+                borderColor: 'var(--border-color)',
                 padding: '0.4rem 0.65rem'
               }}
               onClick={() => setShowProjectDropdown(!showProjectDropdown)}
@@ -86,8 +86,8 @@ export default function InspectionSummaryPage({
                   top: 'calc(100% + 4px)',
                   right: 0,
                   width: '280px',
-                  background: '#ffffff',
-                  border: '1px solid #cbd5e1',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '8px',
                   boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                   zIndex: 999999,
@@ -109,9 +109,9 @@ export default function InspectionSummaryPage({
                       fontSize: '11.5px',
                       fontWeight: 700,
                       borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      background: '#f8fafc',
-                      color: '#0f172a',
+                      border: '1px solid var(--border-color)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-heading)',
                       outline: 'none'
                     }}
                   />
@@ -131,7 +131,7 @@ export default function InspectionSummaryPage({
                             fontSize: '11.5px',
                             fontWeight: isSelected ? 800 : 600,
                             background: isSelected ? '#e0f2fe' : 'transparent',
-                            color: isSelected ? '#0369a1' : '#0f172a',
+                            color: isSelected ? '#0369a1' : '#ffffff',
                             cursor: 'pointer'
                           }}
                           onClick={() => {
@@ -141,7 +141,7 @@ export default function InspectionSummaryPage({
                           }}
                         >
                           <div>📁 {p.name}</div>
-                          <div style={{ fontSize: '10px', color: '#64748b' }}>Client: {p.client}</div>
+                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Client: {p.client}</div>
                         </div>
                       );
                     })}
@@ -234,7 +234,7 @@ export default function InspectionSummaryPage({
 
                     {/* Product Name */}
                     <td>
-                      <div style={{ fontWeight: 700, fontSize: '13px', color: '#ffffff' }}>
+                      <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-heading)' }}>
                         {product.name}
                       </div>
                       <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '0.1rem' }}>
@@ -259,13 +259,13 @@ export default function InspectionSummaryPage({
                     {/* Compliance Score Bar */}
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={{ flex: 1, height: '6px', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
                           <div style={{ 
                             width: `${res.score}%`, height: '100%', 
                             background: res.score === 100 ? '#34d399' : (res.score >= 75 ? '#fbbf24' : '#fb7185') 
                           }} />
                         </div>
-                        <strong style={{ fontSize: '12px', color: res.score === 100 ? '#34d399' : '#ffffff' }}>{res.score}%</strong>
+                        <strong style={{ fontSize: '12px', color: res.score === 100 ? 'var(--success)' : 'var(--text-heading)' }}>{res.score}%</strong>
                       </div>
                     </td>
 

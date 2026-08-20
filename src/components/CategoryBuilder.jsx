@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { PlusCircle, Trash2, Cpu, Check, Layers } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CategoryBuilder({ categories, setCategories }) {
+  const navigate = useNavigate();
   const [catName, setCatName] = useState('');
   const [catDescription, setCatDescription] = useState('');
   const [fields, setFields] = useState([

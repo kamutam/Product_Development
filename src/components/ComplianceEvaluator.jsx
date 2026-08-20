@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  CheckCircle2, XCircle, AlertTriangle, Search, Printer, ShieldCheck, Info, Sparkles, ArrowRight, Award, Calendar, Layers, Clock, Activity, CheckSquare, ShieldAlert, Sliders, Check
+  CheckCircle2, XCircle, AlertTriangle, Search, Printer, ShieldCheck, Info, Sparkles, ArrowRight, Award, Calendar, Layers, Clock, Activity, CheckSquare, ShieldAlert, Sliders, Check, Loader2, Bot, AlertOctagon
 } from 'lucide-react';
+import { generateComplianceInsights, detectSpecAnomalies } from '../utils/aiService';
 import { evaluateProductAgainstProject, findSimilarProducts } from '../utils/evaluator';
 import GovtEmblemLogo from './GovtEmblemLogo';
 
@@ -12,6 +13,9 @@ export default function ComplianceEvaluator({
   const [searchQuery, setSearchQuery] = useState('');
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
   const [projectSearchQuery, setProjectSearchQuery] = useState('');
+  const [aiInsights, setAiInsights] = useState(null);
+  const [isInsightLoading, setIsInsightLoading] = useState(false);
+  const [productAnomalies, setProductAnomalies] = useState({});
 
   const activeProject = projects.find(p => p.id === activeProjectId) || projects[0];
   const activeCategory = categories.find(c => c.id === activeProject?.categoryId);
@@ -118,6 +122,50 @@ export default function ComplianceEvaluator({
     projectStatusBadgeClass = 'badge-reject';
   }
 
+  // Fetch AI Insights whenever project or evaluations change
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchInsights = async () => {
+      setIsInsightLoading(true);
+      try {
+        const insights = await generateComplianceInsights(activeProject, evaluatedProducts);
+        if (isMounted) setAiInsights(insights);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (isMounted) setIsInsightLoading(false);
+      }
+    };
+
+    fetchInsights();
+    return () => { isMounted = false; };
+  }, [activeProjectId, evaluatedProducts.length]);
+
+  // Fetch ML Anomalies
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchAnomalies = async () => {
+      const anomaliesMap = {};
+      for (const prod of categoryProducts) {
+        if (!productAnomalies[prod.id]) {
+          const res = await detectSpecAnomalies(prod.specs || prod);
+          anomaliesMap[prod.id] = res;
+        }
+      }
+      if (isMounted && Object.keys(anomaliesMap).length > 0) {
+        setProductAnomalies(prev => ({ ...prev, ...anomaliesMap }));
+      }
+    };
+
+    if (categoryProducts.length > 0) {
+      fetchAnomalies();
+    }
+    
+    return () => { isMounted = false; };
+  }, [categoryProducts.length]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Top Header & Project Selector Bar */}
@@ -148,9 +196,9 @@ export default function ComplianceEvaluator({
                 justify: 'space-between',
                 fontSize: '12px',
                 fontWeight: 800,
-                background: '#ffffff',
-                color: '#0f172a',
-                borderColor: '#cbd5e1',
+                background: 'var(--bg-card)',
+                color: 'var(--text-heading)',
+                borderColor: 'var(--border-color)',
                 padding: '0.4rem 0.65rem'
               }}
               onClick={() => setShowProjectDropdown(!showProjectDropdown)}
@@ -170,8 +218,8 @@ export default function ComplianceEvaluator({
                   top: 'calc(100% + 4px)',
                   right: 0,
                   width: '280px',
-                  background: '#ffffff',
-                  border: '1px solid #cbd5e1',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '8px',
                   boxShadow: '0 20px 45px rgba(0,0,0,0.25)',
                   zIndex: 999999,
@@ -193,9 +241,9 @@ export default function ComplianceEvaluator({
                       fontSize: '11.5px',
                       fontWeight: 700,
                       borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      background: '#f8fafc',
-                      color: '#0f172a',
+                      border: '1px solid var(--border-color)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-heading)',
                       outline: 'none'
                     }}
                   />
@@ -215,7 +263,7 @@ export default function ComplianceEvaluator({
                             fontSize: '11.5px',
                             fontWeight: isSelected ? 800 : 600,
                             background: isSelected ? '#e0f2fe' : 'transparent',
-                            color: isSelected ? '#0369a1' : '#0f172a',
+                            color: isSelected ? '#0369a1' : '#ffffff',
                             cursor: 'pointer'
                           }}
                           onClick={() => {
@@ -225,7 +273,7 @@ export default function ComplianceEvaluator({
                           }}
                         >
                           <div>📁 {p.name}</div>
-                          <div style={{ fontSize: '10px', color: '#64748b' }}>Client: {p.client}</div>
+                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Client: {p.client}</div>
                         </div>
                       );
                     })}
@@ -240,10 +288,50 @@ export default function ComplianceEvaluator({
         </div>
       </div>
 
+      {/* AI INSIGHTS PANEL */}
+      <div className="card" style={{
+        background: 'linear-gradient(145deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%)',
+        border: '1px solid rgba(139, 92, 246, 0.3)',
+        boxShadow: '0 0 20px rgba(139, 92, 246, 0.1)',
+        padding: '1.2rem',
+        animation: 'fadeInUp 0.4s ease-out'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem', color: '#c4b5fd' }}>
+          <Bot size={18} />
+          <h3 style={{ fontSize: '1.1rem', margin: 0, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>AI Compliance Insights</h3>
+          {isInsightLoading && <Loader2 size={14} className="animate-spin" />}
+        </div>
+        
+        {isInsightLoading || !aiInsights ? (
+          <div style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Analyzing project specifications and product data...</div>
+        ) : (
+          <div>
+            <p style={{ fontSize: '13.5px', color: 'var(--text-main)', lineHeight: '1.5', marginBottom: '0.8rem' }}>
+              {aiInsights.summary}
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '12px' }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Risk Level:</span> 
+                <strong style={{ 
+                  color: aiInsights.riskLevel === 'High' ? '#f87171' : (aiInsights.riskLevel === 'Medium' ? '#fbbf24' : '#34d399'), 
+                  marginLeft: '0.4rem' 
+                }}>
+                  {aiInsights.riskLevel}
+                </strong>
+              </div>
+              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '12px', flex: 1 }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>AI Recommendation:</span> 
+                <span style={{ color: '#bae6fd', marginLeft: '0.4rem' }}>{aiInsights.recommendation}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* PROJECT & PRODUCTS STATUS SUMMARY PANEL */}
       <div className="card" style={{ 
-        background: '#ffffff', 
-        borderColor: '#cbd5e1', 
+        background: 'var(--bg-card)', 
+        borderColor: 'var(--border-color)', 
         padding: '1rem 1.25rem' 
       }}>
         <div style={{ fontSize: '12px', color: '#0284c7', fontWeight: 800, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
@@ -253,11 +341,11 @@ export default function ComplianceEvaluator({
         <div className="grid-cols-4" style={{ gap: '0.85rem' }}>
           {/* Project Status */}
           <div style={{ 
-            background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', 
-            border: '1px solid #cbd5e1' 
+            background: 'var(--bg-card)', padding: '0.75rem', borderRadius: '8px', 
+            border: '1px solid var(--border-color)' 
           }}>
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Project PO / Tender ID</div>
-            <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Project PO / Tender ID</div>
+            <div style={{ fontWeight: 800, fontSize: '13px', color: 'var(--text-heading)', marginTop: '0.2rem' }}>
               {activeProject?.poNumber || activeProject?.code || 'N/A'}
             </div>
             <div style={{ fontSize: '11px', color: '#0284c7', marginTop: '0.25rem', fontWeight: 700 }}>
@@ -268,7 +356,7 @@ export default function ComplianceEvaluator({
           {/* Accepted Products Status - 1-CLICK INTERACTIVE FILTER */}
           <div 
             style={{ 
-              background: '#ffffff', 
+              background: 'var(--bg-card)', 
               padding: '0.75rem', 
               borderRadius: '8px', 
               border: statusFilter === 'ACCEPTED' ? '2.5px solid #059669' : '1px solid #86efac',
@@ -279,7 +367,7 @@ export default function ComplianceEvaluator({
             onClick={() => setStatusFilter(statusFilter === 'ACCEPTED' ? 'ALL' : 'ACCEPTED')}
             title="Click to view only Accepted compliant products"
           >
-            <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: '#166534', fontWeight: 800 }}>Accepted Compliant</span>
               <CheckCircle2 size={13} color="#059669" />
             </div>
@@ -292,7 +380,7 @@ export default function ComplianceEvaluator({
           {/* Rejected Products Status - 1-CLICK INTERACTIVE FILTER */}
           <div 
             style={{ 
-              background: '#ffffff', 
+              background: 'var(--bg-card)', 
               padding: '0.75rem', 
               borderRadius: '8px', 
               border: statusFilter === 'REJECTED' ? '2.5px solid #e11d48' : '1px solid #fecdd3',
@@ -303,7 +391,7 @@ export default function ComplianceEvaluator({
             onClick={() => setStatusFilter(statusFilter === 'REJECTED' ? 'ALL' : 'REJECTED')}
             title="Click to view only Rejected products"
           >
-            <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: '#991b1b', fontWeight: 800 }}>Rejected / Non-Compliant</span>
               <XCircle size={13} color="#e11d48" />
             </div>
@@ -316,7 +404,7 @@ export default function ComplianceEvaluator({
           {/* Total Evaluated & Domain Status - 1-CLICK SHOW ALL */}
           <div 
             style={{ 
-              background: '#ffffff', 
+              background: 'var(--bg-card)', 
               padding: '0.75rem', 
               borderRadius: '8px', 
               border: statusFilter === 'ALL' ? '2.5px solid #0284c7' : '1px solid #cbd5e1',
@@ -326,12 +414,12 @@ export default function ComplianceEvaluator({
             onClick={() => setStatusFilter('ALL')}
             title="Click to view all candidate models"
           >
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Product Domain Category</div>
-            <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a', marginTop: '0.2rem' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>Product Domain Category</div>
+            <div style={{ fontWeight: 800, fontSize: '13px', color: 'var(--text-heading)', marginTop: '0.2rem' }}>
               {activeCategory?.name}
             </div>
-            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '0.25rem' }}>
-              Total Screened: <strong style={{ color: '#0f172a' }}>{categoryProducts.length} candidate models</strong>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+              Total Screened: <strong style={{ color: 'var(--text-heading)' }}>{categoryProducts.length} candidate models</strong>
             </div>
 
           </div>
@@ -512,6 +600,7 @@ export default function ComplianceEvaluator({
           filteredList.map(({ product, res }) => {
             const similarProds = findSimilarProducts(product, activeProject, activeCategory, products);
             const currentProductStatus = productProcurementStatus[product.id] || (res.status.includes('ACCEPTED') ? 'Selected for Procurement' : 'Under Technical Evaluation');
+            const anomalyData = productAnomalies[product.id];
 
             return (
               <div key={product.id} className="card" style={{ 
@@ -557,6 +646,19 @@ export default function ComplianceEvaluator({
                     {res.status === 'ACCEPTED_WAIVER' && (
                       <div style={{ fontSize: '11px', color: '#fde047', marginTop: '0.2rem', fontWeight: 700 }}>
                         ★ Waiver Reason: {res.overrideReason} ({res.overrideNotes})
+                      </div>
+                    )}
+
+                    {anomalyData?.hasAnomalies && (
+                      <div style={{ marginTop: '0.6rem', padding: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px' }}>
+                        <div style={{ fontWeight: 800, color: '#ef4444', fontSize: '11.5px', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <AlertOctagon size={13} /> ML Risk Anomalies Detected:
+                        </div>
+                        <ul style={{ paddingLeft: '1.2rem', margin: '0.3rem 0 0 0', fontSize: '11px', color: '#f87171' }}>
+                          {anomalyData.anomalies.map((anom, idx) => (
+                            <li key={idx}>{anom}</li>
+                          ))}
+                        </ul>
                       </div>
                     )}
                   </div>
@@ -650,14 +752,14 @@ export default function ComplianceEvaluator({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                       {similarProds.slice(0, 2).map(({ product: altP, res: altR, recommendationReason }) => (
                         <div key={altP.id} style={{ 
-                          padding: '0.45rem 0.65rem', background: '#ffffff', 
-                          borderRadius: '6px', border: '1px solid #cbd5e1',
+                          padding: '0.45rem 0.65rem', background: 'var(--bg-card)', 
+                          borderRadius: '6px', border: '1px solid var(--border-color)',
                           display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px'
                         }}>
                           <div>
-                            <span style={{ fontWeight: 700, color: '#0f172a' }}>{altP.name}</span>{' '}
+                            <span style={{ fontWeight: 700, color: 'var(--text-heading)' }}>{altP.name}</span>{' '}
                             <span className="badge badge-accept" style={{ fontSize: '10px', padding: '0.1rem 0.35rem' }}>ACCEPTED</span>
-                            <span style={{ color: '#475569', fontSize: '11px', marginLeft: '0.4rem' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '11px', marginLeft: '0.4rem' }}>
                               ({altP.vendor} - {altP.testingStatus || 'Tested'})
                             </span>
                           </div>

@@ -64,7 +64,7 @@ export default function SendRequirementModal({ oem, initialRequirement = '', cat
             <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               BRIHASPATHI TECHNOLOGIES &bull; OEM B2B INQUIRY ENGINE
             </div>
-            <h3 style={{ fontSize: '1.25rem', color: '#0f172a', margin: '0.15rem 0 0 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: 'var(--text-heading)', margin: '0.15rem 0 0 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Building2 size={22} color="#0284c7" /> Send Technical Requirement to {oem?.name || 'OEM Partner'}
             </h3>
           </div>
@@ -220,15 +220,15 @@ export default function SendRequirementModal({ oem, initialRequirement = '', cat
         ) : (
           /* GENERATED EMAIL PREVIEW VIEW */
           <div>
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '1rem', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                 Subject Line:
               </div>
-              <div style={{ fontSize: '13.5px', color: '#0f172a', fontWeight: 800, background: '#ffffff', padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+              <div style={{ fontSize: '13.5px', color: 'var(--text-heading)', fontWeight: 800, background: 'var(--bg-card)', padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
                 {generatedEmail.subject}
               </div>
 
-              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', marginTop: '0.85rem', marginBottom: '0.35rem' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginTop: '0.85rem', marginBottom: '0.35rem' }}>
                 Generated Business Email Body:
               </div>
               <textarea 
@@ -236,7 +236,7 @@ export default function SendRequirementModal({ oem, initialRequirement = '', cat
                 rows="14"
                 readOnly
                 value={generatedEmail.body}
-                style={{ background: '#ffffff', color: '#0f172a', fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.5, borderColor: '#cbd5e1' }}
+                style={{ background: 'var(--bg-card)', color: 'var(--text-heading)', fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.5, borderColor: 'var(--border-color)' }}
               />
             </div>
 
