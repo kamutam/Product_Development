@@ -115,10 +115,13 @@ export async function runIngestionAgent({ apiKey, fileName, fileText, onProgress
   // POINT 1: TENDER NUMBER (TENDER REF NO & GEM ID)
   // -------------------------------------------------------------
   const gemBidMatch = fileText.match(/GEM[\/\-_]\d{4}[\/\-_][A-Z0-9]+[\/\-_]\d+/i) || fileText.match(/GEM\/\d{4}\/[A-Z]\/\d+/i);
-  const multiSlashMatch = fileText.match(/\b([A-Z0-9]{2,15}\/[A-Z0-9_\-]{3,30}\/[A-Z0-9&_\-]{2,25}(?:\/[A-Z0-9_\-]{2,25})*)\b/i);
-  const tenderNoAndDateMatch = fileText.match(/TENDER\s*NO\.?\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9\/\-_]+(?:\/[A-Za-z0-9\/\-_]+)+)(?:\s+dated\s+([0-9\.\-\/]{8,12}))?/i);
-  const tenderRefMatch = fileText.match(/TENDER\s*(?:REF(?:ERENCE)?|NO\.?)\s*(?:NO\.?|NUMBER|CODE)?\s*[:\-\–]?\s*([A-Za-z0-9\/\-_.]{5,65})/i) ||
-    fileText.match(/(?:NIT\s*(?:No|Number|Ref)?|RFP\s*(?:No|Number|Ref)?|Bid\s*(?:No|Number|Ref)?|Enquiry\s*No|IFB\s*No)\s*[:\-\–\.]\s*([A-Za-z0-9\/\-_.]{5,65})/i);
+  
+  const explicitTenderRefMatch = 
+    fileText.match(/(?:TENDER\s*(?:REF(?:ERENCE)?|NO\.?)\s*(?:NO\.?|NUMBER|CODE)?|NIT\s*(?:NO\.?|NUMBER|REF)|RFP\s*(?:NO\.?|NUMBER)|IFB\s*(?:NO\.?|NUMBER)|BID\s*(?:NO\.?|NUMBER|REF)|ENQUIRY\s*NO\.?)\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i) ||
+    fileText.match(/TENDER\s*NO\.?\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9\/_\-&.]+)(?:\s+dated\s+([0-9.\-\/]{8,12}))?/i) ||
+    fileText.match(/(?:Ref(?:erence)?\s*(?:No|Number)?|NIT\s*Ref)\s*[:\-\–]\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i);
+
+  const multiSlashMatch = fileText.match(/\b([A-Z0-9]{2,15}(?:[\/_\-&.][A-Za-z0-9&_\-]{1,30}){2,6})\b/i);
 
   let gemId = 'N/A (Departmental RFP / ATC)';
   if (gemBidMatch && gemBidMatch[0]) {
@@ -134,13 +137,10 @@ export async function runIngestionAgent({ apiKey, fileName, fileText, onProgress
   let tenderRefNo = 'N/A';
   let tenderDated = '';
 
-  if (multiSlashMatch && multiSlashMatch[1] && isValidTenderRef(multiSlashMatch[1])) {
+  if (explicitTenderRefMatch && explicitTenderRefMatch[1] && isValidTenderRef(explicitTenderRefMatch[1])) {
+    tenderRefNo = explicitTenderRefMatch[1].trim();
+  } else if (multiSlashMatch && multiSlashMatch[1] && isValidTenderRef(multiSlashMatch[1])) {
     tenderRefNo = multiSlashMatch[1].trim();
-  } else if (tenderNoAndDateMatch && tenderNoAndDateMatch[1] && isValidTenderRef(tenderNoAndDateMatch[1])) {
-    tenderRefNo = tenderNoAndDateMatch[1].trim();
-    if (tenderNoAndDateMatch[2]) tenderDated = tenderNoAndDateMatch[2].trim();
-  } else if (tenderRefMatch && tenderRefMatch[1] && isValidTenderRef(tenderRefMatch[1])) {
-    tenderRefNo = tenderRefMatch[1].trim().replace(/[()]/g, '');
   }
 
   if ((tenderRefNo === 'N/A' || !isValidTenderRef(tenderRefNo)) && lowerText.includes('gail')) {

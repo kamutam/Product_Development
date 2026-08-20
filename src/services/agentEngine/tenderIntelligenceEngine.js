@@ -92,15 +92,20 @@ export async function runTenderIntelligenceExtraction({
     snippet: 'GeM Bid ID is managed on the GeM Portal submission portal.'
   };
 
-  const multiSlashMatch = fileText.match(/\b([A-Z0-9]{2,15}\/[A-Z0-9_\-]{3,30}\/[A-Z0-9&_\-]{2,25}(?:\/[A-Z0-9_\-]{2,25})*)\b/i);
-  const tenderNoAndDateMatch = fileText.match(/TENDER\s*NO\.?\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9\/\-_]+(?:\/[A-Za-z0-9\/\-_]+)+)(?:\s+dated\s+([0-9\.\-\/]{8,12}))?/i);
+  // 1. Explicit Tender Reference Identifier (captures full string including slashes, '&', hyphens, numbers)
+  const explicitTenderRefMatch = 
+    fileText.match(/(?:TENDER\s*(?:REF(?:ERENCE)?|NO\.?)\s*(?:NO\.?|NUMBER|CODE)?|NIT\s*(?:NO\.?|NUMBER|REF)|RFP\s*(?:NO\.?|NUMBER)|IFB\s*(?:NO\.?|NUMBER)|BID\s*(?:NO\.?|NUMBER|REF)|ENQUIRY\s*NO\.?)\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i) ||
+    fileText.match(/TENDER\s*NO\.?\s*(?:&\s*DATE)?\s*[:\-\–]?\s*([A-Za-z0-9\/_\-&.]+)(?:\s+dated\s+([0-9.\-\/]{8,12}))?/i) ||
+    fileText.match(/(?:Ref(?:erence)?\s*(?:No|Number)?|NIT\s*Ref)\s*[:\-\–]\s*([A-Za-z0-9]+(?:[\/_\-&.][A-Za-z0-9]+)+)/i);
+
+  const multiSlashMatch = fileText.match(/\b([A-Z0-9]{2,15}(?:[\/_\-&.][A-Za-z0-9&_\-]{1,30}){2,6})\b/i);
 
   let tenderRefNo = 'N/A';
   let tenderRefEvidence = null;
 
-  if (tenderNoAndDateMatch && tenderNoAndDateMatch[1] && !tenderNoAndDateMatch[1].toLowerCase().includes('page')) {
-    tenderRefNo = tenderNoAndDateMatch[1].trim();
-    tenderRefEvidence = createEvidence(tenderNoAndDateMatch[0], TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B)', tenderNoAndDateMatch[0]);
+  if (explicitTenderRefMatch && explicitTenderRefMatch[1] && !explicitTenderRefMatch[1].toLowerCase().includes('page')) {
+    tenderRefNo = explicitTenderRefMatch[1].trim();
+    tenderRefEvidence = createEvidence(explicitTenderRefMatch[0], TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B) IFB', explicitTenderRefMatch[0]);
   } else if (multiSlashMatch && multiSlashMatch[1] && !multiSlashMatch[1].toLowerCase().includes('page')) {
     tenderRefNo = multiSlashMatch[1].trim();
     tenderRefEvidence = createEvidence(multiSlashMatch[1], TENDER_SECTION_TYPES.IFB, 3, 'Clause 2.0 (B)');
