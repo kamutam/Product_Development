@@ -705,6 +705,19 @@ ${JSON.stringify(availableProducts.slice(0, 25).map(p => ({ id: p.id, name: p.na
 
 REQUIRED JSON OUTPUT FORMAT:
 {
+  "tenderAgency": {
+    "CATEGORY": "Tender Agency",
+    "EXTRACTION_RULE": "Extract ONLY what is explicitly stated. Use 'Not Specified in Document' if absent — never fabricate.",
+    "organisationName":  "Exact Government Department / Ministry / Authority / PSU name from document text",
+    "issuingAuthority":  "Exact Tender Inviting Authority / Issuing Officer / Competent Authority as stated in text",
+    "tenderRefNo":       "Exact NIT No. / RFP No. / Tender Reference Number from text",
+    "gemId":             "Exact GeM Bid Number if present, else 'Not Mentioned in this Document'",
+    "publishDate":       "Exact NIT / Issue Date from text, else 'Not Specified in Document'",
+    "preBidMeetingDate": "Exact Pre-Bid Meeting date, time & venue from text, else 'Not Specified in Document'",
+    "lastDate":          "Exact Bid Submission Deadline / Last Date from text, else 'Not Specified in Document'",
+    "bidType":           "Two-Packet | Single-Packet | GeM Electronic Tender — infer from context if label absent",
+    "tenderDomain":      "surveillance | transit | solar | railways | networking | access_control | smart_infra | general"
+  },
   "dossierSummary": {
     "organisationName": "Exact Government Department / Authority / Ministry name from text",
     "tenderName": "Exact tender title / scope of work",
@@ -816,6 +829,23 @@ Respond ONLY with valid JSON. No markdown ticks outside JSON.`;
 
   // Synthesize 14-Point Statutory Dossier from LLM + deterministic extractors
   const stat14 = extractComplete14StatutoryPoints(fileText, fileName);
+
+  // ── Tender Agency Category: prefer grounded LLM values, fall back to deterministic ──
+  const llmAgency   = parsed.tenderAgency || {};
+  const stat14Agency = stat14.tenderAgency || {};
+  const resolvedTenderAgency = {
+    organisationName:  llmAgency.organisationName  || stat14Agency.organisationName  || stat14.point3_orgName,
+    issuingAuthority:  llmAgency.issuingAuthority  || stat14Agency.issuingAuthority  || stat14.point3_orgName,
+    tenderRefNo:       llmAgency.tenderRefNo        || stat14Agency.tenderRefNo        || stat14.point1_tenderNumber,
+    gemId:             llmAgency.gemId              || stat14Agency.gemId              || stat14.gemId,
+    publishDate:       llmAgency.publishDate        || stat14Agency.publishDate        || 'Not Specified in Document',
+    preBidMeetingDate: llmAgency.preBidMeetingDate  || stat14Agency.preBidMeetingDate  || stat14.point6_preBidMeeting,
+    lastDate:          llmAgency.lastDate            || stat14Agency.lastDate            || 'Not Specified in Document',
+    bidType:           llmAgency.bidType            || stat14Agency.bidType            || 'Not Specified in Document',
+    tenderDomain:      llmAgency.tenderDomain       || stat14Agency.tenderDomain       || 'general',
+  };
+  parsed.tenderAgency = resolvedTenderAgency;
+
   parsed.statutory14Points = {
     point1_tenderNumber: (parsed.dossierSummary?.tenderRefNo && !parsed.dossierSummary?.tenderRefNo.startsWith('Not Specified')) ? parsed.dossierSummary.tenderRefNo : stat14.point1_tenderNumber,
     point1_gemBidNo: parsed.gemDocument?.gemId || stat14.gemId,
@@ -831,7 +861,9 @@ Respond ONLY with valid JSON. No markdown ticks outside JSON.`;
     point11_paymentTerms: stat14.point11_paymentTerms,
     point12_workCompletionTime: parsed.atcDocument?.sow?.executionPeriod || stat14.point12_workCompletionTime,
     point13_slaTerms: stat14.point13_slaTerms,
-    point14_scopeOfWork: parsed.atcDocument?.sow?.projectSummary || stat14.point14_scopeOfWork
+    point14_scopeOfWork: parsed.atcDocument?.sow?.projectSummary || stat14.point14_scopeOfWork,
+    // Tender Agency category is now a first-class block on statutory14Points
+    tenderAgency: resolvedTenderAgency,
   };
 
   return parsed;
@@ -1037,6 +1069,20 @@ export const runTenderParsingAgent = async (fileName, availableProducts = [], on
       }
     };
 
+    // ── Build Tender Agency block from the deterministic extractor ──────────
+    const stat14Agency = extractComplete14StatutoryPoints(fileText, fileName).tenderAgency || {};
+    const tenderAgency = {
+      organisationName:  stat14Agency.organisationName  || dossierSummary.organisationName,
+      issuingAuthority:  stat14Agency.issuingAuthority  || dossierSummary.issuingAuthority  || dossierSummary.organisationName,
+      tenderRefNo:       stat14Agency.tenderRefNo        || dossierSummary.tenderRefNo,
+      gemId:             stat14Agency.gemId              || dossierSummary.gemId,
+      publishDate:       stat14Agency.publishDate        || dossierSummary.publishDate        || 'Not Specified in Document',
+      preBidMeetingDate: stat14Agency.preBidMeetingDate  || dossierSummary.preBidMeetingDate,
+      lastDate:          stat14Agency.lastDate            || dossierSummary.lastDate,
+      bidType:           stat14Agency.bidType            || dossierSummary.bidType            || 'Not Specified in Document',
+      tenderDomain:      stat14Agency.tenderDomain       || dossierSummary.tenderDomain       || 'general',
+    };
+
     resolve({
       dossierSummary,
       gemDocument,
@@ -1044,7 +1090,9 @@ export const runTenderParsingAgent = async (fileName, availableProducts = [], on
       boqDocument,
       atcDocument,
       commercialTerms,
-      bom: suggestedBom
+      bom: suggestedBom,
+      // ── Tender Agency Category — top-level extraction result ──────────────
+      tenderAgency,
     });
   });
 };

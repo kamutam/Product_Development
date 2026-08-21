@@ -13,7 +13,10 @@ import {
   findSourceEvidence,
   TENDER_SECTION_TYPES
 } from '../../utils/tenderPackageEngine';
-import { extractComplete14StatutoryPoints } from '../../utils/statutory14PointAnalyzer';
+import {
+  extractComplete14StatutoryPoints,
+  extractTenderAgencyFields,
+} from '../../utils/statutory14PointAnalyzer';
 
 /**
  * Executes deep evidence-based extraction across the complete multi-document tender package.
@@ -394,6 +397,9 @@ export async function runTenderIntelligenceExtraction({
   // -------------------------------------------------------------------------
   // 7. ASSEMBLE MASTER TENDER INTELLIGENCE DOSSIER
   // -------------------------------------------------------------------------
+  // ── Tender Agency Category: strict document-grounded extraction ────────────
+  const tenderAgency = extractTenderAgencyFields(fileText, fileName);
+
   const finalIntelligenceDossier = {
     // 14 Statutory Points
     statutory14Points: {
@@ -493,6 +499,11 @@ export async function runTenderIntelligenceExtraction({
     conflictsAndOverrides,
     pageMap,
     totalPages,
+
+    // ── Tender Agency Category (top-level, all 9 fields) ───────────────────
+    // Strict document-grounded. Every field falls back to "Not Specified…" if
+    // the source document does not explicitly state it.
+    tenderAgency,
 
     // Developer Diagnostics Payload
     diagnostics: {
