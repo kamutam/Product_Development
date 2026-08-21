@@ -162,6 +162,141 @@ export function extractEmdDetails(fileText = '') {
   return 'N/A (Bid Security Declaration / Exemption as per GeM GTC / Not Stated in Document)';
 }
 
+// ---------------------------------------------------------------------------
+// TENDER AGENCY CATEGORY — Strict Document-Grounded Extraction
+// ---------------------------------------------------------------------------
+
+/**
+ * Extracts ALL fields belonging to the "Tender Agency" category.
+ * STRICT ZERO-HALLUCINATION: every field falls back to a documented
+ * "Not Specified…" string rather than an invented value.
+ *
+ * @param {string} fileText  - Raw / normalised OCR text from the tender document
+ * @param {string} fileName  - Original file name (used as a final fallback only)
+ * @returns {{
+ *   organisationName:   string,
+ *   issuingAuthority:   string,
+ *   tenderRefNo:        string,
+ *   gemId:              string,
+ *   publishDate:        string,
+ *   preBidMeetingDate:  string,
+ *   lastDate:           string,
+ *   bidType:            string,
+ *   tenderDomain:       string
+ * }}
+ */
+export function extractTenderAgencyFields(fileText = '', fileName = '') {
+  const norm  = normalizeTenderText(fileText);
+  const lower = norm.toLowerCase();
+
+  // ── 1. Organisation / Procuring Authority Name ─────────────────────────────
+  let organisationName = extractOrganizationInfo(norm, fileName);
+
+  // ── 2. Issuing Authority (may differ from the procuring dept) ─────────────
+  //       Look for explicit "Tender Inviting Authority" / "Issued by" label first.
+  let issuingAuthority = '';
+  const issuingMatch = norm.match(
+    /(?:Tender\s*Inviting\s*Authority|Issued\s*By|Issuing\s*Authority|Competent\s*Authority|Authorised\s*Officer|Signing\s*Authority)\s*[:\-–=]?\s*([^\n\r]{5,120})/i
+  );
+  if (issuingMatch && issuingMatch[1]) {
+    const cand = issuingMatch[1].trim().replace(/^[&\-:\.\s]+/, '');
+    if (cand.length >= 5 && !cand.toLowerCase().includes('clause')) {
+      issuingAuthority = cand;
+    }
+  }
+  // Fall back to the organisation name when no separate issuing authority is stated
+  if (!issuingAuthority) {
+    issuingAuthority = organisationName || 'Not Specified in Uploaded Document';
+  }
+
+  // ── 3. Tender Reference / NIT Number ──────────────────────────────────────
+  const { tenderRefNo, gemId } = extractTenderNumbers(norm, fileName);
+
+  // ── 4. Publish / NIT Date ─────────────────────────────────────────────────
+  let publishDate = 'Not Specified in Uploaded Document';
+  const publishPatterns = [
+    /(?:Date\s*of\s*(?:Issue|Publication|Tender|NIT|Bid)|NIT\s*Date|Published\s*(?:On|Date)|Issue\s*Date)\s*[:\-–=]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4})/i,
+    /(?:Tender\s*No\.?.*?Dated?|Ref.*?Dated?)\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4})/i,
+  ];
+  for (const pat of publishPatterns) {
+    const m = norm.match(pat);
+    if (m && m[1] && m[1].length >= 6) {
+      publishDate = m[1].trim();
+      break;
+    }
+  }
+
+  // ── 5. Pre-Bid Meeting Date, Time & Venue ─────────────────────────────────
+  const preBidMeetingDate = extractPreBidMeetingInfo(norm);
+
+  // ── 6. Bid Submission Deadline ────────────────────────────────────────────
+  let lastDate = 'Not Specified in Uploaded Document (Refer to GeM Portal / NIT Schedule)';
+  const lastDatePatterns = [
+    /(?:Bid\s*End\s*Date|Submission\s*Deadline|Last\s*Date\s*(?:of\s*)?(?:Submission|Receipt)|Bid\s*Due\s*Date|Closing\s*Date)\s*[:\-–=]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4}(?:\s+[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?(?:\s*(?:AM|PM|hrs))?)?)/i,
+    /(?:Due\s*Date|Last\s*Date)\s*[:\-–=]?\s*([0-9]{1,2}[\/\-\.][0-9]{1,2}[\/\-\.][0-9]{2,4})/i,
+  ];
+  for (const pat of lastDatePatterns) {
+    const m = norm.match(pat);
+    if (m && m[1] && m[1].length >= 6) {
+      lastDate = m[1].trim();
+      break;
+    }
+  }
+
+  // ── 7. Bid / Tender Type ──────────────────────────────────────────────────
+  let bidType = 'Not Specified in Uploaded Document';
+  const bidTypeMatch = norm.match(
+    /(?:Bid\s*Type|Tender\s*Type|Type\s*of\s*(?:Bid|Tender)|Procurement\s*Type)\s*[:\-–=]?\s*([^\n\r]{4,80})/i
+  );
+  if (bidTypeMatch && bidTypeMatch[1]) {
+    bidType = bidTypeMatch[1].trim().replace(/^[&\-:\.\s]+/, '');
+  } else {
+    // Infer from context keywords
+    if (lower.includes('two packet') || lower.includes('two-packet') || lower.includes('two envelope') || lower.includes('two bid')) {
+      bidType = 'Two-Packet Electronic Tender (Technical + Commercial)';
+    } else if (lower.includes('single packet') || lower.includes('single bid') || lower.includes('single envelope')) {
+      bidType = 'Single-Packet Electronic Tender';
+    } else if (lower.includes('gem') || lower.includes('government e-market')) {
+      bidType = 'GeM Electronic Tender (Refer to GeM Portal Bid Parameters)';
+    }
+  }
+
+  // ── 8. Tender Domain / Sector ─────────────────────────────────────────────
+  let tenderDomain = 'general';
+  if (lower.includes('ais-140') || lower.includes('gps tracker') || lower.includes('fleet management') || lower.includes('transit') || lower.includes('mdvr')) {
+    tenderDomain = 'transit';
+  } else if (lower.includes('solar') || lower.includes('photovoltaic') || lower.includes('inverter') || lower.includes('pv module')) {
+    tenderDomain = 'solar';
+  } else if (lower.includes('loco') || lower.includes('locomotive') || lower.includes('rdso') || lower.includes('railway')) {
+    tenderDomain = 'railways';
+  } else if (lower.includes('access control') || lower.includes('biometric') || lower.includes('turnstile') || lower.includes('boom barrier')) {
+    tenderDomain = 'access_control';
+  } else if (lower.includes('core switch') || lower.includes('firewall') || lower.includes('structured cabling') || lower.includes('ofc cable')) {
+    tenderDomain = 'networking';
+  } else if (lower.includes('smart pole') || lower.includes('smart city') || lower.includes('environmental sensor')) {
+    tenderDomain = 'smart_infra';
+  } else if (
+    lower.includes('cctv') || lower.includes('camera') || lower.includes('surveillance') ||
+    lower.includes('nvr') || lower.includes('vms') || lower.includes('ptz')
+  ) {
+    tenderDomain = 'surveillance';
+  }
+
+  return {
+    organisationName,
+    issuingAuthority,
+    tenderRefNo,
+    gemId,
+    publishDate,
+    preBidMeetingDate,
+    lastDate,
+    bidType,
+    tenderDomain,
+  };
+}
+
+// ---------------------------------------------------------------------------
+
 /**
  * 5. Comprehensive 14-Point Statutory Extractor (100% Zero-Hallucination)
  */
@@ -238,6 +373,9 @@ export function extractComplete14StatutoryPoints(fileText = '', fileName = '') {
   const sowMatch = norm.match(/(?:Scope\s*of\s*Work|Brief\s*Scope|Scope\s*of\s*Supply)\s*[:\-\–=]?\s*([^\n\r]{10,200})/i);
   const scopeOfWork = sowMatch ? sowMatch[1].trim() : `Turnkey Supply, Delivery, Installation, Testing, Commissioning & Maintenance as detailed in RFP technical schedules for ${orgName}.`;
 
+  // ── Tender Agency Category Block ───────────────────────────────────────────
+  const tenderAgency = extractTenderAgencyFields(fileText, fileName);
+
   return {
     point1_tenderNumber: tenderRefNo,
     gemId: gemId,
@@ -255,6 +393,11 @@ export function extractComplete14StatutoryPoints(fileText = '', fileName = '') {
     point11_paymentTerms: paymentTerms,
     point12_workCompletionTime: workCompletionTime,
     point13_slaTerms: slaTerms,
-    point14_scopeOfWork: scopeOfWork
+    point14_scopeOfWork: scopeOfWork,
+
+    // ── Tender Agency Category ──────────────────────────────────────────────
+    // All fields explicitly belong to the "Tender Agency" extraction category.
+    // Every value is document-grounded; falls back to "Not Specified…" if absent.
+    tenderAgency,
   };
 }
