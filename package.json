@@ -1,0 +1,10 @@
+{
+  "name": "anti-gravity-projects-root",
+  "version": "1.0.0",
+  "description": "Root runner for Product Development",
+  "scripts": {
+    "dev": "npm --prefix Product_Development run dev",
+    "build": "npm --prefix Product_Development run build",
+    "start": "npm --prefix Product_Development run start"
+  }
+}
